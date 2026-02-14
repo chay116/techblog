@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vAI Tech Blog</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <h1>vAI Tech Blog</h1>
+      <p>Worklogs and comparisons across CUDA, Vulkan, HIP, GLSL, and GPU architectures.</p>
+    </header>
+
+    <main class="layout">
+      <section class="filters">
+        <h2>Category</h2>
+        <div id="category-filters" class="chips"></div>
+
+        <h2>Track</h2>
+        <div id="track-filters" class="chips"></div>
+
+        <h2>Tags</h2>
+        <div id="tag-filters" class="chips"></div>
+
+        <button id="clear-btn" class="clear-btn">Clear Filters</button>
+      </section>
+
+      <section class="content">
+        <div class="meta" id="meta"></div>
+        <div id="post-list" class="post-list"></div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

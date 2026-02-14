@@ -1,0 +1,88 @@
+{
+  "posts": [
+    {
+      "title": "Comparison - NVIDIA Ampere vs Ada (Template)",
+      "date": "2026-02-17",
+      "status": "wip",
+      "project": "vAI",
+      "category": "comparison",
+      "track": "gpu-architecture",
+      "tags": [
+        "nvidia",
+        "gpu-architecture",
+        "ampere",
+        "ada"
+      ],
+      "path": "posts/comparison/gpu-architecture/2026-02-17-comparison-nvidia-ampere-vs-ada-template.md",
+      "summary": "Architecture-level differences that may affect vAI kernels."
+    },
+    {
+      "title": "Comparison - CUDA vs Vulkan Initialization",
+      "date": "2026-02-16",
+      "status": "wip",
+      "project": "vAI",
+      "category": "comparison",
+      "track": "api-language",
+      "tags": [
+        "cuda",
+        "vulkan",
+        "initialization",
+        "nvidia"
+      ],
+      "path": "posts/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init.md",
+      "summary": "Initialization complexity and first execution behavior on NVIDIA GPU."
+    },
+    {
+      "title": "Worklog #02 - Vulkan Barrier Audit for Compute",
+      "date": "2026-02-15",
+      "status": "wip",
+      "project": "vAI",
+      "category": "worklog",
+      "track": "api-language",
+      "tags": [
+        "vulkan",
+        "barrier",
+        "synchronization",
+        "compute"
+      ],
+      "path": "posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit.md",
+      "summary": "Barrier placement in the Vulkan compute path may be over-conservative, reducing overlap opportunities."
+    },
+    {
+      "title": "Worklog #01 - CUDA vs Vulkan Initialization on NVIDIA",
+      "date": "2026-02-14",
+      "status": "wip",
+      "project": "vAI",
+      "category": "worklog",
+      "track": "api-language",
+      "tags": [
+        "cuda",
+        "vulkan",
+        "nvidia",
+        "initialization"
+      ],
+      "path": "posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia.md",
+      "summary": "vAI compute path starts with both CUDA and Vulkan backends. The immediate objective is to isolate one-time initialization cost and first-dispatch latency."
+    }
+  ],
+  "categories": [
+    "comparison",
+    "worklog"
+  ],
+  "tracks": [
+    "api-language",
+    "gpu-architecture"
+  ],
+  "tags": {
+    "nvidia": 3,
+    "vulkan": 3,
+    "cuda": 2,
+    "initialization": 2,
+    "ada": 1,
+    "ampere": 1,
+    "barrier": 1,
+    "compute": 1,
+    "gpu-architecture": 1,
+    "synchronization": 1
+  }
+}

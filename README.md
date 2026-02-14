@@ -55,6 +55,14 @@ Run the checklist in `docs/weekly-review-checklist.md` once per week.
 - Main index: `docs/post-index.md`
 - Post template: `docs/post-template.md`
 
+## GitHub Pages
+
+- Site source: `site/`
+- Data build script: `scripts/build_site.py`
+- Deploy workflow: `.github/workflows/deploy-pages.yml`
+
+When `main` is updated, GitHub Actions builds `site/posts.json` from `posts/` and deploys the static page.
+
 ## Comparison Document Policy
 
 Every file under `comparisons/` must include:
