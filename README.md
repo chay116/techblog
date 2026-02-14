@@ -4,6 +4,10 @@ This repository is a research-oriented blog for optimization work, especially ar
 
 ## Structure
 
+- `posts/`: publish-ready temporary/final blog entries
+  - `worklog/`
+  - `comparison/api-language/`
+  - `comparison/gpu-architecture/`
 - `worklog/`: date-based experiment logs (WIP-friendly)
 - `comparisons/`: stable comparison notes (concept and performance oriented)
   - `gpu-architecture/`: architecture-level comparisons (e.g., NVIDIA vs AMD generations)
@@ -45,6 +49,11 @@ tags: ["gpu", "optimization"]
 ## Weekly Maintenance
 
 Run the checklist in `docs/weekly-review-checklist.md` once per week.
+
+## Browse Posts
+
+- Main index: `docs/post-index.md`
+- Post template: `docs/post-template.md`
 
 ## Comparison Document Policy
 
