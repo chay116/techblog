@@ -70,9 +70,9 @@ function renderPosts() {
     const item = document.createElement("article");
     item.className = "post";
 
-    const ghUrl = `https://github.com/chay116/techblog/blob/main/${p.path}`;
+    const postUrl = `./post.html?path=${encodeURIComponent(p.path)}`;
     item.innerHTML = `
-      <h3><a href="${ghUrl}" target="_blank" rel="noreferrer">${p.title}</a></h3>
+      <h3><a href="${postUrl}">${p.title}</a></h3>
       <div class="sub">${p.date} | ${p.category} | ${p.track} | ${p.status}</div>
       <p>${p.summary || "No summary"}</p>
       <div class="tags">${p.tags.map((t) => `<span class="tag">${t}</span>`).join("")}</div>

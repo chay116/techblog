@@ -42,6 +42,11 @@ body {
   grid-template-columns: 280px 1fr;
 }
 
+.layout.single {
+  grid-template-columns: 1fr;
+  max-width: 900px;
+}
+
 .filters, .content {
   background: var(--panel);
   border: 1px solid var(--line);
@@ -134,6 +139,28 @@ body {
   font-size: 0.78rem;
   padding: 0.15rem 0.5rem;
   background: #fff;
+}
+
+.markdown {
+  line-height: 1.6;
+}
+
+.markdown h1, .markdown h2, .markdown h3 {
+  margin-top: 1.2rem;
+}
+
+.markdown pre {
+  background: #f2ece2;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.8rem;
+  overflow-x: auto;
+}
+
+.markdown code {
+  background: #f2ece2;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
 }
 
 @media (max-width: 840px) {
