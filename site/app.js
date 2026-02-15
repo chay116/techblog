@@ -2,10 +2,27 @@ const LANG_MODE_KEY = "blog_lang_mode";
 const PANEL_OPEN_KEY = "blog_filter_panel_open";
 const LIST_OPEN_KEY = "blog_post_list_open";
 
+function safeStorageGet(key, fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value === null ? fallback : value;
+  } catch (_) {
+    return fallback;
+  }
+}
+
+function safeStorageSet(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch (_) {
+    // ignore storage failures (private mode / blocked storage)
+  }
+}
+
 const state = {
-  lang: localStorage.getItem(LANG_MODE_KEY) || "en",
-  panelOpen: localStorage.getItem(PANEL_OPEN_KEY) !== "0",
-  listOpen: localStorage.getItem(LIST_OPEN_KEY) !== "0",
+  lang: safeStorageGet(LANG_MODE_KEY, "en"),
+  panelOpen: safeStorageGet(PANEL_OPEN_KEY, "1") !== "0",
+  listOpen: safeStorageGet(LIST_OPEN_KEY, "1") !== "0",
   category: null,
   track: null,
   tag: null,
@@ -30,13 +47,13 @@ function renderLanguageSwitch() {
 
   root.appendChild(createChip("English", state.lang === "en", () => {
     state.lang = "en";
-    localStorage.setItem(LANG_MODE_KEY, "en");
+    safeStorageSet(LANG_MODE_KEY, "en");
     renderAll();
   }, "mode-chip"));
 
   root.appendChild(createChip("한국어", state.lang === "ko", () => {
     state.lang = "ko";
-    localStorage.setItem(LANG_MODE_KEY, "ko");
+    safeStorageSet(LANG_MODE_KEY, "ko");
     renderAll();
   }, "mode-chip"));
 }
@@ -152,13 +169,13 @@ async function main() {
 
   byId("panel-toggle").addEventListener("click", () => {
     state.panelOpen = !state.panelOpen;
-    localStorage.setItem(PANEL_OPEN_KEY, state.panelOpen ? "1" : "0");
+    safeStorageSet(PANEL_OPEN_KEY, state.panelOpen ? "1" : "0");
     renderAll();
   });
 
   byId("list-toggle").addEventListener("click", () => {
     state.listOpen = !state.listOpen;
-    localStorage.setItem(LIST_OPEN_KEY, state.listOpen ? "1" : "0");
+    safeStorageSet(LIST_OPEN_KEY, state.listOpen ? "1" : "0");
     renderAll();
   });
 
