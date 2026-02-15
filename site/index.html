@@ -20,32 +20,38 @@
         </p>
       </header>
 
-      <section class="mode-row">
-        <span class="label">Language</span>
-        <div class="mode-switch" id="lang-switch"></div>
-      </section>
+      <div class="layout">
+        <aside class="sidebar">
+          <details class="filter-box" id="filter-details" open>
+            <summary>Filter posts</summary>
+            <div class="filter-body">
+              <h3>Category</h3>
+              <div id="category-filters" class="chips"></div>
 
-      <details class="filter-box" id="filter-details">
-        <summary>Filter posts</summary>
-        <div class="filter-body">
-          <h3>Category</h3>
-          <div id="category-filters" class="chips"></div>
+              <h3>Track</h3>
+              <div id="track-filters" class="chips"></div>
 
-          <h3>Track</h3>
-          <div id="track-filters" class="chips"></div>
+              <h3>Tags</h3>
+              <div id="tag-filters" class="chips"></div>
 
-          <h3>Tags</h3>
-          <div id="tag-filters" class="chips"></div>
+              <button id="clear-btn" class="clear-btn" type="button">Clear filters</button>
+            </div>
+          </details>
+        </aside>
 
-          <button id="clear-btn" class="clear-btn" type="button">Clear filters</button>
-        </div>
-      </details>
+        <section class="main-col">
+          <section class="mode-row">
+            <span class="label">Language</span>
+            <div class="mode-switch" id="lang-switch"></div>
+          </section>
 
-      <section class="post-section">
-        <h2 id="mode-title">English</h2>
-        <p class="count" id="meta"></p>
-        <div id="post-list" class="post-list"></div>
-      </section>
+          <section class="post-section">
+            <h2 id="mode-title">English</h2>
+            <p class="count" id="meta"></p>
+            <div id="post-list" class="post-list"></div>
+          </section>
+        </section>
+      </div>
     </main>
 
     <script src="./app.js"></script>
