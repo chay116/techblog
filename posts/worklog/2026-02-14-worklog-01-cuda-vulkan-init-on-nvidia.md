@@ -3,6 +3,7 @@ title: "Worklog #01 - CUDA vs Vulkan Initialization on NVIDIA"
 date: "2026-02-14"
 status: "wip"
 project: "vAI"
+lang: "en"
 category: "worklog"
 track: "api-language"
 tags: ["cuda", "vulkan", "nvidia", "initialization"]

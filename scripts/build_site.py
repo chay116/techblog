@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-POSTS_DIR = ROOT / "posts"
+POSTS_DIRS = [ROOT / "posts", ROOT / "posts-ko"]
 SITE_DIR = ROOT / "site"
 
 
@@ -50,25 +50,29 @@ def extract_summary(body: str):
 
 def collect_posts():
     posts = []
-    for path in sorted(POSTS_DIR.rglob("*.md")):
-        text = path.read_text(encoding="utf-8")
-        frontmatter, body = parse_frontmatter(text)
-        rel = path.relative_to(ROOT).as_posix()
-        tags = frontmatter.get("tags", [])
-        if isinstance(tags, str):
-            tags = [tags]
-        post = {
-            "title": frontmatter.get("title", path.stem),
-            "date": frontmatter.get("date", ""),
-            "status": frontmatter.get("status", "wip"),
-            "project": frontmatter.get("project", ""),
-            "category": frontmatter.get("category", "other"),
-            "track": frontmatter.get("track", "other"),
-            "tags": tags,
-            "path": rel,
-            "summary": extract_summary(body),
-        }
-        posts.append(post)
+    for posts_dir in POSTS_DIRS:
+        if not posts_dir.exists():
+            continue
+        for path in sorted(posts_dir.rglob("*.md")):
+            text = path.read_text(encoding="utf-8")
+            frontmatter, body = parse_frontmatter(text)
+            rel = path.relative_to(ROOT).as_posix()
+            tags = frontmatter.get("tags", [])
+            if isinstance(tags, str):
+                tags = [tags]
+            post = {
+                "title": frontmatter.get("title", path.stem),
+                "date": frontmatter.get("date", ""),
+                "status": frontmatter.get("status", "wip"),
+                "project": frontmatter.get("project", ""),
+                "lang": frontmatter.get("lang", "en"),
+                "category": frontmatter.get("category", "other"),
+                "track": frontmatter.get("track", "other"),
+                "tags": tags,
+                "path": rel,
+                "summary": extract_summary(body),
+            }
+            posts.append(post)
 
     posts.sort(key=lambda x: (x["date"], x["title"]), reverse=True)
     return posts
@@ -87,11 +91,12 @@ def main():
     posts = collect_posts()
     payload = {
         "posts": posts,
+        "languages": sorted({p["lang"] for p in posts}),
         "categories": sorted({p["category"] for p in posts}),
         "tracks": sorted({p["track"] for p in posts}),
         "tags": build_tags(posts),
     }
-    (SITE_DIR / "posts.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    (SITE_DIR / "posts.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"Built site data with {len(posts)} posts")
 
 

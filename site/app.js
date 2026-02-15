@@ -49,7 +49,7 @@ function renderFilters() {
   });
 }
 
-function filteredPosts() {
+function baseFilteredPosts() {
   return state.data.posts.filter((p) => {
     if (state.category && p.category !== state.category) return false;
     if (state.track && p.track !== state.track) return false;
@@ -58,13 +58,21 @@ function filteredPosts() {
   });
 }
 
-function renderPosts() {
-  const posts = filteredPosts();
-  const list = byId("post-list");
-  const meta = byId("meta");
+function renderPostList(listId, metaId, lang) {
+  const posts = baseFilteredPosts().filter((p) => (p.lang || "en") === lang);
+  const list = byId(listId);
+  const meta = byId(metaId);
 
   meta.textContent = `${posts.length} posts`;
   list.innerHTML = "";
+
+  if (posts.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = "No posts for current filters.";
+    list.appendChild(empty);
+    return;
+  }
 
   posts.forEach((p) => {
     const item = document.createElement("article");
@@ -84,7 +92,8 @@ function renderPosts() {
 
 function renderAll() {
   renderFilters();
-  renderPosts();
+  renderPostList("post-list-ko", "meta-ko", "ko");
+  renderPostList("post-list-en", "meta-en", "en");
 }
 
 async function main() {

@@ -8,6 +8,9 @@ This repository is a research-oriented blog for optimization work, especially ar
   - `worklog/`
   - `comparison/api-language/`
   - `comparison/gpu-architecture/`
+- `posts-ko/`: Korean version entries
+  - `worklog/`
+  - `comparison/api-language/`
 - `worklog/`: date-based experiment logs (WIP-friendly)
 - `comparisons/`: stable comparison notes (concept and performance oriented)
   - `gpu-architecture/`: architecture-level comparisons (e.g., NVIDIA vs AMD generations)

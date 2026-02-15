@@ -3,32 +3,49 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>vAI Tech Blog</title>
+    <title>Chaeyoung Lim</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <header class="hero">
-      <h1>vAI Tech Blog</h1>
-      <p>Worklogs and comparisons across CUDA, Vulkan, HIP, GLSL, and GPU architectures.</p>
+      <h1>Chaeyoung Lim</h1>
+      <p class="subtitle">Worklog and research notes on GPU optimization, graphics APIs, and systems engineering.</p>
+      <nav class="links">
+        <a href="https://www.linkedin.com/in/chaeyoung-lim-6b0046132/" target="_blank" rel="noreferrer">LinkedIn</a>
+        <a href="https://github.com/chay116" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="mailto:chay116@naver.com">Naver Email</a>
+      </nav>
     </header>
 
-    <main class="layout">
-      <section class="filters">
-        <h2>Category</h2>
+    <main class="container">
+      <section class="filters card">
+        <h2>Filter</h2>
+        <h3>Category</h3>
         <div id="category-filters" class="chips"></div>
 
-        <h2>Track</h2>
+        <h3>Track</h3>
         <div id="track-filters" class="chips"></div>
 
-        <h2>Tags</h2>
+        <h3>Tags</h3>
         <div id="tag-filters" class="chips"></div>
 
-        <button id="clear-btn" class="clear-btn">Clear Filters</button>
+        <button id="clear-btn" class="clear-btn">Clear filters</button>
       </section>
 
       <section class="content">
-        <div class="meta" id="meta"></div>
-        <div id="post-list" class="post-list"></div>
+        <div class="lang-grid">
+          <article class="card">
+            <h2>한국어</h2>
+            <p class="count" id="meta-ko"></p>
+            <div id="post-list-ko" class="post-list"></div>
+          </article>
+
+          <article class="card">
+            <h2>English</h2>
+            <p class="count" id="meta-en"></p>
+            <div id="post-list-en" class="post-list"></div>
+          </article>
+        </div>
       </section>
     </main>
 

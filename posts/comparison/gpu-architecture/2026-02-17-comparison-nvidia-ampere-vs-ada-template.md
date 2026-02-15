@@ -3,6 +3,7 @@ title: "Comparison - NVIDIA Ampere vs Ada (Template)"
 date: "2026-02-17"
 status: "wip"
 project: "vAI"
+lang: "en"
 category: "comparison"
 track: "gpu-architecture"
 tags: ["nvidia", "gpu-architecture", "ampere", "ada"]

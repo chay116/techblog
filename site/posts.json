@@ -5,6 +5,7 @@
       "date": "2026-02-17",
       "status": "wip",
       "project": "vAI",
+      "lang": "en",
       "category": "comparison",
       "track": "gpu-architecture",
       "tags": [
@@ -17,10 +18,28 @@
       "summary": "Architecture-level differences that may affect vAI kernels."
     },
     {
+      "title": "비교 - CUDA vs Vulkan 초기화",
+      "date": "2026-02-16",
+      "status": "wip",
+      "project": "vAI",
+      "lang": "ko",
+      "category": "comparison",
+      "track": "api-language",
+      "tags": [
+        "cuda",
+        "vulkan",
+        "초기화",
+        "nvidia"
+      ],
+      "path": "posts-ko/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init-ko.md",
+      "summary": "NVIDIA GPU 기준으로 초기화 복잡도와 첫 실행 특성을 비교한다."
+    },
+    {
       "title": "Comparison - CUDA vs Vulkan Initialization",
       "date": "2026-02-16",
       "status": "wip",
       "project": "vAI",
+      "lang": "en",
       "category": "comparison",
       "track": "api-language",
       "tags": [
@@ -33,10 +52,28 @@
       "summary": "Initialization complexity and first execution behavior on NVIDIA GPU."
     },
     {
+      "title": "워크로그 #02 - Vulkan Compute 배리어 점검",
+      "date": "2026-02-15",
+      "status": "wip",
+      "project": "vAI",
+      "lang": "ko",
+      "category": "worklog",
+      "track": "api-language",
+      "tags": [
+        "vulkan",
+        "barrier",
+        "sync",
+        "compute"
+      ],
+      "path": "posts-ko/worklog/2026-02-15-worklog-02-vulkan-barrier-audit-ko.md",
+      "summary": "현재 Vulkan compute 경로에서 배리어 범위가 과도할 가능성이 있다."
+    },
+    {
       "title": "Worklog #02 - Vulkan Barrier Audit for Compute",
       "date": "2026-02-15",
       "status": "wip",
       "project": "vAI",
+      "lang": "en",
       "category": "worklog",
       "track": "api-language",
       "tags": [
@@ -49,10 +86,28 @@
       "summary": "Barrier placement in the Vulkan compute path may be over-conservative, reducing overlap opportunities."
     },
     {
+      "title": "워크로그 #01 - NVIDIA에서 CUDA vs Vulkan 초기화",
+      "date": "2026-02-14",
+      "status": "wip",
+      "project": "vAI",
+      "lang": "ko",
+      "category": "worklog",
+      "track": "api-language",
+      "tags": [
+        "cuda",
+        "vulkan",
+        "nvidia",
+        "초기화"
+      ],
+      "path": "posts-ko/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia-ko.md",
+      "summary": "vAI의 CUDA/Vulkan 백엔드에서 첫 실행 지연과 초기화 비용을 분리해서 확인한다."
+    },
+    {
       "title": "Worklog #01 - CUDA vs Vulkan Initialization on NVIDIA",
       "date": "2026-02-14",
       "status": "wip",
       "project": "vAI",
+      "lang": "en",
       "category": "worklog",
       "track": "api-language",
       "tags": [
@@ -65,6 +120,10 @@
       "summary": "vAI compute path starts with both CUDA and Vulkan backends. The immediate objective is to isolate one-time initialization cost and first-dispatch latency."
     }
   ],
+  "languages": [
+    "en",
+    "ko"
+  ],
   "categories": [
     "comparison",
     "worklog"
@@ -74,15 +133,17 @@
     "gpu-architecture"
   ],
   "tags": {
-    "nvidia": 3,
-    "vulkan": 3,
-    "cuda": 2,
+    "vulkan": 6,
+    "nvidia": 5,
+    "cuda": 4,
+    "barrier": 2,
+    "compute": 2,
     "initialization": 2,
+    "초기화": 2,
     "ada": 1,
     "ampere": 1,
-    "barrier": 1,
-    "compute": 1,
     "gpu-architecture": 1,
+    "sync": 1,
     "synchronization": 1
   }
 }

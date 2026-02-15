@@ -3,6 +3,7 @@ title: "Comparison - CUDA vs Vulkan Initialization"
 date: "2026-02-16"
 status: "wip"
 project: "vAI"
+lang: "en"
 category: "comparison"
 track: "api-language"
 tags: ["cuda", "vulkan", "initialization", "nvidia"]

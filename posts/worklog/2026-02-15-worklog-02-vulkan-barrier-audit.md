@@ -3,6 +3,7 @@ title: "Worklog #02 - Vulkan Barrier Audit for Compute"
 date: "2026-02-15"
 status: "wip"
 project: "vAI"
+lang: "en"
 category: "worklog"
 track: "api-language"
 tags: ["vulkan", "barrier", "synchronization", "compute"]
