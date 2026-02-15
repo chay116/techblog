@@ -1,7 +1,11 @@
 const LANG_MODE_KEY = "blog_lang_mode";
+const PANEL_OPEN_KEY = "blog_filter_panel_open";
+const LIST_OPEN_KEY = "blog_post_list_open";
 
 const state = {
   lang: localStorage.getItem(LANG_MODE_KEY) || "en",
+  panelOpen: localStorage.getItem(PANEL_OPEN_KEY) !== "0",
+  listOpen: localStorage.getItem(LIST_OPEN_KEY) !== "0",
   category: null,
   track: null,
   tag: null,
@@ -35,6 +39,20 @@ function renderLanguageSwitch() {
     localStorage.setItem(LANG_MODE_KEY, "ko");
     renderAll();
   }, "mode-chip"));
+}
+
+function renderPanelState() {
+  const panel = byId("filter-panel");
+  const button = byId("panel-toggle");
+  panel.classList.toggle("collapsed", !state.panelOpen);
+  button.textContent = state.panelOpen ? "Hide" : "Show";
+}
+
+function renderListState() {
+  const list = byId("post-list");
+  const button = byId("list-toggle");
+  list.classList.toggle("hidden", !state.listOpen);
+  button.textContent = state.listOpen ? "Hide List" : "Show List";
 }
 
 function renderFilters() {
@@ -115,6 +133,8 @@ function renderPosts() {
 
 function renderAll() {
   renderLanguageSwitch();
+  renderPanelState();
+  renderListState();
   renderFilters();
   renderPosts();
 }
@@ -127,6 +147,18 @@ async function main() {
     state.category = null;
     state.track = null;
     state.tag = null;
+    renderAll();
+  });
+
+  byId("panel-toggle").addEventListener("click", () => {
+    state.panelOpen = !state.panelOpen;
+    localStorage.setItem(PANEL_OPEN_KEY, state.panelOpen ? "1" : "0");
+    renderAll();
+  });
+
+  byId("list-toggle").addEventListener("click", () => {
+    state.listOpen = !state.listOpen;
+    localStorage.setItem(LIST_OPEN_KEY, state.listOpen ? "1" : "0");
     renderAll();
   });
 

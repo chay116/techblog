@@ -71,6 +71,29 @@ body {
   margin: 0 0 0.5rem;
 }
 
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.tiny-btn {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.18rem 0.58rem;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.filters.collapsed h3,
+.filters.collapsed .mode-switch,
+.filters.collapsed .chips,
+.filters.collapsed .clear-btn {
+  display: none;
+}
+
 .filters h3 {
   margin-top: 0.9rem;
   font-size: 0.95rem;
@@ -126,7 +149,8 @@ body {
 
 .mode-chip.active {
   border-color: var(--accent);
-  background: var(--accent-soft);
+  background: var(--accent);
+  color: #fff;
 }
 
 .count {
@@ -137,6 +161,10 @@ body {
 .post-list {
   display: grid;
   gap: 0.65rem;
+}
+
+.post-list.hidden {
+  display: none;
 }
 
 .post {
@@ -190,6 +218,11 @@ body {
   max-width: 900px;
 }
 
+.layout.single .content {
+  padding-left: 2rem;
+  padding-right: 1.2rem;
+}
+
 .markdown {
   line-height: 1.65;
 }
@@ -211,5 +244,10 @@ body {
 @media (max-width: 900px) {
   .container {
     grid-template-columns: 1fr;
+  }
+
+  .layout.single .content {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
