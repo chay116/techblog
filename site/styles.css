@@ -106,10 +106,27 @@ body {
   cursor: pointer;
 }
 
-.lang-grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: 1fr 1fr;
+.mode-switch {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.16rem;
+  background: #fff;
+  gap: 0.2rem;
+}
+
+.mode-chip {
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 999px;
+  padding: 0.22rem 0.7rem;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.mode-chip.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .count {
@@ -193,10 +210,6 @@ body {
 
 @media (max-width: 900px) {
   .container {
-    grid-template-columns: 1fr;
-  }
-
-  .lang-grid {
     grid-template-columns: 1fr;
   }
 }

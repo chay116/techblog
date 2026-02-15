@@ -1,4 +1,7 @@
+const LANG_MODE_KEY = "blog_lang_mode";
+
 const state = {
+  lang: localStorage.getItem(LANG_MODE_KEY) || "en",
   category: null,
   track: null,
   tag: null,
@@ -9,12 +12,29 @@ function byId(id) {
   return document.getElementById(id);
 }
 
-function createChip(text, active, onClick) {
+function createChip(text, active, onClick, className = "chip") {
   const btn = document.createElement("button");
-  btn.className = `chip ${active ? "active" : ""}`;
+  btn.className = `${className} ${active ? "active" : ""}`;
   btn.textContent = text;
   btn.addEventListener("click", onClick);
   return btn;
+}
+
+function renderLanguageSwitch() {
+  const root = byId("lang-switch");
+  root.innerHTML = "";
+
+  root.appendChild(createChip("English", state.lang === "en", () => {
+    state.lang = "en";
+    localStorage.setItem(LANG_MODE_KEY, "en");
+    renderAll();
+  }, "mode-chip"));
+
+  root.appendChild(createChip("한국어", state.lang === "ko", () => {
+    state.lang = "ko";
+    localStorage.setItem(LANG_MODE_KEY, "ko");
+    renderAll();
+  }, "mode-chip"));
 }
 
 function renderFilters() {
@@ -49,8 +69,9 @@ function renderFilters() {
   });
 }
 
-function baseFilteredPosts() {
+function filteredPosts() {
   return state.data.posts.filter((p) => {
+    if ((p.lang || "en") !== state.lang) return false;
     if (state.category && p.category !== state.category) return false;
     if (state.track && p.track !== state.track) return false;
     if (state.tag && !p.tags.includes(state.tag)) return false;
@@ -58,11 +79,13 @@ function baseFilteredPosts() {
   });
 }
 
-function renderPostList(listId, metaId, lang) {
-  const posts = baseFilteredPosts().filter((p) => (p.lang || "en") === lang);
-  const list = byId(listId);
-  const meta = byId(metaId);
+function renderPosts() {
+  const posts = filteredPosts();
+  const list = byId("post-list");
+  const meta = byId("meta");
+  const modeTitle = byId("mode-title");
 
+  modeTitle.textContent = state.lang === "ko" ? "한국어" : "English";
   meta.textContent = `${posts.length} posts`;
   list.innerHTML = "";
 
@@ -77,8 +100,8 @@ function renderPostList(listId, metaId, lang) {
   posts.forEach((p) => {
     const item = document.createElement("article");
     item.className = "post";
-
     const postUrl = `./post.html?path=${encodeURIComponent(p.path)}`;
+
     item.innerHTML = `
       <h3><a href="${postUrl}">${p.title}</a></h3>
       <div class="sub">${p.date} | ${p.category} | ${p.track} | ${p.status}</div>
@@ -91,9 +114,9 @@ function renderPostList(listId, metaId, lang) {
 }
 
 function renderAll() {
+  renderLanguageSwitch();
   renderFilters();
-  renderPostList("post-list-ko", "meta-ko", "ko");
-  renderPostList("post-list-en", "meta-en", "en");
+  renderPosts();
 }
 
 async function main() {

@@ -20,6 +20,10 @@
     <main class="container">
       <section class="filters card">
         <h2>Filter</h2>
+
+        <h3>Language Mode</h3>
+        <div class="mode-switch" id="lang-switch"></div>
+
         <h3>Category</h3>
         <div id="category-filters" class="chips"></div>
 
@@ -32,20 +36,10 @@
         <button id="clear-btn" class="clear-btn">Clear filters</button>
       </section>
 
-      <section class="content">
-        <div class="lang-grid">
-          <article class="card">
-            <h2>한국어</h2>
-            <p class="count" id="meta-ko"></p>
-            <div id="post-list-ko" class="post-list"></div>
-          </article>
-
-          <article class="card">
-            <h2>English</h2>
-            <p class="count" id="meta-en"></p>
-            <div id="post-list-en" class="post-list"></div>
-          </article>
-        </div>
+      <section class="content card">
+        <h2 id="mode-title">English</h2>
+        <p class="count" id="meta"></p>
+        <div id="post-list" class="post-list"></div>
       </section>
     </main>
 
