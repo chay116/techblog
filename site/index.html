@@ -7,43 +7,42 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <header class="hero">
-      <h1>Chaeyoung Lim</h1>
-      <p class="subtitle">Worklog and research notes on GPU optimization, graphics APIs, and systems engineering.</p>
-      <nav class="links">
-        <a href="https://www.linkedin.com/in/chaeyoung-lim-6b0046132/" target="_blank" rel="noreferrer">LinkedIn</a>
-        <a href="https://github.com/chay116" target="_blank" rel="noreferrer">GitHub</a>
-        <a href="mailto:chay116@naver.com">Naver Email</a>
-      </nav>
-    </header>
+    <main class="page">
+      <header class="site-head">
+        <h1>Chaeyoung Lim</h1>
+        <p class="subtitle">Worklog and research notes on GPU optimization, graphics APIs, and systems engineering.</p>
+        <p class="links">
+          <a href="https://www.linkedin.com/in/chaeyoung-lim-6b0046132/" target="_blank" rel="noreferrer">LinkedIn</a>
+          <span>·</span>
+          <a href="https://github.com/chay116" target="_blank" rel="noreferrer">GitHub</a>
+          <span>·</span>
+          <a href="mailto:chay116@naver.com">Naver Email</a>
+        </p>
+      </header>
 
-    <main class="container">
-      <section class="filters card" id="filter-panel">
-        <div class="panel-head">
-          <h2>Filter</h2>
-          <button id="panel-toggle" class="tiny-btn" type="button">Hide</button>
-        </div>
-
-        <h3>Language Mode</h3>
+      <section class="mode-row">
+        <span class="label">Language</span>
         <div class="mode-switch" id="lang-switch"></div>
-
-        <h3>Category</h3>
-        <div id="category-filters" class="chips"></div>
-
-        <h3>Track</h3>
-        <div id="track-filters" class="chips"></div>
-
-        <h3>Tags</h3>
-        <div id="tag-filters" class="chips"></div>
-
-        <button id="clear-btn" class="clear-btn">Clear filters</button>
       </section>
 
-      <section class="content card">
-        <div class="panel-head">
-          <h2 id="mode-title">English</h2>
-          <button id="list-toggle" class="tiny-btn" type="button">Hide List</button>
+      <details class="filter-box" id="filter-details">
+        <summary>Filter posts</summary>
+        <div class="filter-body">
+          <h3>Category</h3>
+          <div id="category-filters" class="chips"></div>
+
+          <h3>Track</h3>
+          <div id="track-filters" class="chips"></div>
+
+          <h3>Tags</h3>
+          <div id="tag-filters" class="chips"></div>
+
+          <button id="clear-btn" class="clear-btn" type="button">Clear filters</button>
         </div>
+      </details>
+
+      <section class="post-section">
+        <h2 id="mode-title">English</h2>
         <p class="count" id="meta"></p>
         <div id="post-list" class="post-list"></div>
       </section>

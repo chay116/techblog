@@ -1,6 +1,5 @@
 const LANG_MODE_KEY = "blog_lang_mode";
-const PANEL_OPEN_KEY = "blog_filter_panel_open";
-const LIST_OPEN_KEY = "blog_post_list_open";
+const FILTER_OPEN_KEY = "blog_filter_open";
 
 function safeStorageGet(key, fallback) {
   try {
@@ -15,14 +14,12 @@ function safeStorageSet(key, value) {
   try {
     localStorage.setItem(key, value);
   } catch (_) {
-    // ignore storage failures (private mode / blocked storage)
+    // ignore storage failures
   }
 }
 
 const state = {
   lang: safeStorageGet(LANG_MODE_KEY, "en"),
-  panelOpen: safeStorageGet(PANEL_OPEN_KEY, "1") !== "0",
-  listOpen: safeStorageGet(LIST_OPEN_KEY, "1") !== "0",
   category: null,
   track: null,
   tag: null,
@@ -37,6 +34,7 @@ function createChip(text, active, onClick, className = "chip") {
   const btn = document.createElement("button");
   btn.className = `${className} ${active ? "active" : ""}`;
   btn.textContent = text;
+  btn.type = "button";
   btn.addEventListener("click", onClick);
   return btn;
 }
@@ -45,31 +43,31 @@ function renderLanguageSwitch() {
   const root = byId("lang-switch");
   root.innerHTML = "";
 
-  root.appendChild(createChip("English", state.lang === "en", () => {
-    state.lang = "en";
-    safeStorageSet(LANG_MODE_KEY, "en");
-    renderAll();
-  }, "mode-chip"));
+  root.appendChild(
+    createChip(
+      "English",
+      state.lang === "en",
+      () => {
+        state.lang = "en";
+        safeStorageSet(LANG_MODE_KEY, "en");
+        renderAll();
+      },
+      "mode-chip"
+    )
+  );
 
-  root.appendChild(createChip("한국어", state.lang === "ko", () => {
-    state.lang = "ko";
-    safeStorageSet(LANG_MODE_KEY, "ko");
-    renderAll();
-  }, "mode-chip"));
-}
-
-function renderPanelState() {
-  const panel = byId("filter-panel");
-  const button = byId("panel-toggle");
-  panel.classList.toggle("collapsed", !state.panelOpen);
-  button.textContent = state.panelOpen ? "Hide" : "Show";
-}
-
-function renderListState() {
-  const list = byId("post-list");
-  const button = byId("list-toggle");
-  list.classList.toggle("hidden", !state.listOpen);
-  button.textContent = state.listOpen ? "Hide List" : "Show List";
+  root.appendChild(
+    createChip(
+      "한국어",
+      state.lang === "ko",
+      () => {
+        state.lang = "ko";
+        safeStorageSet(LANG_MODE_KEY, "ko");
+        renderAll();
+      },
+      "mode-chip"
+    )
+  );
 }
 
 function renderFilters() {
@@ -82,25 +80,30 @@ function renderFilters() {
   tagRoot.innerHTML = "";
 
   state.data.categories.forEach((c) => {
-    catRoot.appendChild(createChip(c, state.category === c, () => {
-      state.category = state.category === c ? null : c;
-      renderAll();
-    }));
+    catRoot.appendChild(
+      createChip(c, state.category === c, () => {
+        state.category = state.category === c ? null : c;
+        renderAll();
+      })
+    );
   });
 
   state.data.tracks.forEach((t) => {
-    trackRoot.appendChild(createChip(t, state.track === t, () => {
-      state.track = state.track === t ? null : t;
-      renderAll();
-    }));
+    trackRoot.appendChild(
+      createChip(t, state.track === t, () => {
+        state.track = state.track === t ? null : t;
+        renderAll();
+      })
+    );
   });
 
   Object.entries(state.data.tags).forEach(([tag, count]) => {
-    const label = `${tag} (${count})`;
-    tagRoot.appendChild(createChip(label, state.tag === tag, () => {
-      state.tag = state.tag === tag ? null : tag;
-      renderAll();
-    }));
+    tagRoot.appendChild(
+      createChip(`${tag} (${count})`, state.tag === tag, () => {
+        state.tag = state.tag === tag ? null : tag;
+        renderAll();
+      })
+    );
   });
 }
 
@@ -139,9 +142,8 @@ function renderPosts() {
 
     item.innerHTML = `
       <h3><a href="${postUrl}">${p.title}</a></h3>
-      <div class="sub">${p.date} | ${p.category} | ${p.track} | ${p.status}</div>
+      <p class="sub">${p.date}</p>
       <p>${p.summary || "No summary"}</p>
-      <div class="tags">${p.tags.map((t) => `<span class="tag">${t}</span>`).join("")}</div>
     `;
 
     list.appendChild(item);
@@ -150,8 +152,6 @@ function renderPosts() {
 
 function renderAll() {
   renderLanguageSwitch();
-  renderPanelState();
-  renderListState();
   renderFilters();
   renderPosts();
 }
@@ -160,22 +160,16 @@ async function main() {
   const resp = await fetch("./posts.json");
   state.data = await resp.json();
 
+  const details = byId("filter-details");
+  details.open = safeStorageGet(FILTER_OPEN_KEY, "0") === "1";
+  details.addEventListener("toggle", () => {
+    safeStorageSet(FILTER_OPEN_KEY, details.open ? "1" : "0");
+  });
+
   byId("clear-btn").addEventListener("click", () => {
     state.category = null;
     state.track = null;
     state.tag = null;
-    renderAll();
-  });
-
-  byId("panel-toggle").addEventListener("click", () => {
-    state.panelOpen = !state.panelOpen;
-    safeStorageSet(PANEL_OPEN_KEY, state.panelOpen ? "1" : "0");
-    renderAll();
-  });
-
-  byId("list-toggle").addEventListener("click", () => {
-    state.listOpen = !state.listOpen;
-    safeStorageSet(LIST_OPEN_KEY, state.listOpen ? "1" : "0");
     renderAll();
   });
 

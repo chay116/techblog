@@ -1,102 +1,105 @@
 :root {
-  --bg: #f7f5f0;
-  --card: #ffffff;
-  --ink: #1f2328;
-  --muted: #62666d;
-  --line: #d7dce2;
-  --accent: #0f5aa8;
-  --accent-soft: #e8f0fb;
+  --bg: #ffffff;
+  --ink: #1f1f1f;
+  --muted: #666;
+  --line: #e5e5e5;
+  --accent: #164ea6;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
+  background: var(--bg);
   color: var(--ink);
-  background: linear-gradient(180deg, #fbfaf7 0%, var(--bg) 100%);
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.6;
 }
 
-.hero {
-  max-width: 1000px;
+.page {
+  max-width: 760px;
   margin: 0 auto;
-  padding: 2.2rem 1rem 1rem;
+  padding: 2.2rem 1.2rem 3rem;
 }
 
-.hero h1 {
+.site-head h1 {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3rem);
-  letter-spacing: 0.01em;
+  font-size: 2.2rem;
+  font-weight: 700;
 }
 
 .subtitle {
-  margin: 0.5rem 0 0;
+  margin: 0.45rem 0 0;
   color: var(--muted);
 }
 
 .links {
-  margin-top: 0.8rem;
-  display: flex;
-  gap: 0.8rem;
-  flex-wrap: wrap;
-}
-
-.links a {
-  color: var(--accent);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-}
-
-.links a:hover {
-  border-bottom-color: var(--accent);
-}
-
-.container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 1rem 1.2rem;
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: 250px 1fr;
-}
-
-.card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 1rem;
-}
-
-.filters h2, .filters h3 {
-  margin: 0 0 0.5rem;
-}
-
-.panel-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.8rem;
-}
-
-.tiny-btn {
-  border: 1px solid var(--line);
-  background: #fff;
-  border-radius: 999px;
-  padding: 0.18rem 0.58rem;
-  cursor: pointer;
+  margin: 0.6rem 0 0;
   color: var(--muted);
 }
 
-.filters.collapsed h3,
-.filters.collapsed .mode-switch,
-.filters.collapsed .chips,
-.filters.collapsed .clear-btn {
-  display: none;
+a {
+  color: var(--accent);
+  text-decoration: none;
 }
 
-.filters h3 {
-  margin-top: 0.9rem;
+a:hover {
+  text-decoration: underline;
+}
+
+.mode-row {
+  margin-top: 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.label {
+  color: var(--muted);
   font-size: 0.95rem;
+}
+
+.mode-switch {
+  display: inline-flex;
+  gap: 0.25rem;
+}
+
+.mode-chip {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.22rem 0.72rem;
+  cursor: pointer;
+}
+
+.mode-chip.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.filter-box {
+  margin-top: 1rem;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 0.4rem 0;
+}
+
+.filter-box summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.filter-body {
+  padding-top: 0.6rem;
+}
+
+.filter-body h3 {
+  margin: 0.5rem 0 0.35rem;
+  font-size: 0.95rem;
+  color: var(--muted);
 }
 
 .chips {
@@ -108,146 +111,114 @@ body {
 .chip {
   border: 1px solid var(--line);
   background: #fff;
-  border-radius: 999px;
-  padding: 0.22rem 0.62rem;
-  cursor: pointer;
   color: var(--ink);
+  border-radius: 999px;
+  padding: 0.18rem 0.58rem;
+  cursor: pointer;
 }
 
 .chip.active {
   border-color: var(--accent);
-  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .clear-btn {
-  margin-top: 0.9rem;
-  width: 100%;
+  margin-top: 0.7rem;
   border: 1px solid var(--line);
-  border-radius: 8px;
   background: #fff;
-  padding: 0.45rem;
+  border-radius: 6px;
+  padding: 0.3rem 0.55rem;
   cursor: pointer;
 }
 
-.mode-switch {
-  display: inline-flex;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 0.16rem;
-  background: #fff;
-  gap: 0.2rem;
+.post-section {
+  margin-top: 1.2rem;
 }
 
-.mode-chip {
-  border: 1px solid transparent;
-  background: transparent;
-  border-radius: 999px;
-  padding: 0.22rem 0.7rem;
-  cursor: pointer;
-  color: var(--ink);
-}
-
-.mode-chip.active {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: #fff;
+.post-section h2 {
+  margin: 0;
+  font-size: 1.4rem;
 }
 
 .count {
-  margin: 0.25rem 0 0.8rem;
+  margin: 0.15rem 0 0.75rem;
   color: var(--muted);
 }
 
 .post-list {
   display: grid;
-  gap: 0.65rem;
-}
-
-.post-list.hidden {
-  display: none;
+  gap: 0.85rem;
 }
 
 .post {
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 0.75rem;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.8rem;
 }
 
 .post h3 {
   margin: 0;
-  font-size: 1.03rem;
-}
-
-.post a {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-.post a:hover {
-  text-decoration: underline;
+  font-size: 1.08rem;
 }
 
 .sub {
-  margin-top: 0.25rem;
+  margin: 0.15rem 0;
   color: var(--muted);
   font-size: 0.88rem;
 }
 
-.tags {
-  margin-top: 0.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3rem;
-}
-
-.tag {
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  font-size: 0.75rem;
-  padding: 0.12rem 0.45rem;
-  background: #fff;
-}
-
 .empty {
   color: var(--muted);
-  margin: 0;
+}
+
+.hero {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2rem 1.2rem 0.6rem;
 }
 
 .layout.single {
-  grid-template-columns: 1fr;
-  max-width: 900px;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 1.2rem 2rem;
 }
 
 .layout.single .content {
-  padding-left: 2rem;
-  padding-right: 1.2rem;
+  padding-left: 2.6rem;
 }
 
 .markdown {
-  line-height: 1.65;
+  line-height: 1.7;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3 {
+  margin-top: 1.2rem;
 }
 
 .markdown pre {
-  background: #f1f4f8;
+  background: #f7f7f7;
   border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 0.8rem;
+  border-radius: 6px;
+  padding: 0.75rem;
   overflow-x: auto;
 }
 
 .markdown code {
-  background: #f1f4f8;
-  padding: 0.1rem 0.28rem;
+  background: #f7f7f7;
   border-radius: 4px;
+  padding: 0.08rem 0.25rem;
 }
 
-@media (max-width: 900px) {
-  .container {
-    grid-template-columns: 1fr;
+@media (max-width: 760px) {
+  .page,
+  .hero,
+  .layout.single {
+    padding-left: 0.95rem;
+    padding-right: 0.95rem;
   }
 
   .layout.single .content {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0;
   }
 }
