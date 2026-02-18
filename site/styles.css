@@ -38,6 +38,11 @@ body {
   color: var(--muted);
 }
 
+.nav {
+  margin: 0.55rem 0 0;
+  color: var(--muted);
+}
+
 a {
   color: var(--accent);
   text-decoration: none;
@@ -119,6 +124,19 @@ a:hover {
   color: var(--muted);
 }
 
+.search {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.45rem 0.55rem;
+  font: inherit;
+}
+
+.search:focus {
+  outline: 2px solid rgba(22, 78, 166, 0.25);
+  outline-offset: 2px;
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -183,6 +201,10 @@ a:hover {
   font-size: 0.88rem;
 }
 
+.muted {
+  color: var(--muted);
+}
+
 .empty {
   color: var(--muted);
 }
@@ -227,6 +249,55 @@ a:hover {
   background: #f7f7f7;
   border-radius: 4px;
   padding: 0.08rem 0.25rem;
+}
+
+.sep {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 0.6rem 0;
+}
+
+.tree {
+  font-size: 0.95rem;
+}
+
+.tree-root-btn,
+.tree-track-btn,
+.tree-folder-btn {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+.tree-root-btn.active,
+.tree-folder-btn.active {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.tree-folder {
+  margin-top: 0.15rem;
+}
+
+.tree-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.tree-count {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.tree-children {
+  padding-left: 0.9rem;
+  margin-left: 0.35rem;
+  border-left: 1px solid var(--line);
 }
 
 @media (max-width: 760px) {

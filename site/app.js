@@ -23,11 +23,67 @@ const state = {
   category: null,
   track: null,
   tag: null,
+  q: "",
+  explicitCategory: false,
   data: null,
 };
 
 function byId(id) {
   return document.getElementById(id);
+}
+
+function parseQuery() {
+  try {
+    return new URLSearchParams(window.location.search);
+  } catch (_) {
+    return new URLSearchParams();
+  }
+}
+
+function applyQueryToState(params) {
+  const lang = params.get("lang");
+  if (lang === "en" || lang === "ko") {
+    state.lang = lang;
+    safeStorageSet(LANG_MODE_KEY, lang);
+  }
+
+  state.explicitCategory = params.has("category");
+  const category = params.get("category");
+  state.category = category || null;
+
+  const track = params.get("track");
+  state.track = track || null;
+
+  const tag = params.get("tag");
+  state.tag = tag || null;
+
+  const q = params.get("q");
+  state.q = q ? q.trim() : "";
+}
+
+function validateStateAgainstData() {
+  if (!state.data) return;
+
+  if (state.category && state.category !== "all" && !state.data.categories.includes(state.category)) state.category = null;
+  if (state.track && !state.data.tracks.includes(state.track)) state.track = null;
+  if (state.tag && !(state.tag in state.data.tags)) state.tag = null;
+}
+
+function syncUrl() {
+  const params = new URLSearchParams();
+  if (state.lang && state.lang !== "en") params.set("lang", state.lang);
+  if (state.category) params.set("category", state.category);
+  if (state.track) params.set("track", state.track);
+  if (state.tag) params.set("tag", state.tag);
+  if (state.q) params.set("q", state.q);
+
+  const qs = params.toString();
+  const next = `${window.location.pathname}${qs ? `?${qs}` : ""}`;
+  try {
+    window.history.replaceState(null, "", next);
+  } catch (_) {
+    // ignore history failures (e.g., restricted environments)
+  }
 }
 
 function createChip(text, active, onClick, className = "chip") {
@@ -108,11 +164,24 @@ function renderFilters() {
 }
 
 function filteredPosts() {
+  const q = state.q.trim().toLowerCase();
   return state.data.posts.filter((p) => {
     if ((p.lang || "en") !== state.lang) return false;
-    if (state.category && p.category !== state.category) return false;
+    if (state.category && state.category !== "all" && p.category !== state.category) return false;
     if (state.track && p.track !== state.track) return false;
-    if (state.tag && !p.tags.includes(state.tag)) return false;
+    if (state.tag && !(p.tags || []).includes(state.tag)) return false;
+    if (q) {
+      const hay = [
+        p.title || "",
+        p.summary || "",
+        p.category || "",
+        p.track || "",
+        ...(p.tags || []),
+      ]
+        .join(" ")
+        .toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
     return true;
   });
 }
@@ -138,11 +207,19 @@ function renderPosts() {
   posts.forEach((p) => {
     const item = document.createElement("article");
     item.className = "post";
-    const postUrl = `./post.html?path=${encodeURIComponent(p.path)}`;
+
+    const from = window.location.search || "";
+    const postUrl =
+      from.length > 1
+        ? `./post.html?path=${encodeURIComponent(p.path)}&from=${encodeURIComponent(from)}`
+        : `./post.html?path=${encodeURIComponent(p.path)}`;
+
+    const metaBits = [p.date, p.category, p.track, p.status].filter(Boolean);
+    const metaText = metaBits.join(" · ");
 
     item.innerHTML = `
       <h3><a href="${postUrl}">${p.title}</a></h3>
-      <p class="sub">${p.date}</p>
+      <p class="sub">${metaText}</p>
       <p>${p.summary || "No summary"}</p>
     `;
 
@@ -154,11 +231,30 @@ function renderAll() {
   renderLanguageSwitch();
   renderFilters();
   renderPosts();
+  syncUrl();
 }
 
 async function main() {
   const resp = await fetch("./posts.json");
   state.data = await resp.json();
+
+  const params = parseQuery();
+  applyQueryToState(params);
+  validateStateAgainstData();
+
+  // Default view: Worklog only, unless category was explicitly set in the URL.
+  if (!state.explicitCategory && !state.category && state.data.categories.includes("worklog")) {
+    state.category = "worklog";
+  }
+
+  const search = byId("search-input");
+  if (search) {
+    search.value = state.q;
+    search.addEventListener("input", () => {
+      state.q = search.value.trim();
+      renderAll();
+    });
+  }
 
   const details = byId("filter-details");
   details.open = safeStorageGet(FILTER_OPEN_KEY, "0") === "1";
@@ -167,9 +263,12 @@ async function main() {
   });
 
   byId("clear-btn").addEventListener("click", () => {
-    state.category = null;
+    state.category = state.data.categories.includes("worklog") ? "worklog" : null;
     state.track = null;
     state.tag = null;
+    state.q = "";
+    const search2 = byId("search-input");
+    if (search2) search2.value = "";
     renderAll();
   });
 

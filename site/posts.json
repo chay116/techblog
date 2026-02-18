@@ -17,7 +17,7 @@
         "pipeline-cache"
       ],
       "path": "posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/ko.md",
-      "summary": "커널이 실행되기 전에 누군가 SASS로 컴파일해야 한다. CUDA와 Vulkan은 이 컴파일을 서로 다른 단계에서 수행하고 결과를 다르게 캐싱한다. 이 글에서는 콜드 스타트 vs 웜 스타트 컴파일 비용을 측정하고 캐싱 전략을 비교한다."
+      "summary": "지난 네 글에서 CUDA와 Vulkan이 NVIDIA GPU에서 거의 동일한 SASS를 생성한다는 것을 확인했다. 산술, 메모리 접근, 코얼레싱 동작 — 모두 동일. BDA를 사용하면 바인딩 모델까지 수렴한다."
     },
     {
       "title": "Worklog #07 - JIT Cache vs Pipeline Cache",
@@ -36,7 +36,7 @@
         "pipeline-cache"
       ],
       "path": "posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/en.md",
-      "summary": "Before any kernel runs, someone has to compile it to SASS. CUDA and Vulkan handle this compilation at different stages and cache results differently. This post measures the cold-start vs warm-start compilation cost and compares caching strategies."
+      "summary": "Over the past four posts, we have established that CUDA and Vulkan produce nearly identical SASS on NVIDIA GPUs. The arithmetic, the memory accesses, the coalescing behavior — all the same. With BDA, even the binding model converges."
     },
     {
       "title": "워크로그 #06 - 바인드리스, BDA, 원시 포인터",
@@ -55,7 +55,7 @@
         "bindless"
       ],
       "path": "posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/ko.md",
-      "summary": "Sebastian Aaltonen의 \"There Is No Graphics API\" 논제는 Vulkan에 Buffer Device Address(BDA) 같은 기능이 추가되면서 프로그래밍 모델이 하드웨어 수준에서 CUDA와 수렴한다고 주장한다. 이 글에서는 그 주장을 ISA 수준에서 검증한다: BDA 기반 Vulkan SASS가 실제로 CUDA 포인터 SASS처럼 보이는가?"
+      "summary": "[워크로그 #04](/posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/)에서 CUDA와 Vulkan 사이의 유일한 구조적 SASS 차이를 확인했다: 디스크립터 간접 참조. CUDA는 상수 뱅크를 통해 버퍼 주소를 직접 전달한다. Vulkan은 글로벌 메모리의 디스크립터 테이블에서 가져오면서 추가 `LDG` 명령어가 발생한다."
     },
     {
       "title": "Worklog #06 - Bindless, BDA, Raw Pointers",
@@ -74,7 +74,7 @@
         "bindless"
       ],
       "path": "posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/en.md",
-      "summary": "Sebastian Aaltonen's \"There Is No Graphics API\" thesis argues that as Vulkan adds features like Buffer Device Address (BDA), the programming model converges with CUDA at the hardware level. This post puts that claim to the ISA test: does BDA-based Vulkan SASS actually look like CUDA pointer SASS?"
+      "summary": "In [Worklog #04](/posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/) we identified the one structural SASS difference between CUDA and Vulkan: the descriptor indirection. CUDA passes buffer addresses directly through the constant bank. Vulkan fetches them from a descriptor table in global memory, adding extra `LDG` instructions."
     },
     {
       "title": "워크로그 #05 - SASS 레벨에서 본 메모리 코얼레싱",
@@ -92,7 +92,7 @@
         "memory-coalescing"
       ],
       "path": "posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/ko.md",
-      "summary": "메모리 접근 패턴은 GPU 커널 성능을 좌우한다. 이 글에서는 CUDA와 Vulkan 양쪽에서 AoS(Array of Structures) vs SoA(Structure of Arrays) 레이아웃을 SASS 레벨로 비교하며, 컴파일러가 생성하는 로드 명령어에 집중한다."
+      "summary": "이전 두 글에서 CUDA와 Vulkan이 단순 커널에서 거의 동일한 SASS를 생성하며, 유일한 차이가 디스크립터 바인딩 오버헤드라는 것을 확인했다. 벡터 덧셈 커널에서는 순수 대역폭 바운드여서 그것이 문제가 되지 않았다."
     },
     {
       "title": "Worklog #05 - Memory Coalescing at SASS Level",
@@ -110,7 +110,7 @@
         "memory-coalescing"
       ],
       "path": "posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/en.md",
-      "summary": "Memory access patterns dominate GPU kernel performance. This post compares AoS (Array of Structures) vs SoA (Structure of Arrays) layouts in both CUDA and Vulkan at the SASS level, focusing on the load instructions the compiler generates."
+      "summary": "In the previous two posts, we saw that CUDA and Vulkan produce nearly identical SASS for simple kernels, with the only difference being descriptor binding overhead. But for the vector add kernel, that did not matter because the kernel was purely bandwidth-bound and the computation was trivial."
     },
     {
       "title": "워크로그 #04 - Hello SASS: 벡터 덧셈",
@@ -128,7 +128,7 @@
         "vector-add"
       ],
       "path": "posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/ko.md",
-      "summary": "가장 단순하면서도 의미 있는 컴퓨트 커널은 `C[i] = A[i] + B[i]`다. CUDA와 Vulkan에서 동일한 로직을 구현하면 노이즈가 최소화된 1:1 SASS 비교가 가능하다. 이 글에서는 생성된 SASS를 분석하고 실행 시간을 측정한다."
+      "summary": "[워크로그 #03](/posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/)에서 CUDA와 Vulkan이 동일한 NVIDIA 백엔드 컴파일러로 합류한다는 것을 확인했다. 빈 커널은 동일한 SASS를 생성한다. 그러면 실제로 *무언가를 하는* 커널은 어떨까?"
     },
     {
       "title": "Worklog #04 - Hello SASS: Vector Add",
@@ -146,7 +146,22 @@
         "vector-add"
       ],
       "path": "posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/en.md",
-      "summary": "The simplest meaningful compute kernel is `C[i] = A[i] + B[i]`. By implementing identical logic in both CUDA and Vulkan, we get a 1:1 SASS comparison with minimal noise. This post examines the generated SASS and measures execution time."
+      "summary": "In [Worklog #03](/posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/) we established that CUDA and Vulkan feed into the same NVIDIA backend compiler. An empty kernel produces identical SASS. But what about a kernel that actually *does* something?"
+    },
+    {
+      "title": "🗓️ 버전 이력",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Meta",
+      "tags": [
+        "unreal",
+        "Meta"
+      ],
+      "path": "posts/unreal-summary/VersionHistory.md",
+      "summary": "이 파일은 UnrealSummary 문서에 대한 주요 변경사항과 추가사항을 추적합니다."
     },
     {
       "title": "워크로그 #03 - CUDA vs Vulkan: 컴파일 툴체인 해부",
@@ -164,7 +179,67 @@
         "toolchain"
       ],
       "path": "posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/ko.md",
-      "summary": "CUDA와 Vulkan 컴퓨트 셰이더는 결국 동일한 NVIDIA SASS(Shader ASSembly) 명령어로 GPU에서 실행된다. 그러나 그 SASS를 만들어내는 컴파일 경로는 근본적으로 다르다. 이 글에서는 두 파이프라인을 나란히 매핑한다."
+      "summary": "CUDA든 Vulkan이든, 디스패치하는 모든 컴퓨트 워크로드는 결국 동일한 NVIDIA SASS 명령어로 같은 실리콘 위에서 실행된다. GPU는 어떤 API가 작업을 제출했는지 모른다. 그러나 소스 코드에서 SASS까지의 여정은 두 에코시스템 사이에서 근본적으로 다르며, 그 여정을 이해하는 것이 두 API가 동일한 하드웨어를 대상으로 함에도 왜 그토록 다르게 느껴지는지를 이해하는 열쇠다."
+    },
+    {
+      "title": "메모리 관리 (Memory Management)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/Memory.md",
+      "summary": "**언리얼 엔진의 메모리 관리 시스템**은 크로스 플랫폼 메모리 할당, 추적, 최적화를 제공하는 Core 모듈의 핵심 구성 요소입니다. 표준 C++ 메모리 함수 대신 커스텀 할당자를 사용하여 성능, 디버깅, 플랫폼 특화 최적화를 제공합니다."
+    },
+    {
+      "title": "게임 프레임워크 (GameFramework)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "GameFramework",
+      "tags": [
+        "unreal",
+        "GameFramework"
+      ],
+      "path": "posts/unreal-summary/GameFramework/Overview.md",
+      "summary": "**게임 프레임워크(GameFramework)**는 언리얼 엔진에서 게임플레이를 구성하는 핵심 클래스들의 집합입니다. 이는 플레이어, AI, 게임 규칙, UI 등 게임의 모든 요소를 관리하는 표준화된 아키텍처를 제공합니다."
+    },
+    {
+      "title": "가비지 컬렉션 (Garbage Collection)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "CoreUObject",
+      "tags": [
+        "unreal",
+        "CoreUObject"
+      ],
+      "path": "posts/unreal-summary/CoreUObject/GarbageCollection.md",
+      "summary": "**언리얼 엔진의 가비지 컬렉션(GC)** 시스템은 UObject의 자동 메모리 관리를 담당하는 핵심 시스템입니다. C++의 수동 메모리 관리와 달리, UObject는 자동으로 추적되고 참조가 없을 때 정리됩니다."
+    },
+    {
+      "title": "World (월드 시스템)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "GameFramework",
+      "tags": [
+        "unreal",
+        "GameFramework"
+      ],
+      "path": "posts/unreal-summary/GameFramework/World.md",
+      "summary": "**UWorld**는 언리얼 엔진의 **게임 월드를 나타내는 최상위 컨테이너**입니다. 모든 Actor, Level, Subsystem을 소유하며 게임의 시뮬레이션과 렌더링을 관리합니다."
     },
     {
       "title": "Worklog #03 - CUDA vs Vulkan: Compilation Toolchain Anatomy",
@@ -182,7 +257,635 @@
         "toolchain"
       ],
       "path": "posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/en.md",
-      "summary": "Both CUDA and Vulkan compute shaders end up as the same NVIDIA SASS (Shader ASSembly) instructions on the GPU. But the compilation paths that produce that SASS are radically different. This post maps the two pipelines side by side."
+      "summary": "Every compute workload you dispatch — whether through CUDA or Vulkan — ends up as the same NVIDIA SASS instructions on the same silicon. The GPU does not know which API submitted the work. Yet the journey from your source code to those SASS instructions is fundamentally different between the two ecosystems, and understanding that journey is the key to understanding why the two APIs feel so different despite targeting identical hardware."
+    },
+    {
+      "title": "VectorVM Overview",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "VectorVM",
+      "tags": [
+        "unreal",
+        "VectorVM"
+      ],
+      "path": "posts/unreal-summary/VectorVM/Overview.md",
+      "summary": "VectorVM은 **Unreal Engine의 SIMD 기반 가상 머신**으로, 주로 **Niagara 파티클 시스템**에서 고성능 데이터 병렬 연산을 수행하기 위해 설계되었습니다."
+    },
+    {
+      "title": "UAnimSequence - 애니메이션 시퀀스 데이터 (Animation Sequence Data)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Animation/Core/AnimSequence.md",
+      "summary": "**UAnimSequence**는 Unreal Animation Framework의 **핵심 에셋 클래스**로, 애니메이션 키프레임 데이터를 저장하고 관리합니다. 스켈레탈 메시의 본(Bone) 애니메이션과 커브(Curve) 데이터를 포함하며, 압축, 루트 모션, Additive 애니메이션, 리타게팅 등 다양한 기능을 지원합니다."
+    },
+    {
+      "title": "Testing and Validation (테스트 및 검증)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Validation.md",
+      "summary": "Niagara 시스템의 **정확성과 안정성을 보장**하기 위한 테스트 및 검증 전략입니다."
+    },
+    {
+      "title": "Simulation - Niagara 런타임 시뮬레이션 (Niagara Runtime Simulation)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Niagara/Core/Simulation.md",
+      "summary": "**Niagara Simulation System**은 **컴파일된 스크립트를 실제로 실행하여 파티클을 시뮬레이션하는 런타임 시스템**입니다. 3-tier 아키텍처를 통해 동일한 시스템의 다수 인스턴스를 배치로 묶어 효율적으로 시뮬레이션합니다."
+    },
+    {
+      "title": "Shader 컴파일 시스템 (Shader Compilation System)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Shader",
+      "tags": [
+        "unreal",
+        "Shader"
+      ],
+      "path": "posts/unreal-summary/Shader/Compilation.md",
+      "summary": "Unreal Engine의 Shader 컴파일 시스템은 **Material Editor 노드 그래프**를 **플랫폼별 GPU 바이트코드**로 변환하는 복잡한 파이프라인입니다. 이 시스템은 **병렬 컴파일**, **DDC (Derived Data Cache)**, **Permutation 관리**를 통해 효율적으로 수천 개의 Shader 변형을 생성합니다."
+    },
+    {
+      "title": "RLPhysicsWorld - RL 배치 시뮬레이션",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "MuJoCoChaos",
+      "tags": [
+        "unreal",
+        "MuJoCoChaos"
+      ],
+      "path": "posts/unreal-summary/MuJoCoChaos/RLPhysicsWorld.md",
+      "summary": "RLPhysicsWorld는 **강화학습(Reinforcement Learning)** 훈련을 위한 **배치 물리 시뮬레이션** 시스템입니다. 여러 환경을 병렬로 실행하여 샘플 효율성을 극대화합니다."
+    },
+    {
+      "title": "RDG 실전 사용 예시 (Practical Examples)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "RenderGraph"
+      ],
+      "path": "posts/unreal-summary/Rendering/RenderGraph/Examples.md",
+      "summary": "- [레벨 1: 간단한 Compute Shader Pass](#레벨-1-간단한-compute-shader-pass)"
+    },
+    {
+      "title": "PlayerController (플레이어 컨트롤러)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "GameFramework",
+      "tags": [
+        "unreal",
+        "GameFramework"
+      ],
+      "path": "posts/unreal-summary/GameFramework/PlayerController.md",
+      "summary": "**APlayerController**는 언리얼 엔진의 **플레이어 입력과 Pawn을 연결하는 브릿지**입니다. 사람 플레이어가 Pawn을 제어할 수 있도록 입력 처리, 카메라 관리, HUD 표시를 담당합니다."
+    },
+    {
+      "title": "Pawn (폰과 캐릭터)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "GameFramework",
+      "tags": [
+        "unreal",
+        "GameFramework"
+      ],
+      "path": "posts/unreal-summary/GameFramework/Pawn.md",
+      "summary": "**APawn**은 언리얼 엔진의 **플레이어나 AI가 제어할 수 있는 물리적 표현**입니다. Controller가 Possess하여 제어할 수 있으며, 입력을 받아 움직임과 행동을 수행합니다."
+    },
+    {
+      "title": "Niagara 렌더링 파이프라인 (Rendering Pipeline)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Rendering.md",
+      "summary": "Niagara 렌더링 파이프라인은 **Game Thread (GT)** 에서 시뮬레이션된 파티클 데이터를 **Render Thread (RT)** 로 전달하여 최종적으로 화면에 렌더링하는 시스템입니다. 이 과정은 **UNiagaraRendererProperties** (설정 계층), **FNiagaraRenderer** (실행 계층), **FNiagaraSceneProxy** (Scene 브릿지), 그리고 **Vertex Factory** (GPU 인스턴싱)로 구성된 계층적 아키텍처를 따릅니다."
+    },
+    {
+      "title": "Niagara Scalability System",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Optimization.md",
+      "summary": "Niagara의 Scalability 시스템은 **성능과 품질 사이의 균형을 자동으로 관리**하는 핵심 시스템입니다. 이 시스템은 실시간으로 이펙트의 중요도를 평가하고, 거리, 가시성, 인스턴스 수, GPU 예산 등 다양한 기준에 따라 이펙트를 선택적으로 비활성화(Culling)합니다."
+    },
+    {
+      "title": "Niagara Particle Attributes 시스템",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Particle_Attributes.md",
+      "summary": "**Niagara Particle Attributes**는 파티클의 상태를 저장하는 **타입 안전한 변수 시스템**입니다. 각 파티클은 Position, Velocity, Color, Size 등의 Attribute를 가지며, 이들은 **FNiagaraDataSet**에 **Structure of Arrays (SoA)** 형태로 저장됩니다. Attribute는 Niagara Script에서 읽고 쓸 수 있으며, 렌더러나 DataInterface를 통해 외부 시스템과도 상호작용합니다."
+    },
+    {
+      "title": "Niagara Module 시스템",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Module_System.md",
+      "summary": "**Niagara Module**은 재사용 가능한 **파티클 동작 블록**입니다. 각 Module은 특정 기능(예: 중력 적용, 색상 변경, 충돌 처리 등)을 캡슐화하며, Emitter Stack에 추가하여 파티클 시스템을 구성합니다. Module은 **함수 그래프(Function Graph)** 형태로 구현되며, **Input/Output 파라미터**를 통해 데이터를 주고받습니다."
+    },
+    {
+      "title": "Niagara GPU Simulation Pipeline Deep Dive",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/GPU_Simulation_Pipeline_Deep_Dive.md",
+      "summary": "**Niagara GPU Simulation**은 Unreal Engine의 차세대 VFX 시스템으로, 수백만 개의 파티클을 GPU에서 병렬 처리합니다. CPU 시뮬레이션과 달리 GPU Compute Shader를 통해 대규모 파티클 시뮬레이션을 효율적으로 수행하며, Data Interface를 통한 데이터 공유, Multi-Stage Simulation, 그리고 Render Thread와의 동기화를 지원합니다."
+    },
+    {
+      "title": "Nanite 테셀레이션 (Tessellation - Displacement)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Nanite"
+      ],
+      "path": "posts/unreal-summary/Rendering/Nanite/Tessellation.md",
+      "summary": "Nanite는 **전통적 하드웨어 테셀레이션** 대신 **Displacement 기반 프로그래밍 가능 테셀레이션**을 지원합니다."
+    },
+    {
+      "title": "Nanite 클러스터 시스템 (Cluster System)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Nanite"
+      ],
+      "path": "posts/unreal-summary/Rendering/Nanite/Cluster.md",
+      "summary": "**클러스터 (Cluster)** 는 Nanite의 기본 처리 단위로, 메시를 **128개 삼각형 단위**로 분할한 지오메트리 블록입니다."
+    },
+    {
+      "title": "Nanite 압축 시스템 (Compression System)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Nanite"
+      ],
+      "path": "posts/unreal-summary/Rendering/Nanite/Compression.md",
+      "summary": "Nanite는 극도로 높은 압축률을 달성하여 **평균 ~5.6 bytes/triangle**의 메모리 효율을 제공합니다."
+    },
+    {
+      "title": "Nanite 스트리밍 시스템 (Streaming System)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Nanite"
+      ],
+      "path": "posts/unreal-summary/Rendering/Nanite/Streaming.md",
+      "summary": "Nanite는 **페이지 기반 가상화 스트리밍**을 사용하여 GPU 메모리를 효율적으로 관리합니다."
+    },
+    {
+      "title": "Nanite 머티리얼 시스템 (Material System)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Nanite"
+      ],
+      "path": "posts/unreal-summary/Rendering/Nanite/Material.md",
+      "summary": "Nanite는 **Visibility Buffer 기반 Deferred Material Evaluation**을 사용하여 효율적인 머티리얼 처리를 제공합니다."
+    },
+    {
+      "title": "Nanite Displacement Deep Dive",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Nanite"
+      ],
+      "path": "posts/unreal-summary/Rendering/Nanite/Displacement.md",
+      "summary": "Nanite Displacement는 Unreal Engine 5.4+에서 도입된 실시간 지오메트리 디스플레이스먼트 시스템입니다. 기존 Tessellation과 달리, Nanite의 Cluster 기반 LOD 시스템과 통합되어 무한에 가까운 디테일을 제공하면서도 메모리와 성능을 효율적으로 관리합니다. Height Map, Normal Map, Vector Displacement를 지원하며, 실시간으로 지오메트리를 생성합니다."
+    },
+    {
+      "title": "MuJoCoTypes - 핵심 데이터 구조",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "MuJoCoChaos",
+      "tags": [
+        "unreal",
+        "MuJoCoChaos"
+      ],
+      "path": "posts/unreal-summary/MuJoCoChaos/MuJoCoTypes.md",
+      "summary": "MuJoCoTypes.h는 MuJoCo 스타일의 물리 시뮬레이션을 위한 **핵심 데이터 구조**를 정의합니다. Generalized Coordinates (일반화 좌표)를 기반으로 한 관절체 물리를 표현합니다."
+    },
+    {
+      "title": "MuJoCoChaos Version History",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "MuJoCoChaos",
+      "tags": [
+        "unreal",
+        "MuJoCoChaos"
+      ],
+      "path": "posts/unreal-summary/MuJoCoChaos/VersionHistory.md",
+      "summary": "**Architecture Refactoring - Option A: Standalone Physics Scene**"
+    },
+    {
+      "title": "MuJoCoChaos Plugin",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "MuJoCoChaos",
+      "tags": [
+        "unreal",
+        "MuJoCoChaos"
+      ],
+      "path": "posts/unreal-summary/MuJoCoChaos/Overview.md",
+      "summary": "MuJoCoChaos는 MuJoCo/Brax 스타일의 **Generalized Coordinates 기반 물리 시뮬레이션**을 Unreal Engine의 **Chaos Physics** 시스템에 통합하는 플러그인입니다."
+    },
+    {
+      "title": "ModuleSystem (모듈 시스템)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/ModuleSystem.md",
+      "summary": "**Module System**은 언리얼 엔진의 **코드 조직화 및 동적 로딩 메커니즘**입니다. 엔진, 게임, 플러그인의 모든 코드는 **모듈(Module)** 단위로 분할되며, 각 모듈은 독립적으로 컴파일되고 런타임에 동적으로 로드/언로드될 수 있습니다."
+    },
+    {
+      "title": "ModelLoader - 모델 로딩 시스템",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "MuJoCoChaos",
+      "tags": [
+        "unreal",
+        "MuJoCoChaos"
+      ],
+      "path": "posts/unreal-summary/MuJoCoChaos/ModelLoader.md",
+      "summary": "ModelLoader 모듈은 **MJCF (MuJoCo XML)** 및 **URDF (ROS Robot Description)** 포맷의 로봇 모델을 로드하고, 내부 `FMuJoCoModel` 구조체로 변환합니다."
+    },
+    {
+      "title": "Lumen Hardware Ray Tracing Deep Dive",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Lumen"
+      ],
+      "path": "posts/unreal-summary/Rendering/Lumen/HardwareRayTracing.md",
+      "summary": "Lumen Hardware Ray Tracing (HWRT) Mode는 Unreal Engine 5.0+에서 도입된 DXR/Vulkan Ray Tracing API를 활용한 고품질 광선 추적 모드입니다. 기본 Software Ray Tracing (Distance Field + Screen Traces)을 대체하여 훨씬 정확한 지오메트리 표현과 향상된 시각적 품질을 제공합니다."
+    },
+    {
+      "title": "Inertialization",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation",
+        "Blending"
+      ],
+      "path": "posts/unreal-summary/Animation/Blending/Inertialization.md",
+      "summary": "**사용 예시:**"
+    },
+    {
+      "title": "GameMode (게임 모드와 게임 규칙)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "GameFramework",
+      "tags": [
+        "unreal",
+        "GameFramework"
+      ],
+      "path": "posts/unreal-summary/GameFramework/GameMode.md",
+      "summary": "**AGameModeBase**는 언리얼 엔진의 **게임 규칙과 진행을 정의하는 클래스**입니다. 플레이어 입장, Pawn 스폰, 승리 조건, 게임 흐름을 관리하며 **서버에만 존재**합니다."
+    },
+    {
+      "title": "GPU Compute Shaders - 배치 시뮬레이션 가속",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "MuJoCoChaos",
+      "tags": [
+        "unreal",
+        "MuJoCoChaos"
+      ],
+      "path": "posts/unreal-summary/MuJoCoChaos/GPUCompute.md",
+      "summary": "GPU Compute 모듈은 **Unreal Engine의 RHI Compute Shader**를 사용하여 배치 물리 시뮬레이션을 가속합니다. 수천 개의 병렬 환경을 동시에 시뮬레이션하여 강화학습 훈련 속도를 크게 향상시킵니다."
+    },
+    {
+      "title": "ForwardDynamics - 순동역학 알고리즘",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "MuJoCoChaos",
+      "tags": [
+        "unreal",
+        "MuJoCoChaos"
+      ],
+      "path": "posts/unreal-summary/MuJoCoChaos/ForwardDynamics.md",
+      "summary": "ForwardDynamics 모듈은 관절체(Articulated Body)의 **순동역학(Forward Dynamics)**을 계산합니다. 주어진 힘/토크로부터 가속도를 구하는 문제를 O(n) 복잡도로 해결합니다."
+    },
+    {
+      "title": "Editor - Niagara 에디터 시스템 (Niagara Editor System)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Editor.md",
+      "summary": "**Niagara Editor**는 **아티스트와 디자이너가 코드 없이 파티클 이펙트를 제작할 수 있는 비주얼 에디팅 시스템**입니다. MVVM (Model-View-ViewModel) 아키텍처를 기반으로 하여 복잡한 Niagara 시스템을 직관적으로 편집하고, 실시간 프리뷰하며, 디버깅할 수 있습니다."
+    },
+    {
+      "title": "Debugger & Profiling - Niagara 디버깅 및 프로파일링",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Debugger_and_Profiling.md",
+      "summary": "**Niagara Debugger & Profiling 시스템**은 런타임 및 에디터 환경에서 **Niagara System의 성능 분석, 상태 모니터링, 디버깅**을 위한 통합 프레임워크입니다."
+    },
+    {
+      "title": "DataInterface - Niagara 데이터 인터페이스 (Niagara Data Interface)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Niagara/Core/DataInterface.md",
+      "summary": "**DataInterface (DI)**는 **Niagara 시뮬레이션과 외부 데이터를 연결하는 중개 시스템**입니다. Texture, Mesh, Collision, Audio, Curve 등 다양한 외부 데이터 소스를 파티클 시뮬레이션에서 읽고 쓸 수 있게 해줍니다."
+    },
+    {
+      "title": "Custom Global Shader 제작 가이드",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Shader",
+      "tags": [
+        "unreal",
+        "Shader"
+      ],
+      "path": "posts/unreal-summary/Shader/CustomGlobalShader.md",
+      "summary": "**Global Shader**는 Material Editor를 거치지 않고 **순수 코드로 작성하는 셰이더**로, 다음과 같은 경우에 필요합니다:"
+    },
+    {
+      "title": "Compiler - Niagara 컴파일러 시스템 (Niagara Compiler System)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Compiler.md",
+      "summary": "**Niagara Compiler**는 **그래프 기반 비주얼 스크립팅을 실행 가능한 코드로 변환하는 컴파일 시스템**입니다. Niagara 에디터에서 작성된 노드 그래프를 분석하여 CPU용 VectorVM 바이트코드와 GPU용 HLSL 코드를 생성합니다."
+    },
+    {
+      "title": "CharacterMovement Network Prediction Deep Dive",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Movement",
+      "tags": [
+        "unreal",
+        "Movement"
+      ],
+      "path": "posts/unreal-summary/Movement/CharacterMovement_NetworkPrediction_Deep_Dive.md",
+      "summary": "Unreal Engine의 **CharacterMovementComponent 네트워크 예측 시스템**은 클라이언트-서버 아키텍처에서 **지연 시간(Latency)을 숨기고** 반응성 있는 캐릭터 이동을 제공하는 핵심 메커니즘입니다. 본 문서는 Client-Side Prediction, Server Reconciliation, Move Buffering의 내부 동작을 상세히 분석합니다."
+    },
+    {
+      "title": "Blueprint API - Niagara Blueprint 통합",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Blueprint_API.md",
+      "summary": "**Niagara Blueprint API**는 **Blueprint에서 Niagara System을 제어하고 상호작용**할 수 있는 완전한 인터페이스를 제공합니다."
+    },
+    {
+      "title": "BlendProfiles - 본별 블렌드 가중치 (Per-Bone Blend Weights)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation",
+        "Blending"
+      ],
+      "path": "posts/unreal-summary/Animation/Blending/BlendProfiles.md",
+      "summary": "언리얼 엔진의 블렌드 프로필(Blend Profile) 시스템은 애니메이션 블렌딩에서 가장 세밀하고 강력한 제어 메커니즘입니다. 전통적인 균일한 블렌딩 방식의 한계를 극복하고, 각 본(본)별로 독립적인 블렌드 가중치를 적용할 수 있게 해줍니다."
+    },
+    {
+      "title": "Baker & SimCache - Niagara 베이킹 및 시뮬레이션 캐시",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Baker_and_SimCache.md",
+      "summary": "**Niagara Baker & SimCache 시스템**은 **시뮬레이션 결과를 오프라인으로 캡처하여 에셋으로 변환**하거나, **재생 가능한 캐시로 저장**하는 통합 프레임워크입니다."
+    },
+    {
+      "title": "Advanced Features - Soft Body & Tendon/Muscle Systems",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "MuJoCoChaos",
+      "tags": [
+        "unreal",
+        "MuJoCoChaos"
+      ],
+      "path": "posts/unreal-summary/MuJoCoChaos/AdvancedFeatures.md",
+      "summary": "Advanced Features 모듈은 **연성체 시뮬레이션**과 **근골격계 시뮬레이션**을 제공합니다. 이 시스템들은 로봇 공학, 바이오메카닉스, 소프트 로보틱스 등의 RL 환경에서 활용됩니다."
+    },
+    {
+      "title": "Actor (액터 시스템)",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "GameFramework",
+      "tags": [
+        "unreal",
+        "GameFramework"
+      ],
+      "path": "posts/unreal-summary/GameFramework/Actor.md",
+      "summary": "**AActor**는 언리얼 엔진의 **게임 월드에 배치할 수 있는 모든 오브젝트의 기반 클래스**입니다. 레벨에 스폰되고, Transform을 가지며, 컴포넌트를 소유하고, Tick을 받으며, 네트워크 복제가 가능한 모든 것은 Actor입니다."
     },
     {
       "title": "Comparison - NVIDIA Ampere vs Ada (Template)",
@@ -302,6 +1005,2642 @@
       ],
       "path": "posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/en.md",
       "summary": "vAI compute path starts with both CUDA and Vulkan backends. The immediate objective is to isolate one-time initialization cost and first-dispatch latency."
+    },
+    {
+      "title": "MuJoCoChaos - Chaos 통합 분석 및 누락 항목",
+      "date": "2025-12-17",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "MuJoCoChaos",
+      "tags": [
+        "unreal",
+        "MuJoCoChaos"
+      ],
+      "path": "posts/unreal-summary/MuJoCoChaos/ChaosIntegrationAnalysis.md",
+      "summary": "- ✅ `CreateParticles()` - Chaos Evolution을 통한 실제 파티클 생성 구현"
+    },
+    {
+      "title": "MuJoCoChaos - Chaos Physics Integration",
+      "date": "2025-12-17",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "MuJoCoChaos",
+      "tags": [
+        "unreal",
+        "MuJoCoChaos"
+      ],
+      "path": "posts/unreal-summary/MuJoCoChaos/ChaosIntegration.md",
+      "summary": "MuJoCoChaos 플러그인이 Unreal Engine의 Chaos Physics 시스템과 통합되는 방식을 설명합니다. 핵심 과제는 MuJoCo 스타일의 **Generalized Coordinates** (qpos, qvel)와 Chaos의 **Maximal Coordinates** (각 바디의 독립 6DOF) 사이의 양방향 동기화입니다."
+    },
+    {
+      "title": "Chaos Physics Complete Flow Diagram",
+      "date": "2025-12-11",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Complete_Flow_Diagram.md",
+      "summary": "이 문서는 Chaos Physics 엔진의 전체 실행 흐름을 시각적으로 설명합니다. GT(Game Thread)와 PT(Physics Thread) 간의 데이터 흐름, 솔버 파이프라인, 충돌 검출, Island 시스템 등을 다룹니다."
+    },
+    {
+      "title": "Chaos Physics Performance Optimization Guide",
+      "date": "2025-12-10",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Performance_Optimization_Guide.md",
+      "summary": "이 문서는 **Chaos Physics 시스템의 성능 최적화**를 위한 종합 가이드입니다. Destruction, Cloth, Rigid Body, Vehicle 등 모든 물리 시뮬레이션에 적용 가능한 최적화 기법을 다룹니다."
+    },
+    {
+      "title": "Chaos DirtySet 심층 분석",
+      "date": "2025-12-10",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_DirtySet_Deep_Dive.md",
+      "summary": "**FDirtySet**은 Chaos Physics에서 Game Thread와 Physics Thread 간의 효율적인 데이터 동기화를 위해 \"변경된 프록시\"만을 추적하는 핵심 시스템입니다. 이를 통해 불필요한 데이터 전송을 방지하고 성능을 최적화합니다."
+    },
+    {
+      "title": "Chaos Design Philosophy & PhysX Comparison",
+      "date": "2025-12-10",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Design_Philosophy_And_PhysX_Comparison.md",
+      "summary": "**Chaos Physics**는 UE4.23에서 도입된 Epic Games의 자체 물리 엔진으로, NVIDIA PhysX를 대체합니다. 단순한 교체가 아닌 **완전히 재설계된 현대적 물리 시스템**으로, Data-Oriented Design, Island 기반 병렬화, 통합 물리 프레임워크를 핵심으로 합니다."
+    },
+    {
+      "title": "Chaos Vehicle Physics Deep Dive",
+      "date": "2025-12-09",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Vehicle_Physics_Deep_Dive.md",
+      "summary": "**Chaos Vehicle Physics**는 UE5에서 차량 물리 시뮬레이션을 담당하는 시스템입니다. 모듈형 아키텍처를 통해 휠, 서스펜션, 엔진, 변속기 등을 개별적으로 구성할 수 있습니다."
+    },
+    {
+      "title": "Chaos Substepping & Async Physics",
+      "date": "2025-12-09",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Substepping_And_Async_Physics.md",
+      "summary": "**Substepping**과 **Async Physics**는 물리 시뮬레이션의 정확도와 성능을 조절하는 핵심 시스템입니다. Substepping은 고정 타임스텝으로 안정성을 확보하고, Async Physics는 물리 연산을 별도 스레드에서 실행하여 게임 스레드와 병렬화합니다."
+    },
+    {
+      "title": "Chaos Scene Query Deep Dive",
+      "date": "2025-12-09",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Scene_Query_Deep_Dive.md",
+      "summary": "**Scene Query**는 물리 월드에서 기하학적 검사를 수행하는 시스템입니다. Raycast, Sweep, Overlap 등을 통해 충돌 감지, 시선 검사, 트리거 영역 확인 등을 수행합니다."
+    },
+    {
+      "title": "Chaos Ragdoll Physics",
+      "date": "2025-12-09",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Ragdoll_Physics.md",
+      "summary": "**Ragdoll Physics**는 캐릭터의 사망, 넉백, 물리 기반 애니메이션을 구현하는 시스템입니다. Skeletal Mesh의 본(Bone)들을 물리 바디로 시뮬레이션하며, 제약(Constraint)으로 연결됩니다."
+    },
+    {
+      "title": "Chaos Physics Materials",
+      "date": "2025-12-09",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Physics_Materials.md",
+      "summary": "**Physics Material**은 물체의 물리적 특성(마찰, 반발력, 밀도 등)을 정의하는 에셋입니다. 표면 유형에 따라 다른 물리 반응을 구현할 수 있습니다."
+    },
+    {
+      "title": "Chaos Physics Complete Architecture",
+      "date": "2025-12-09",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Complete_Architecture.md",
+      "summary": "**Chaos Physics**는 UE5의 기본 물리 엔진으로, 멀티스레드 환경에서 Position Based Dynamics (PBD) 기반 시뮬레이션을 수행합니다. 이 문서는 **전체 아키텍처**와 **데이터 흐름**을 심층 분석합니다."
+    },
+    {
+      "title": "Chaos Network Physics Replication",
+      "date": "2025-12-09",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Network_Physics_Replication.md",
+      "summary": "**Network Physics Replication**은 멀티플레이어 게임에서 물리 시뮬레이션을 동기화하는 시스템입니다. 서버 권한 모델, 클라이언트 예측, 상태 보정을 통해 네트워크 지연에도 일관된 물리 경험을 제공합니다."
+    },
+    {
+      "title": "Chaos Island System & Sleep/Wake Deep Dive",
+      "date": "2025-12-09",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Island_And_Sleep_System.md",
+      "summary": "**Island System**은 물리적으로 연결된 파티클들을 그룹화하여 시뮬레이션 효율성을 높이는 시스템입니다. **Sleep/Wake** 메커니즘은 움직임이 없는 오브젝트의 시뮬레이션을 중단하여 성능을 최적화합니다."
+    },
+    {
+      "title": "Chaos Destruction & Geometry Collection Deep Dive",
+      "date": "2025-12-09",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Destruction_And_Geometry_Collection_Deep_Dive.md",
+      "summary": "**Chaos Destruction**은 **Geometry Collection** 기반 파괴 시스템입니다. 계층적 클러스터링, Strain 기반 파괴, Connection Graph를 통한 손상 전파를 지원합니다."
+    },
+    {
+      "title": "Chaos Debug & Profiling",
+      "date": "2025-12-09",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Debug_And_Profiling.md",
+      "summary": "**Chaos Debug & Profiling**은 물리 시스템의 문제를 진단하고 성능을 분석하는 도구 모음입니다. 시각화, 통계, 콘솔 명령을 통해 물리 동작을 검사할 수 있습니다."
+    },
+    {
+      "title": "Chaos Constraint Types Deep Dive",
+      "date": "2025-12-09",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Constraint_Types_Deep_Dive.md",
+      "summary": "**Chaos Physics**에서 **Constraint (제약)**는 두 개 이상의 강체 간의 관계를 정의하는 핵심 시스템입니다. Joint, Spring, Suspension 등 다양한 제약 타입이 존재하며, 각각 특화된 물리적 행동을 구현합니다."
+    },
+    {
+      "title": "Chaos Cloth Simulation Deep Dive",
+      "date": "2025-12-09",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Cloth_Simulation_Deep_Dive.md",
+      "summary": "**Chaos Cloth**는 UE5의 천 시뮬레이션 시스템으로, 옷, 깃발, 커튼 등의 부드러운 물체를 시뮬레이션합니다. PBD (Position-Based Dynamics)와 Force-based Solver를 지원하며, CPU 기반으로 동작합니다."
+    },
+    {
+      "title": "Physics Simulation Methods - 종합 비교",
+      "date": "2025-12-07",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Constraint_Solving_Methods.md",
+      "summary": "물리 시뮬레이션은 크게 **4가지 패러다임**으로 분류됩니다. 각 방식은 다른 문제 영역에서 장점을 가지며, 현대 물리 엔진들은 이들을 조합하여 사용합니다."
+    },
+    {
+      "title": "Physics Interface & FBodyInstance",
+      "date": "2025-12-07",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/PhysicsInterface.md",
+      "summary": "**FBodyInstance**는 Unreal Engine에서 Game Thread와 Physics Thread를 연결하는 핵심 인터페이스입니다. `UPrimitiveComponent`의 물리 상태를 캡슐화하고 관리합니다."
+    },
+    {
+      "title": "Physics Asset (물리 에셋)",
+      "date": "2025-12-07",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/PhysicsAsset.md",
+      "summary": "**Physics Asset**은 SkeletalMesh의 물리 시뮬레이션을 정의하는 에셋입니다. Ragdoll, 물리 애니메이션, 충돌 설정 등에 사용됩니다."
+    },
+    {
+      "title": "Integration Methods (적분 방법)",
+      "date": "2025-12-07",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Integration_Methods.md",
+      "summary": "물리 시뮬레이션에서 **적분(Integration)**은 힘과 가속도로부터 속도와 위치를 계산하는 핵심 과정입니다. 적분 방법의 선택은 **안정성**, **정확도**, **성능** 사이의 트레이드오프를 결정합니다."
+    },
+    {
+      "title": "Field System",
+      "date": "2025-12-07",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/FieldSystem.md",
+      "summary": "**Field System**은 공간 기반으로 물리 효과를 적용하는 시스템입니다. 주로 Geometry Collection 파괴, 폭발 효과, 물리 필드 등에 사용됩니다."
+    },
+    {
+      "title": "Collision Detection & Scene Query",
+      "date": "2025-12-07",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Collision_And_SceneQuery.md",
+      "summary": "Chaos의 충돌 시스템은 **BroadPhase → Midphase → NarrowPhase** 파이프라인으로 구성되며, Scene Query(Raycast, Sweep, Overlap)는 동일한 공간 분할 구조를 활용합니다."
+    },
+    {
+      "title": "Chaos Physics System Overview",
+      "date": "2025-12-07",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Overview.md",
+      "summary": "Unreal Engine 5는 **Chaos**라는 자체 물리 엔진을 사용합니다. PhysX에서 완전히 전환되어 파괴, 천, 강체, 차량 등 모든 물리 시뮬레이션을 담당합니다."
+    },
+    {
+      "title": "Chaos Physics Threading & Synchronization Deep Dive",
+      "date": "2025-12-05",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Threading_And_Synchronization.md",
+      "summary": "Chaos Physics는 **별도의 Physics Thread**에서 시뮬레이션을 수행하여 Game Thread와 독립적으로 실행됩니다. 이 문서는 두 스레드 간의 **안전한 데이터 동기화 메커니즘**을 심층 분석합니다."
+    },
+    {
+      "title": "Radiance Cache",
+      "date": "2025-12-03",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Lumen",
+      "tags": [
+        "unreal",
+        "Lumen"
+      ],
+      "path": "posts/unreal-summary/Lumen/RadianceCache.md",
+      "summary": "**Radiance Cache**는 Lumen Global Illumination의 핵심 구성 요소로, 월드 공간에서 저해상도 간접광 정보를 캐시하여 효율적인 조명 계산을 가능하게 합니다. Screen Probe가 화면 공간 기반인 반면, Radiance Cache는 **월드 공간 Clipmap** 구조를 사용하여 카메라 독립적인 조명 정보를 저장합니다."
+    },
+    {
+      "title": "Lumen Screen Probe Gather 심층 분석",
+      "date": "2025-12-03",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Lumen",
+      "tags": [
+        "unreal",
+        "Lumen"
+      ],
+      "path": "posts/unreal-summary/Lumen/ScreenProbe.md",
+      "summary": "**Screen Probe Gather**는 Lumen의 핵심 Final Gather 기법으로, 화면 공간에 **다운샘플된 프로브 그리드**를 배치하고 각 프로브에서 반구 방향으로 레이를 트레이싱하여 Diffuse Global Illumination을 계산합니다."
+    },
+    {
+      "title": "Mesh Distance Field (Mesh SDF) 심층 분석",
+      "date": "2025-12-02",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Lumen",
+      "tags": [
+        "unreal",
+        "Lumen"
+      ],
+      "path": "posts/unreal-summary/Lumen/MeshDistanceField.md",
+      "summary": "Mesh Distance Field는 각 Static Mesh의 표면으로부터의 **Signed Distance**를 저장하는 3D 볼륨 데이터입니다. Lumen의 Software Ray Tracing, Distance Field Ambient Occlusion, Movable SkyLight 그림자 등에 핵심적으로 사용됩니다."
+    },
+    {
+      "title": "Lumen Tracing",
+      "date": "2025-12-02",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Lumen",
+      "tags": [
+        "unreal",
+        "Lumen"
+      ],
+      "path": "posts/unreal-summary/Lumen/LumenTracing.md",
+      "summary": "**Lumen Tracing**은 Lumen Global Illumination에서 광선 추적(Ray Tracing)을 수행하는 핵심 시스템입니다. Lumen은 **다중 계층 트레이싱 파이프라인**을 사용하여 성능과 품질의 균형을 맞춥니다. Screen Tracing, Mesh SDF Tracing, Global SDF Tracing, 그리고 Hardware Ray Tracing이 계층적으로 결합되어 최종 조명을 계산합니다."
+    },
+    {
+      "title": "Lumen Surface Cache 심층 분석",
+      "date": "2025-12-02",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Lumen",
+      "tags": [
+        "unreal",
+        "Lumen"
+      ],
+      "path": "posts/unreal-summary/Lumen/SurfaceCache.md",
+      "summary": "**Surface Cache**는 Lumen의 핵심 데이터 구조로, 씬의 모든 표면에 대한 머티리얼 속성과 라이팅 정보를 GPU에서 효율적으로 샘플링할 수 있도록 **아틀라스 텍스처** 형태로 저장하는 시스템입니다."
+    },
+    {
+      "title": "Lumen Reflections",
+      "date": "2025-12-02",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Lumen",
+      "tags": [
+        "unreal",
+        "Lumen"
+      ],
+      "path": "posts/unreal-summary/Lumen/LumenReflections.md",
+      "summary": "**Lumen Reflections**는 Lumen Global Illumination 시스템의 반사 계산을 담당하는 서브시스템입니다. Screen Space Reflections (SSR)을 시작으로 Mesh SDF, Global SDF, 그리고 Hardware Ray Tracing까지 다중 계층 트레이싱을 수행하여 고품질 반사를 생성합니다."
+    },
+    {
+      "title": "Lumen HZB (Hierarchical Z-Buffer) 스크린 스페이스 트레이싱",
+      "date": "2025-12-02",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Lumen"
+      ],
+      "path": "posts/unreal-summary/Rendering/Lumen/HZB_ScreenTracing.md",
+      "summary": "Lumen은 **Closest HZB**(가장 가까운 깊이값의 계층 구조)를 사용하여 스크린 스페이스에서 효율적인 레이 트레이싱을 수행합니다. 이는 Screen Probe Gather, Reflections, Bent Normal 계산에 활용됩니다."
+    },
+    {
+      "title": "Lumen Global Illumination 개요",
+      "date": "2025-12-02",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Lumen",
+      "tags": [
+        "unreal",
+        "Lumen"
+      ],
+      "path": "posts/unreal-summary/Lumen/Overview.md",
+      "summary": "이 Overview 문서는 Lumen 전체 시스템의 개요를 제공합니다. 각 서브시스템에 대한 심층 분석은 아래 개별 문서를 참조하세요:"
+    },
+    {
+      "title": "Global Distance Field 심층 분석",
+      "date": "2025-12-02",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Lumen",
+      "tags": [
+        "unreal",
+        "Lumen"
+      ],
+      "path": "posts/unreal-summary/Lumen/GlobalDistanceField.md",
+      "summary": "Global Distance Field (Global SDF)는 카메라 주변의 모든 Mesh SDF를 합성하여 생성하는 **Clipmap 기반 저해상도 SDF**입니다. 개별 Mesh SDF가 정밀한 근거리 트레이싱에 사용되는 반면, Global SDF는 원거리 트레이싱과 대규모 씬의 빠른 오클루전 계산에 최적화되어 있습니다."
+    },
+    {
+      "title": "언리얼 엔진 + C# 서버 연동 완벽 가이드",
+      "date": "2025-11-26",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Networking",
+      "tags": [
+        "unreal",
+        "Networking"
+      ],
+      "path": "posts/unreal-summary/Networking/Unreal_CSharp_Server_Integration.md",
+      "summary": "1. [전체 아키텍처](#1-전체-아키텍처)"
+    },
+    {
+      "title": "Unreal ↔ C# 서버 메시지 프로토콜 확장 가이드",
+      "date": "2025-11-26",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Networking",
+      "tags": [
+        "unreal",
+        "Networking"
+      ],
+      "path": "posts/unreal-summary/Networking/Message_Protocol_Extension_Guide.md",
+      "summary": "이 문서는 MessagePack을 사용하는 Unreal C++ 클라이언트와 C# 서버 간 메시지 프로토콜을 추가/수정하는 방법을 설명합니다."
+    },
+    {
+      "title": "웹뷰 + C# 서버 완전 통합 가이드",
+      "date": "2025-11-25",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Integration",
+      "tags": [
+        "unreal",
+        "Integration"
+      ],
+      "path": "posts/unreal-summary/Integration/WebView_CSharp_Server_Complete_Integration.md",
+      "summary": "1. [왜 이 조합인가?](#1-왜-이-조합인가)"
+    },
+    {
+      "title": "언리얼 엔진 웹뷰 프로덕션 통합 가이드",
+      "date": "2025-11-25",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "UI",
+      "tags": [
+        "unreal",
+        "UI"
+      ],
+      "path": "posts/unreal-summary/UI/WebView_Production_Integration_Guide.md",
+      "summary": "1. [왜 웹뷰인가? - 비즈니스 관점](#1-왜-웹뷰인가---비즈니스-관점)"
+    },
+    {
+      "title": "Virtualization Technology Deep Dive (Virtual Textures, Nanite, VSM)",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Virtualization"
+      ],
+      "path": "posts/unreal-summary/Rendering/Virtualization/Overview.md",
+      "summary": "**Virtualization (가상화)**는 Unreal Engine 5의 핵심 메모리 최적화 기술로, Textures, Geometry, Shadows를 **필요한 만큼만 GPU 메모리에 로드**하여 방대한 디테일을 제한된 VRAM에서 처리할 수 있게 합니다. 이 문서는 Virtual Textures (VT), Nanite, Virtual Shadow Maps (VSM)의 통합 가상화 아키텍처를 다룹니다."
+    },
+    {
+      "title": "RDG 패스 실행 및 배리어 관리 (Pass Execution & Barrier Management)",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "RenderGraph"
+      ],
+      "path": "posts/unreal-summary/Rendering/RenderGraph/PassExecution.md",
+      "summary": "- [4. 패스 관리](#-4-패스-관리-pass-management)"
+    },
+    {
+      "title": "RDG 리소스 관리 (Resource Management)",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "RenderGraph"
+      ],
+      "path": "posts/unreal-summary/Rendering/RenderGraph/ResourceManagement.md",
+      "summary": "- [3. 리소스 관리 기초](#-3-리소스-관리-resource-management)"
+    },
+    {
+      "title": "RDG (Render Dependency Graph) Architecture Deep Dive",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "RenderGraph"
+      ],
+      "path": "posts/unreal-summary/Rendering/RenderGraph/Architecture.md",
+      "summary": "이 문서는 RDG 아키텍처의 개요와 설계 철학을 다룹니다. 상세한 내용은 아래 문서들을 참고하세요:"
+    },
+    {
+      "title": "Nanite-VSM 통합 (Nanite-Virtual Shadow Maps Integration)",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Nanite"
+      ],
+      "path": "posts/unreal-summary/Rendering/Nanite/NaniteVSMIntegration.md",
+      "summary": "**이 문서는 Nanite와 Virtual Shadow Maps의 통합에 대해서만 다룹니다.**"
+    },
+    {
+      "title": "Nanite 컬링 시스템 (Culling System)",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Nanite"
+      ],
+      "path": "posts/unreal-summary/Rendering/Nanite/Culling.md",
+      "summary": "Nanite의 컬링 시스템은 **Persistent Threads 아키텍처**를 사용하여 GPU에서 계층 구조 순회, LOD 선택, 가시성 판단을 통합 수행합니다."
+    },
+    {
+      "title": "Nanite 체소 지오메트리 시스템 (Voxel Geometry System)",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Nanite"
+      ],
+      "path": "posts/unreal-summary/Rendering/Nanite/VoxelGeometry.md",
+      "summary": "Nanite의 **Voxel Geometry**는 극도로 복잡한 형상이나 폴리지(풀, 나무 등)를 효율적으로 표현하기 위한 실험적 기능입니다. 전통적인 삼각형 단순화가 어려운 경우, **체소화 (Voxelization)**를 통해 기하를 근사하고 **대리 삼각형 (Proxy Triangle)**으로 렌더링합니다."
+    },
+    {
+      "title": "Nanite 래스터화 시스템 (Rasterization System)",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Nanite"
+      ],
+      "path": "posts/unreal-summary/Rendering/Nanite/Rasterization.md",
+      "summary": "Nanite의 래스터화 시스템은 **하드웨어 (HW)와 소프트웨어 (SW) 혼합 래스터라이저**를 사용하여 극도로 작은 삼각형(~1 픽셀)을 효율적으로 처리합니다."
+    },
+    {
+      "title": "Nanite 개요 (Overview)",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Nanite"
+      ],
+      "path": "posts/unreal-summary/Rendering/Nanite/Overview.md",
+      "summary": "**Nanite**는 Unreal Engine 5에서 도입된 **가상화된 마이크로폴리곤 지오메트리 (Virtualized Micropolygon Geometry)** 렌더링 시스템입니다."
+    },
+    {
+      "title": "Nanite Voxel Shaders (Nanite 체소 셰이더)",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Nanite"
+      ],
+      "path": "posts/unreal-summary/Rendering/Nanite/VoxelShaders.md",
+      "summary": "**Nanite Voxel Shaders**는 Nanite의 체소 렌더링을 담당하는 GPU 측 구현입니다. CPU에서 생성된 체소 데이터(FCluster의 FBrick)를 실제로 화면에 그리기 위한 모든 셰이더 코드가 포함되어 있습니다."
+    },
+    {
+      "title": "Nanite Ray Tracing 지원 시스템",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Nanite"
+      ],
+      "path": "posts/unreal-summary/Rendering/Nanite/RayTracing.md",
+      "summary": "Nanite의 **Ray Tracing 지원**은 Nanite 지오메트리를 하드웨어 Ray Tracing (DXR/Vulkan RT)과 통합하기 위한 시스템입니다. Nanite의 GPU-Driven 아키텍처와 전통적인 RT BVH 구조 간의 불일치를 해결하기 위해 **StreamOut** 시스템을 통해 RT 전용 지오메트리를 동적으로 생성합니다."
+    },
+    {
+      "title": "Nanite Foliage 지원 시스템",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Nanite"
+      ],
+      "path": "posts/unreal-summary/Rendering/Nanite/Foliage.md",
+      "summary": "**Nanite Foliage**는 Nanite 지오메트리를 **HierarchicalInstancedStaticMeshComponent (HISM)**와 결합하여 대량의 풀, 나무, 관목 등의 식물을 효율적으로 렌더링하는 시스템입니다."
+    },
+    {
+      "title": "Nanite DAG 시스템 (Directed Acyclic Graph - 계층 구조 및 LOD)",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Nanite"
+      ],
+      "path": "posts/unreal-summary/Rendering/Nanite/DAG.md",
+      "summary": "**DAG (Directed Acyclic Graph, 유향 비순환 그래프)** 는 Nanite의 **자동 LOD 시스템의 핵심**입니다."
+    },
+    {
+      "title": "Lumen Architecture Deep Dive",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Lumen"
+      ],
+      "path": "posts/unreal-summary/Rendering/Lumen/Architecture.md",
+      "summary": "Lumen은 **하드웨어 레이 트레이싱(DXR)의 근본적인 한계**를 극복하기 위해 설계된 소프트웨어 기반 글로벌 일루미네이션 시스템입니다."
+    },
+    {
+      "title": "Common UI 완전 가이드",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "UI",
+      "tags": [
+        "unreal",
+        "UI"
+      ],
+      "path": "posts/unreal-summary/UI/CommonUI_Complete_Guide.md",
+      "summary": "1. [Common UI란 무엇인가?](#1-common-ui란-무엇인가)"
+    },
+    {
+      "title": "C# 서버 + 언리얼 엔진 연동 완전 가이드",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Networking",
+      "tags": [
+        "unreal",
+        "Networking"
+      ],
+      "path": "posts/unreal-summary/Networking/CSharp_Server_Unreal_Integration.md",
+      "summary": "1. [아키텍처 개요](#1-아키텍처-개요)"
+    },
+    {
+      "title": "Avowed GPU Technology Postmortem Deep Dive",
+      "date": "2025-11-23",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "RealWorld",
+      "tags": [
+        "unreal",
+        "RealWorld"
+      ],
+      "path": "posts/unreal-summary/RealWorld/Avowed_GPU_Technology_Postmortem_Deep_Dive.md",
+      "summary": "**Avowed GPU Technology Postmortem**은 Obsidian Entertainment의 시니어 그래픽 엔지니어 Matt Campbell이 GDC 2025에서 발표한 실전 사례 연구입니다. Pillars of Eternity 세계관을 배경으로 한 싱글 플레이어 액션 RPG인 Avowed가 Unreal Engine 5.3.2를 활용하여 Xbox Series S/X 및 PC에 출시되기까지의 기술적 여정, 문제점, 그리고 해결책을 상세히 다룹니다."
+    },
+    {
+      "title": "World Tick Pipeline Deep Dive",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "GameFramework",
+      "tags": [
+        "unreal",
+        "GameFramework"
+      ],
+      "path": "posts/unreal-summary/GameFramework/World_Tick_Pipeline_Deep_Dive.md",
+      "summary": "**UWorld::Tick()**은 Unreal Engine의 모든 게임플레이 로직이 매 프레임마다 실행되는 핵심 파이프라인입니다. 이 시스템은 수천 개의 Actor와 Component를 효율적으로 업데이트하며, 물리 시뮬레이션, 렌더링, 네트워크 복제 등 모든 서브시스템과 동기화됩니다."
+    },
+    {
+      "title": "Virtual Shadow Maps Deep Dive",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Shadows"
+      ],
+      "path": "posts/unreal-summary/Rendering/Shadows/VirtualShadowMaps.md",
+      "summary": "**Virtual Shadow Maps (VSM)**은 Unreal Engine 5의 차세대 섀도우 시스템으로, 페이지 기반 가상 텍스처링과 Nanite 통합으로 메가스케일 섀도우를 효율적으로 렌더링합니다. 이 문서는 VSM의 핵심 알고리즘에 대한 상세 분석을 다룹니다."
+    },
+    {
+      "title": "Tick and Update System (Tick 및 업데이트 시스템)",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Tick_and_Update_System.md",
+      "summary": "Niagara의 Tick 시스템은 **Game Thread (GT)**와 **Concurrent Thread (병렬 실행 스레드)** 간의 정교한 협업을 통해 파티클 시스템을 갱신합니다. 이 시스템은 멀티스레딩을 최대한 활용하여 성능을 최적화하면서도, Thread-Safety를 유지하고 GPU Tick을 적절한 시점에 제출합니다."
+    },
+    {
+      "title": "System and Emitter Lifecycle (시스템 및 에미터 생명주기)",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/System_and_Emitter_Lifecycle.md",
+      "summary": "Niagara System과 Emitter의 **생명주기 관리**는 초기화부터 종료까지의 전체 상태 전환을 담당합니다."
+    },
+    {
+      "title": "System Integration (시스템 통합)",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/System_Integration.md",
+      "summary": "Niagara는 Unreal Engine의 다양한 시스템과 **깊은 통합**을 제공하여 복잡한 게임플레이 이펙트를 구현합니다."
+    },
+    {
+      "title": "Sorting and Culling (정렬 및 컬링)",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Sorting_and_Culling.md",
+      "summary": "Niagara의 Sorting/Culling 시스템은 **렌더링 성능 최적화**를 위해 파티클을 정렬하고 불필요한 파티클을 제거합니다."
+    },
+    {
+      "title": "Simulation Stages Deep Dive (시뮬레이션 스테이지 심화)",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Simulation_Stages_Deep_Dive.md",
+      "summary": "Simulation Stage는 Niagara에서 **파티클 또는 DataInterface를 반복적으로 처리**할 수 있는 강력한 기능입니다. 일반적인 Spawn/Update Script 외에 추가적인 시뮬레이션 단계를 정의하여, Grid 연산, Neighbor 검색, Multi-Pass 알고리즘 등을 구현할 수 있습니다."
+    },
+    {
+      "title": "Shader Permutation Optimization Deep Dive",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Shader",
+      "tags": [
+        "unreal",
+        "Shader"
+      ],
+      "path": "posts/unreal-summary/Shader/PermutationOptimization.md",
+      "summary": "Unreal Engine 5의 **Shader Permutation (셰이더 변형)** 시스템은 다양한 렌더링 경로, 플랫폼, 기능 조합을 처리하기 위한 핵심 메커니즘입니다. 하지만 잘못 관리하면 수만 개의 불필요한 셰이더가 컴파일되어 빌드 시간과 메모리를 낭비합니다. 본 문서는 Permutation 폭발 원인 분석과 실전 최적화 기법을 다룹니다."
+    },
+    {
+      "title": "Sequencer Integration - Niagara Sequencer 통합",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Sequencer_Integration.md",
+      "summary": "**Niagara Sequencer Integration**은 **Unreal Engine의 Sequencer (Cinematics)에서 Niagara System을 제어**하고, **타임라인 기반으로 VFX를 연출**할 수 있는 완전한 통합 시스템입니다."
+    },
+    {
+      "title": "Ribbon and Mesh Rendering (리본 및 메시 렌더링)",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Ribbon_and_Mesh_Rendering.md",
+      "summary": "Niagara의 Ribbon/Mesh Renderer는 **Sprite 이외의 복잡한 형태**를 렌더링합니다."
+    },
+    {
+      "title": "Performance Analysis (성능 분석)",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Performance_Analysis.md",
+      "summary": "Niagara 성능 분석은 **병목 지점을 식별**하고 최적화 기회를 찾는 과정입니다."
+    },
+    {
+      "title": "Parameter System (파라미터 시스템)",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Parameter_System.md",
+      "summary": "Niagara Parameter System은 **스크립트와 시스템 간 데이터 흐름을 관리**하는 핵심 시스템입니다."
+    },
+    {
+      "title": "Niagara Fluids & Grid Simulation (나이아가라 유체 및 그리드 시뮬레이션)",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Niagara_Fluids_Grid_Simulation.md",
+      "summary": "Niagara의 **Grid-based Simulation**은 3D/2D 격자(Grid)를 사용하여 **유체(Fluid), 가스, 연기(Smoke)** 등의 공간 기반 시뮬레이션을 구현합니다."
+    },
+    {
+      "title": "Niagara Collision System",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Collision_System.md",
+      "summary": "Niagara Collision System은 파티클이 월드의 지오메트리와 상호작용할 수 있도록 하는 충돌 감지 및 응답 시스템입니다. **CPU와 GPU 모두에서 다양한 충돌 감지 방식을 제공**하며, 물리 머티리얼 속성, 비동기 트레이스, 리지드 메시 충돌 등 다양한 기능을 지원합니다."
+    },
+    {
+      "title": "Niagara Audio Integration",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Audio_Integration.md",
+      "summary": "Niagara Audio Integration은 **파티클 시스템과 Unreal의 오디오 시스템을 연결하는 통합 레이어**로, 파티클 데이터에 반응하는 오디오 재생, 오디오 데이터를 기반으로 한 파티클 변조, 그리고 실시간 오디오 분석을 제공합니다."
+    },
+    {
+      "title": "Memory Management (메모리 관리)",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Memory_Management.md",
+      "summary": "Niagara의 메모리 관리 시스템은 **FNiagaraDataBuffer**와 **FNiagaraDataSet**를 중심으로 파티클 데이터를 효율적으로 관리하며, **UNiagaraComponentPool**을 통해 Component 재사용을 최적화합니다. 이 시스템은 CPU/GPU 메모리를 분리 관리하고, SoA(Structure of Arrays) 레이아웃을 사용하여 SIMD 성능을 최대화합니다."
+    },
+    {
+      "title": "Lumen Surface Cache - Deep Dive",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Lumen"
+      ],
+      "path": "posts/unreal-summary/Rendering/Lumen/SurfaceCache.md",
+      "summary": "Lumen Surface Cache의 **내부 구현**과 **세부 동작 원리**를 다룹니다."
+    },
+    {
+      "title": "Lumen Radiance Cache Deep Dive",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Lumen"
+      ],
+      "path": "posts/unreal-summary/Rendering/Lumen/RadianceCache.md",
+      "summary": "**Radiance Cache**는 Lumen의 핵심 캐싱 시스템으로, 월드 공간에 배치된 Probe들이 주변의 Radiance를 저장하여 간접광 계산을 가속화합니다. Surface Cache가 표면 기반 캐싱이라면, Radiance Cache는 **볼륨 기반 캐싱**입니다."
+    },
+    {
+      "title": "Lumen - 최적화",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Lumen"
+      ],
+      "path": "posts/unreal-summary/Rendering/Lumen/Optimization.md",
+      "summary": "Lumen의 **성능 최적화**, **Scalability**, **다른 시스템과의 통합**을 다룹니다."
+    },
+    {
+      "title": "Event System Deep Dive (이벤트 시스템 심화)",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Event_System_Deep_Dive.md",
+      "summary": "Niagara Event System은 **파티클 간 또는 Emitter 간 통신**을 가능하게 합니다. 파티클이 특정 조건을 만족할 때 이벤트를 발생시키고, 다른 파티클이나 Emitter가 이를 수신하여 반응할 수 있습니다."
+    },
+    {
+      "title": "EmitterState & Events - Niagara Emitter 상태 및 이벤트",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/EmitterState_and_Events.md",
+      "summary": "**Niagara EmitterState & Events 시스템**은 **Emitter의 생명주기를 관리**하고, **Emitter 간 통신**을 가능하게 하는 핵심 시스템입니다."
+    },
+    {
+      "title": "Custom HLSL Nodes (커스텀 HLSL 노드)",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Custom_HLSL_Nodes.md",
+      "summary": "Custom HLSL Node는 Niagara Script Graph에서 **직접 HLSL 코드를 작성**하여 사용할 수 있는 기능입니다. 복잡한 수학 연산, GPU 최적화, 또는 기존 노드로 구현하기 어려운 기능을 구현할 때 사용합니다."
+    },
+    {
+      "title": "Actor 생명주기 및 Replication Deep Dive",
+      "date": "2025-11-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "GameFramework",
+      "tags": [
+        "unreal",
+        "GameFramework"
+      ],
+      "path": "posts/unreal-summary/GameFramework/Actor_Lifecycle_And_Replication_Deep_Dive.md",
+      "summary": "**AActor**는 Unreal Engine의 모든 게임 오브젝트의 기본 클래스입니다. Actor는 복잡한 생명주기(Lifecycle)와 네트워크 복제(Replication) 시스템을 가지고 있으며, 이를 이해하는 것은 멀티플레이어 게임 개발에 필수적입니다."
+    },
+    {
+      "title": "하드웨어 추상화 레이어 (Hardware Abstraction Layer - HAL)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/HAL.md",
+      "summary": "**HAL (Hardware Abstraction Layer)**는 언리얼 엔진의 플랫폼 독립성을 제공하는 Core 모듈의 핵심 구성 요소입니다. 다양한 운영체제, CPU 아키텍처, 하드웨어 플랫폼에서 동일한 API로 작동하도록 추상화 계층을 제공합니다."
+    },
+    {
+      "title": "패키지 및 링커 시스템 (Package and Linker System)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "CoreUObject",
+      "tags": [
+        "unreal",
+        "CoreUObject"
+      ],
+      "path": "posts/unreal-summary/CoreUObject/PackageAndLinker.md",
+      "summary": "**패키지(Package)**는 언리얼 엔진의 에셋 저장 및 로딩의 기본 단위입니다. 모든 UObject는 UPackage 안에 존재하며, **링커(Linker)** 시스템은 패키지를 디스크에 저장하고 메모리로 로드하는 핵심 메커니즘입니다."
+    },
+    {
+      "title": "템플릿 메타프로그래밍 (Template Metaprogramming)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/Templates.md",
+      "summary": "**언리얼 엔진의 템플릿 시스템**은 컴파일 타임 타입 조작 및 메타프로그래밍을 제공하는 Core 모듈의 핵심 구성 요소입니다. C++ 템플릿을 활용하여 타입 안전성, 제네릭 프로그래밍, 컴파일 타임 최적화를 지원합니다."
+    },
+    {
+      "title": "컨테이너 시스템 (Container System)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/Containers.md",
+      "summary": "**언리얼 엔진의 컨테이너 시스템**은 표준 C++ STL 컨테이너를 대체하는 고성능, 플랫폼 독립적 자료구조 모음입니다. TArray, TMap, TSet 등 게임 개발에 최적화된 메모리 관리와 성능 특성을 제공하며, 엔진의 리플렉션 시스템과 완벽하게 통합됩니다."
+    },
+    {
+      "title": "직렬화 시스템 (Serialization System)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "CoreUObject",
+      "tags": [
+        "unreal",
+        "CoreUObject"
+      ],
+      "path": "posts/unreal-summary/CoreUObject/Serialization.md",
+      "summary": "**언리얼 엔진의 직렬화 시스템**은 메모리상의 데이터를 바이트 스트림으로 변환(직렬화)하고, 다시 메모리로 복원(역직렬화)하는 핵심 시스템입니다. 모든 에셋 저장/로드, 네트워크 리플리케이션, 클립보드 복사/붙여넣기가 이 시스템을 기반으로 작동합니다."
+    },
+    {
+      "title": "오브젝트 인덱싱 시스템 (Object Indexing System)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "CoreUObject",
+      "tags": [
+        "unreal",
+        "CoreUObject"
+      ],
+      "path": "posts/unreal-summary/CoreUObject/ObjectIndexing.md",
+      "summary": "**FUObjectArray**는 언리얼 엔진의 모든 UObject를 중앙 집중식으로 관리하는 글로벌 오브젝트 레지스트리입니다. 모든 UObject는 생성 시 고유한 인덱스를 할당받아 이 배열에 등록되며, 이를 통해 빠른 오브젝트 조회, GC 추적, 반복(iteration)이 가능합니다."
+    },
+    {
+      "title": "엔진 초기화 시스템 (Engine Initialization System)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/EngineInitialization.md",
+      "summary": "**언리얼 엔진 초기화 시스템**은 엔진이 부팅되어 게임이 실행 가능한 상태가 되기까지의 전체 프로세스를 관리합니다. 이는 메모리 할당자 초기화부터 렌더링 시스템, 게임프레임워크 초기화까지 수백 개의 시스템을 순차적으로 시작합니다."
+    },
+    {
+      "title": "에셋 레지스트리 시스템 (Asset Registry System)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "CoreUObject",
+      "tags": [
+        "unreal",
+        "CoreUObject"
+      ],
+      "path": "posts/unreal-summary/CoreUObject/AssetRegistry.md",
+      "summary": "**에셋 레지스트리 (Asset Registry)**는 언리얼 엔진의 모든 에셋에 대한 중앙 집중식 메타데이터 카탈로그입니다. 디스크에 있는 모든 패키지와 에셋의 정보를 인덱싱하여, 에셋을 로드하지 않고도 빠르게 검색하고 쿼리할 수 있게 합니다."
+    },
+    {
+      "title": "언리얼 엔진 애니메이션 블렌딩 시스템",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation",
+        "Blending"
+      ],
+      "path": "posts/unreal-summary/Animation/Blending/BlendSystem.md",
+      "summary": "애니메이션 블렌딩 시스템은 언리얼 엔진의 복잡한 애니메이션 전환 및 혼합을 관리하는 고급 메커니즘입니다. 이 시스템은 다음과 같은 주요 계층으로 구성됩니다:"
+    },
+    {
+      "title": "언리얼 엔진 무브먼트 시스템: Mover Plugin vs CharacterMovementComponent",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Movement",
+      "tags": [
+        "unreal",
+        "Movement"
+      ],
+      "path": "posts/unreal-summary/Movement/MoverVsCharacterMovement.md",
+      "summary": "Mover Plugin은 언리얼 엔진의 차세대 무브먼트 시스템으로, 기존 `CharacterMovementComponent`의 한계를 극복하기 위해 설계된 실험적인 프레임워크입니다. 모듈성, 확장성, 유연성에 중점을 두고 개발되었습니다."
+    },
+    {
+      "title": "언리얼 리플렉션 시스템 (Unreal Reflection System)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "CoreUObject",
+      "tags": [
+        "unreal",
+        "CoreUObject"
+      ],
+      "path": "posts/unreal-summary/CoreUObject/ReflectionSystem.md",
+      "summary": "**언리얼 리플렉션 시스템** (또는 **언리얼 헤더 툴 (Unreal Header Tool, UHT)**이라고도 함)은 언리얼 엔진의 런타임 타입 정보(RTTI) 시스템입니다. C++의 제한적인 RTTI를 확장하여 강력한 메타프로그래밍 기능을 제공합니다."
+    },
+    {
+      "title": "애니메이션 압축 시스템 (Animation Compression)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Animation/Core/Compression.md",
+      "summary": "애니메이션 압축 시스템은 언리얼 엔진의 핵심 애니메이션 메모리 최적화 기술입니다. 로우 데이터를 효율적으로 저장하고 런타임에 빠르게 해제할 수 있는 고급 압축 알고리즘을 제공합니다."
+    },
+    {
+      "title": "스켈레톤 (Skeleton)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Animation/Core/Skeleton.md",
+      "summary": "**USkeleton**은 언리얼 엔진의 애니메이션 시스템에서 골격 구조와 움직임을 정의하는 핵심 자산입니다. 이는 다음과 같은 중요한 역할을 수행합니다:"
+    },
+    {
+      "title": "스마트 포인터 (Smart Pointers)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/SmartPointers.md",
+      "summary": "**언리얼 엔진의 스마트 포인터**는 자동 메모리 관리를 제공하는 Core 모듈의 핵심 구성 요소입니다. 참조 카운팅을 통해 메모리 누수를 방지하고 안전한 포인터 관리를 지원합니다."
+    },
+    {
+      "title": "수학 라이브러리 (Math Library)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/Math.md",
+      "summary": "**언리얼 엔진의 수학 라이브러리**는 3D 게임 개발에 필수적인 벡터, 행렬, 회전 연산을 제공하는 Core 모듈의 핵심 구성 요소입니다. 플랫폼 독립적인 API와 SIMD 최적화를 통해 고성능 수학 연산을 지원합니다."
+    },
+    {
+      "title": "멀티스레딩 시스템 (Multithreading System)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/Multithreading.md",
+      "summary": "**언리얼 엔진의 멀티스레딩 시스템**은 게임 로직, 렌더링, 물리, 오디오 등 모든 서브시스템을 병렬로 실행하여 멀티코어 CPU 성능을 최대한 활용합니다. Task Graph, FRunnable, ParallelFor 등 다양한 추상화 레벨의 API를 제공하여 개발자가 안전하고 효율적인 멀티스레드 코드를 작성할 수 있도록 돕습니다."
+    },
+    {
+      "title": "델리게이트 시스템 (Delegate System)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/Delegates.md",
+      "summary": "**언리얼 엔진의 델리게이트 시스템**은 타입 안전한 함수 포인터 추상화로, 임의의 객체의 멤버 함수를 동적으로 바인딩하고 호출할 수 있게 해줍니다. C++의 이벤트 시스템 부재를 메우며, 블루프린트와의 통합, 직렬화, 멀티캐스트 등 강력한 기능을 제공합니다."
+    },
+    {
+      "title": "나이아가라 스크립팅 시스템 및 모듈",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Scripting_and_Modules.md",
+      "summary": "나이아가라의 스크립팅 시스템은 **노드 기반 비주얼 프로그래밍 환경**과 **모듈화된 재사용 가능한 함수 시스템**을 제공합니다. 이 시스템은 컴파일 시점에 VectorVM 바이트코드 또는 GPU HLSL로 변환되어 실행됩니다."
+    },
+    {
+      "title": "Vertex Factory 시스템",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Shader",
+      "tags": [
+        "unreal",
+        "Shader"
+      ],
+      "path": "posts/unreal-summary/Shader/VertexFactory.md",
+      "summary": "**Vertex Factory**는 다양한 메시 타입(Static Mesh, Skeletal Mesh, Particle 등)의 **버텍스 데이터를 추상화**하는 시스템입니다. 이를 통해 동일한 Material Shader가 다양한 메시 타입에서 작동할 수 있습니다."
+    },
+    {
+      "title": "Unreal Animation Framework (UAF) 개요",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation"
+      ],
+      "path": "posts/unreal-summary/Animation/Overview.md",
+      "summary": "**Unreal Animation Framework (UAF)**는 Unreal Engine 4에서 도입된 **비주얼 기반 애니메이션 시스템**으로, UE3의 코드 중심 AnimTree를 완전히 대체했습니다. 이는 단순한 개선이 아니라 애니메이션 개발 방식의 **패러다임 전환**이었습니다."
+    },
+    {
+      "title": "UObject 해시 시스템 (UObject Hash System)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "CoreUObject",
+      "tags": [
+        "unreal",
+        "CoreUObject"
+      ],
+      "path": "posts/unreal-summary/CoreUObject/UObjectHash.md",
+      "summary": "**UObject 해시 시스템**은 언리얼 엔진에서 UObject를 빠르게 검색하기 위한 핵심 인프라입니다. 수백만 개의 오브젝트 중에서 이름, Outer, 클래스 등으로 O(1) 시간에 찾을 수 있도록 여러 해시 테이블을 관리합니다."
+    },
+    {
+      "title": "UObject 시스템",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "CoreUObject",
+      "tags": [
+        "unreal",
+        "CoreUObject"
+      ],
+      "path": "posts/unreal-summary/CoreUObject/UObject.md",
+      "summary": "**UObject**는 모든 언리얼 엔진 오브젝트의 기본 클래스이며 언리얼의 오브젝트 시스템의 기초입니다. 다음과 같은 중요한 엔진 기능을 제공합니다:"
+    },
+    {
+      "title": "UAnimInstance - 런타임 애니메이션 인스턴스 (Runtime Animation Instance)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Animation/Core/AnimInstance.md",
+      "summary": "**UAnimInstance**는 Unreal Animation Framework의 **핵심 런타임 클래스**로, Animation Blueprint의 **실제 실행 인스턴스**입니다. Skeletal Mesh Component마다 하나씩 생성되며, 매 프레임 애니메이션 그래프를 평가하고 최종 포즈를 생성합니다."
+    },
+    {
+      "title": "Time (시간 시스템)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/Time.md",
+      "summary": "**Time System**은 언리얼 엔진의 **시간 측정 및 관리 메커니즘**입니다. 고성능 타이머, 프레임 시간, 델타 타임, 타임스탬프 등을 플랫폼 독립적으로 제공합니다."
+    },
+    {
+      "title": "TickSystem (틱 시스템)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "GameFramework",
+      "tags": [
+        "unreal",
+        "GameFramework"
+      ],
+      "path": "posts/unreal-summary/GameFramework/TickSystem.md",
+      "summary": "**FTickFunction**은 언리얼 엔진의 **프레임별 업데이트 메커니즘의 핵심**입니다. 모든 Actor와 Component는 FTickFunction을 통해 매 프레임 업데이트되며, Tick Group, 우선순위, 의존성을 정밀하게 제어할 수 있습니다."
+    },
+    {
+      "title": "TaskGraph (태스크 그래프 시스템)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/TaskGraph.md",
+      "summary": "**TaskGraph**는 언리얼 엔진의 **멀티스레드 작업 스케줄링 시스템**으로, DAG(Directed Acyclic Graph) 기반의 의존성 관리를 통해 태스크들을 병렬로 실행합니다. 이 시스템은 게임 스레드, 렌더링 스레드, RHI 스레드 같은 명명된 스레드와 범용 워커 스레드 풀을 조율하여 CPU 코어를 효율적으로 활용합니다."
+    },
+    {
+      "title": "String (문자열 타입들)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/String.md",
+      "summary": "언리얼 엔진은 **세 가지 주요 문자열 타입**을 제공하며, 각각은 **명확히 구분된 사용 목적**을 가집니다:"
+    },
+    {
+      "title": "State Machine - 애니메이션 상태 머신 (Animation State Machine)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation",
+        "AnimGraph"
+      ],
+      "path": "posts/unreal-summary/Animation/AnimGraph/StateMachine.md",
+      "summary": "**State Machine**은 Unreal Animation Framework의 **핵심 제어 시스템**으로, 복잡한 애니메이션 전환 로직을 **시각적**으로 관리합니다. 캐릭터의 행동 상태(Idle, Walk, Run, Jump 등)를 노드로 표현하고, 조건 기반으로 자동 전환합니다."
+    },
+    {
+      "title": "Shader 타입 계층 구조 (Shader Type Hierarchy)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Shader",
+      "tags": [
+        "unreal",
+        "Shader"
+      ],
+      "path": "posts/unreal-summary/Shader/ShaderTypes.md",
+      "summary": "Unreal Engine의 Shader 시스템은 **4단계 계층 구조**로 이루어져 있습니다. 각 계층은 명확한 책임 분리를 통해 다양한 렌더링 시나리오를 지원합니다."
+    },
+    {
+      "title": "Shader 시스템 개요 (Shader System Overview)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Shader",
+      "tags": [
+        "unreal",
+        "Shader"
+      ],
+      "path": "posts/unreal-summary/Shader/Overview.md",
+      "summary": "Unreal Engine의 Shader 시스템은 **크로스 플랫폼 GPU 프로그래밍**을 위한 핵심 인프라입니다. 이 시스템은 **단일 HLSL 소스**로부터 다양한 플랫폼(DirectX, Vulkan, Metal, PlayStation, Xbox 등)과 그래픽 API를 지원하는 셰이더를 자동 생성합니다."
+    },
+    {
+      "title": "Shader Parameters 및 Uniform Buffer",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Shader",
+      "tags": [
+        "unreal",
+        "Shader"
+      ],
+      "path": "posts/unreal-summary/Shader/Parameters.md",
+      "summary": "Unreal Engine의 **Shader Parameter 시스템**은 **CPU에서 GPU로 데이터를 전송**하는 메커니즘입니다. 이 시스템은 **Uniform Buffer**, **Texture/Sampler**, **Loose Parameter**를 통해 다양한 형태의 데이터를 효율적으로 관리합니다."
+    },
+    {
+      "title": "NiagaraSystem - Niagara 시스템 컨테이너 (Niagara System Container)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Niagara/Core/NiagaraSystem.md",
+      "summary": "**UNiagaraSystem**은 **Niagara 이펙트의 최상위 컨테이너**로, 하나 이상의 에미터(Emitter)를 포함하고 전체 이펙트의 실행, 시간, 파라미터 흐름을 관리하는 핵심 클래스입니다. 이것은 **실제로 월드에 배치되고 실행되는 VFX 에셋**이며, UNiagaraComponent를 통해 게임 월드에 인스턴스화됩니다."
+    },
+    {
+      "title": "NiagaraScript - Niagara 스크립트 컴파일 시스템 (Niagara Script Compilation System)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Niagara/Core/NiagaraScript.md",
+      "summary": "**UNiagaraScript**는 **Niagara 그래프(노드 기반 비주얼 스크립팅)를 실행 가능한 코드로 변환하는 컴파일 시스템**입니다. Blueprint와 유사한 그래프 에디터에서 작성된 로직을 CPU용 VectorVM 바이트코드 또는 GPU용 HLSL 코드로 컴파일하여 고성능 파티클 시뮬레이션을 가능하게 합니다."
+    },
+    {
+      "title": "NiagaraEmitter - Niagara 에미터 (Niagara Emitter)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Niagara/Core/NiagaraEmitter.md",
+      "summary": "**UNiagaraEmitter**는 **파티클 생성 및 시뮬레이션의 기본 단위**로, 개별 파티클 그룹의 생성(Spawn), 업데이트(Update), 렌더링(Rendering)을 담당하는 핵심 클래스입니다. 에미터는 **재사용 가능한 독립적인 에셋**이며, 하나 이상의 UNiagaraSystem에 포함되어 복합 이펙트를 구성합니다."
+    },
+    {
+      "title": "NiagaraComponent - Niagara 런타임 컴포넌트 (Niagara Runtime Component)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Niagara/Core/NiagaraComponent.md",
+      "summary": "**UNiagaraComponent**는 **게임 월드에서 Niagara 시스템을 실행하는 런타임 컴포넌트**입니다. UNiagaraSystem 에셋을 인스턴스화하고, 파라미터를 동적으로 제어하며, 생명주기를 관리하는 핵심 인터페이스입니다."
+    },
+    {
+      "title": "Niagara 엔진 통합 구조",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/EngineIntegration.md",
+      "summary": "Niagara는 언리얼 엔진에 **월드 단위 관리 시스템**을 통해 통합되며, 컴포넌트 기반 아키텍처로 액터 시스템과 연결됩니다. 핵심은 **FNiagaraWorldManager**가 UWorld별로 존재하며, **FNiagaraSystemSimulation**을 통해 같은 System의 여러 인스턴스를 배치(batch) 처리합니다."
+    },
+    {
+      "title": "Niagara 시뮬레이션 파이프라인 (Simulation Pipeline)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/SimulationPipeline.md",
+      "summary": "Niagara의 시뮬레이션 파이프라인은 **CPU와 GPU 간의 효율적인 데이터 전송**과 **대규모 파티클 시뮬레이션**을 위한 핵심 시스템입니다. 이 시스템은 **더블 버퍼링**, **VectorVM 바이트코드 인터프리터**, **GPU Compute Shader 디스패치**, **Free ID List 기반 파티클 재활용** 등의 최적화 기법을 사용합니다."
+    },
+    {
+      "title": "Niagara Data Channel (데이터 채널 시스템)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/DataChannel.md",
+      "summary": "**Niagara Data Channel**은 **게임 코드와 Niagara 시스템 간의 실시간 통신 시스템**입니다. C++/Blueprint에서 파티클 데이터를 송신(Write)하고, Niagara System이 이를 수신(Read)하여 반응하는 양방향 데이터 파이프라인을 제공합니다."
+    },
+    {
+      "title": "Niagara DDC 및 쿠킹 시스템 (Derived Data Cache & Cooking System)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/DDC_and_Cooking.md",
+      "summary": "Niagara의 DDC 시스템은 **VM 바이트코드**와 **GPU 셰이더**의 컴파일 결과를 캐싱하여 재컴파일을 방지하고 빌드 속도를 향상시킵니다. 두 가지 주요 경로가 있습니다:"
+    },
+    {
+      "title": "Niagara - VFX 시스템 개요 (Niagara VFX System Overview)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Overview.md",
+      "summary": "**Niagara**는 Unreal Engine 5의 **차세대 VFX 시스템**으로, 데이터 주도형 아키텍처와 모듈 기반 설계를 통해 **고성능 파티클 이펙트**를 제작할 수 있는 강력한 시스템입니다. 기존 Cascade 시스템을 대체하며, **CPU/GPU 병렬 시뮬레이션**, **유연한 스크립팅**, **확장 가능한 데이터 인터페이스**를 지원합니다."
+    },
+    {
+      "title": "Material 시스템 (Material System)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Shader",
+      "tags": [
+        "unreal",
+        "Shader"
+      ],
+      "path": "posts/unreal-summary/Shader/MaterialSystem.md",
+      "summary": "Unreal Engine의 **Material 시스템**은 **아티스트 친화적인 노드 기반 인터페이스**를 통해 복잡한 Shader를 생성합니다. Material Editor에서 만든 노드 그래프는 자동으로 **HLSL 코드**로 변환되어 컴파일됩니다."
+    },
+    {
+      "title": "Logging (로깅 시스템)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/Logging.md",
+      "summary": "**Logging System**은 언리얼 엔진의 **디버깅 및 진단 메시지 출력 메커니즘**입니다. 카테고리 기반 필터링, 동적 verbosity 조절, 다중 출력 장치 지원을 통해 개발 중 효율적인 디버깅을 가능하게 합니다."
+    },
+    {
+      "title": "Linked Animation Graph (연결된 애니메이션 그래프)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation",
+        "AnimGraph"
+      ],
+      "path": "posts/unreal-summary/Animation/AnimGraph/LinkedAnimGraph.md",
+      "summary": "**Linked Animation Graph(연결된 애니메이션 그래프)는 언리얼 엔진의 애니메이션 시스템에서 모듈화와 재사용성을 극대화하는 고급 기능입니다.** 이 시스템은 애니메이션 블루프린트 간 동적이고 유연한 상호작용을 가능하게 하여, 복잡한 애니메이션 로직을 더욱 효율적으로 관리할 수 있게 합니다."
+    },
+    {
+      "title": "IOStore (I/O Store)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/IOStore.md",
+      "summary": "**IOStore**는 언리얼 엔진 4.25부터 도입된 **차세대 파일 패키징 및 I/O 시스템**입니다. 기존 PAK 시스템을 개선하며, **훨씬 빠른 로딩 속도와 효율적인 메모리 사용**을 제공합니다."
+    },
+    {
+      "title": "FileSystem (파일 시스템)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/FileSystem.md",
+      "summary": "**FileSystem**은 언리얼 엔진의 **플랫폼 독립적 파일 I/O API**입니다. 텍스트/바이너리 파일 읽기/쓰기, 디렉토리 탐색, 파일 검색 등을 통합된 인터페이스로 제공하며, 각 플랫폼의 파일 시스템 차이를 추상화합니다."
+    },
+    {
+      "title": "DeadBlending",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation",
+        "Blending"
+      ],
+      "path": "posts/unreal-summary/Animation/Blending/DeadBlending.md",
+      "summary": "- 속도 벡터: 본당 ~12바이트 × 3"
+    },
+    {
+      "title": "Core 모듈",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/Overview.md",
+      "summary": "**Core** 모듈은 언리얼 엔진의 기반 계층입니다. 플랫폼 추상화, 기본 데이터 구조, 메모리 관리, 스레딩 기본 요소, 그리고 다른 모든 언리얼 모듈이 의존하는 저수준 유틸리티를 제공합니다."
+    },
+    {
+      "title": "Console (콘솔 시스템)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/Console.md",
+      "summary": "**Console System**은 언리얼 엔진의 **런타임 설정 및 디버깅 명령어 시스템**입니다. 콘솔 변수(CVar), 콘솔 명령어(Command), 자동 완성을 제공하여 개발 중 실시간으로 게임 동작을 조정할 수 있습니다."
+    },
+    {
+      "title": "Component (컴포넌트 시스템)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "GameFramework",
+      "tags": [
+        "unreal",
+        "GameFramework"
+      ],
+      "path": "posts/unreal-summary/GameFramework/Component.md",
+      "summary": "**UActorComponent**는 언리얼 엔진의 **재사용 가능한 행동을 정의하는 기본 클래스**입니다. Actor는 Component를 소유하여 기능을 모듈화합니다."
+    },
+    {
+      "title": "BlendSpace",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation",
+        "AnimGraph"
+      ],
+      "path": "posts/unreal-summary/Animation/AnimGraph/BlendSpace.md",
+      "summary": "블렌드 스페이스(BlendSpace)는 언리얼 엔진의 고급 애니메이션 보간 시스템으로, 2D/3D 공간에서 애니메이션 클립을 동적으로 혼합할 수 있게 해주는 강력한 도구입니다."
+    },
+    {
+      "title": "Async (비동기 작업 시스템)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Core",
+      "tags": [
+        "unreal",
+        "Core"
+      ],
+      "path": "posts/unreal-summary/Core/Async.md",
+      "summary": "**Async System**은 언리얼 엔진의 **고수준 비동기 작업 API**입니다. TaskGraph보다 사용하기 쉬운 인터페이스를 제공하며, `TFuture<T>`/`TPromise<T>` 패턴으로 비동기 작업의 결과를 안전하게 처리할 수 있습니다."
+    },
+    {
+      "title": "AnimMontage",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation",
+        "AnimGraph"
+      ],
+      "path": "posts/unreal-summary/Animation/AnimGraph/AnimMontage.md",
+      "summary": "AnimMontage는 언리얼 엔진의 애니메이션 시스템에서 **복합적이고 유연한 애니메이션 재생을 가능하게 하는 고급 애셋 타입**입니다. 기본 애니메이션 재생의 한계를 넘어, 개발자에게 더욱 세밀하고 동적인 애니메이션 제어 메커니즘을 제공합니다."
+    },
+    {
+      "title": "AnimGraph 노드 (AnimGraph Nodes)",
+      "date": "2025-11-21",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation",
+        "AnimGraph"
+      ],
+      "path": "posts/unreal-summary/Animation/AnimGraph/AnimNodes.md",
+      "summary": "- FAnimNode_Base 기반 클래스 시스템"
+    },
+    {
+      "title": "World Partition Streaming Optimization Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "World",
+      "tags": [
+        "unreal",
+        "World"
+      ],
+      "path": "posts/unreal-summary/World/World_Partition_Streaming_Optimization_Deep_Dive.md",
+      "summary": "**World Partition Streaming**은 거대한 오픈 월드를 끊김 없이 로딩하는 시스템입니다. The Witcher 4 Demo에서는 **60 FPS 유지**를 위해 획기적인 최적화를 적용했습니다."
+    },
+    {
+      "title": "World Partition & Streaming Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "World",
+      "tags": [
+        "unreal",
+        "World"
+      ],
+      "path": "posts/unreal-summary/World/World_Partition_And_Streaming_Deep_Dive.md",
+      "summary": "**World Partition**은 UE5의 대규모 오픈월드 스트리밍 시스템입니다."
+    },
+    {
+      "title": "Volumetric Fog & Clouds Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Effects"
+      ],
+      "path": "posts/unreal-summary/Rendering/Effects/VolumetricFogAndClouds.md",
+      "summary": "**Volumetric Fog**는 3D 공간에서 빛과 안개의 상호작용을 시뮬레이션하여 사실적인 대기 효과를 제공합니다."
+    },
+    {
+      "title": "Virtual Texturing Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Virtualization"
+      ],
+      "path": "posts/unreal-summary/Rendering/Virtualization/VirtualTexturing.md",
+      "summary": "**Virtual Texturing**은 초대형 텍스처를 타일 기반으로 스트리밍하여 메모리를 절약합니다."
+    },
+    {
+      "title": "UnrealBuildTool (UBT) Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Build",
+      "tags": [
+        "unreal",
+        "Build"
+      ],
+      "path": "posts/unreal-summary/Build/UnrealBuildTool.md",
+      "summary": "**UnrealBuildTool (UBT)** 은 C++ 프로젝트를 컴파일하는 빌드 시스템입니다."
+    },
+    {
+      "title": "Task Graph System Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "MultiThreading",
+      "tags": [
+        "unreal",
+        "MultiThreading"
+      ],
+      "path": "posts/unreal-summary/MultiThreading/Task_Graph_System_Deep_Dive.md",
+      "summary": "**Task Graph**는 Unreal Engine의 병렬 작업 스케줄링 시스템으로, CPU 코어를 효율적으로 활용합니다."
+    },
+    {
+      "title": "Substrate Material System Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Materials"
+      ],
+      "path": "posts/unreal-summary/Rendering/Materials/Substrate.md",
+      "summary": "**Substrate**는 UE5.5+에서 도입된 차세대 머티리얼 시스템으로, 기존 Material System의 한계를 극복합니다."
+    },
+    {
+      "title": "State Tree Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "AI",
+      "tags": [
+        "unreal",
+        "AI"
+      ],
+      "path": "posts/unreal-summary/AI/State_Tree_Deep_Dive.md",
+      "summary": "**State Tree**는 Unreal Engine 5.6+에서 도입된 **차세대 AI 행동 시스템**으로, Behavior Tree를 대체하기 위해 설계되었습니다."
+    },
+    {
+      "title": "Soft Body Physics Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Soft_Body_Physics_Deep_Dive.md",
+      "summary": "**Soft Body Physics**는 변형 가능한 물체(젤리, 천, 근육 등)를 시뮬레이션하는 시스템입니다."
+    },
+    {
+      "title": "Slate Widget Architecture & Rendering Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "UI",
+      "tags": [
+        "unreal",
+        "UI"
+      ],
+      "path": "posts/unreal-summary/UI/Slate_Widget_Architecture_And_Rendering_Deep_Dive.md",
+      "summary": "**Slate**는 Unreal Engine의 크로스플랫폼 UI 프레임워크로, Editor UI와 Runtime Game UI 모두에 사용됩니다."
+    },
+    {
+      "title": "Skeletal Mesh Skinning Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation"
+      ],
+      "path": "posts/unreal-summary/Animation/Skeletal_Mesh_Skinning_Deep_Dive.md",
+      "summary": "**Skeletal Mesh Skinning**은 스켈레탈 메시의 정점(Vertex)을 본(Bone) 애니메이션에 따라 변형하는 프로세스입니다. Unreal Engine은 **CPU Skinning**, **GPU Skinning**, **GPU Skin Cache** 세 가지 방식을 지원합니다."
+    },
+    {
+      "title": "Ray Tracing Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "RayTracing"
+      ],
+      "path": "posts/unreal-summary/Rendering/RayTracing/PathTracing.md",
+      "summary": "**Hardware Ray Tracing**은 GPU의 RT Core를 사용하여 사실적인 반사, 그림자, GI를 제공합니다."
+    },
+    {
+      "title": "Profiling Tools Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Performance",
+      "tags": [
+        "unreal",
+        "Performance"
+      ],
+      "path": "posts/unreal-summary/Performance/Profiling_Tools_Deep_Dive.md",
+      "summary": "**Profiling Tools**는 성능 병목을 찾고 최적화하는 필수 도구입니다."
+    },
+    {
+      "title": "Post Process Pipeline Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Pipeline"
+      ],
+      "path": "posts/unreal-summary/Rendering/Pipeline/PostProcess.md",
+      "summary": "**Post Process**는 렌더링된 이미지에 후처리 효과를 적용하여 시각적 품질을 향상시킵니다."
+    },
+    {
+      "title": "Player Controller & Pawn Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Gameplay",
+      "tags": [
+        "unreal",
+        "Gameplay"
+      ],
+      "path": "posts/unreal-summary/Gameplay/Player_Controller_And_Pawn_Deep_Dive.md",
+      "summary": "**PlayerController**는 입력을 받고, **Pawn**은 실제로 조종되는 객체입니다."
+    },
+    {
+      "title": "Package Serialization & Linker Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Asset",
+      "tags": [
+        "unreal",
+        "Asset"
+      ],
+      "path": "posts/unreal-summary/Asset/Package_Serialization_And_Linker_Deep_Dive.md",
+      "summary": "**Package Serialization**은 UObject를 디스크에 저장하고 로드하는 시스템이며, **Linker**는 이 직렬화를 담당하는 핵심 클래스입니다."
+    },
+    {
+      "title": "Mover Plugin & Mass AI Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "AI",
+      "tags": [
+        "unreal",
+        "AI"
+      ],
+      "path": "posts/unreal-summary/AI/Mover_Plugin_And_Mass_AI_Deep_Dive.md",
+      "summary": "**Mover Plugin**과 **Mass Framework**는 UE 5.6+에서 **수백 명의 NPC를 60 FPS로 구동**하는 시스템입니다."
+    },
+    {
+      "title": "MetaSound System Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Audio",
+      "tags": [
+        "unreal",
+        "Audio"
+      ],
+      "path": "posts/unreal-summary/Audio/MetaSound_System_Deep_Dive.md",
+      "summary": "**MetaSound**는 UE5의 차세대 오디오 엔진으로, 노드 기반 오디오 그래프를 실시간 DSP로 실행합니다."
+    },
+    {
+      "title": "Material System & Shader Compilation Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Material",
+      "tags": [
+        "unreal",
+        "Material"
+      ],
+      "path": "posts/unreal-summary/Material/Material_System_And_Shader_Compilation_Deep_Dive.md",
+      "summary": "**Material System**은 비주얼 노드 기반 Shader 제작 시스템으로, Material Graph → HLSL → Platform Shader (DXIL/SPIR-V/MetalIR)로 변환됩니다."
+    },
+    {
+      "title": "Mass Entity System (ECS) Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "AI",
+      "tags": [
+        "unreal",
+        "AI"
+      ],
+      "path": "posts/unreal-summary/AI/Mass_Entity_System_Deep_Dive.md",
+      "summary": "**Mass Entity**는 UE5의 ECS (Entity Component System)로, 수천~수만 개의 Entity를 효율적으로 처리합니다."
+    },
+    {
+      "title": "Mass Entity LOD System Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "AI",
+      "tags": [
+        "unreal",
+        "AI"
+      ],
+      "path": "posts/unreal-summary/AI/Mass_Entity_LOD_System_Deep_Dive.md",
+      "summary": "**Mass Entity LOD**는 수천 개의 엔티티를 효율적으로 관리하기 위해 **거리 기반 LOD (Level of Detail)** 시스템을 제공합니다."
+    },
+    {
+      "title": "Mass Crowd Avoidance Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "AI",
+      "tags": [
+        "unreal",
+        "AI"
+      ],
+      "path": "posts/unreal-summary/AI/Mass_Crowd_Avoidance_Deep_Dive.md",
+      "summary": "**Mass Crowd Avoidance**는 **수백~수천 명의 NPC가 서로 겹치지 않고** 자연스럽게 이동하도록 하는 시스템입니다."
+    },
+    {
+      "title": "Lumen Hit Lighting Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Lumen"
+      ],
+      "path": "posts/unreal-summary/Rendering/Lumen/HitLighting.md",
+      "summary": "**Lumen Hit Lighting**은 Ray가 표면에 Hit했을 때 해당 위치의 **최종 조명을 계산**하는 시스템입니다."
+    },
+    {
+      "title": "Iris Replication System Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Networking",
+      "tags": [
+        "unreal",
+        "Networking"
+      ],
+      "path": "posts/unreal-summary/Networking/Iris_Replication_System_Deep_Dive.md",
+      "summary": "**Iris Replication System**은 UE5.7에 도입된 차세대 네트워크 복제 시스템으로, 기존 Replication Graph를 대체하며 더 나은 성능과 확장성을 제공합니다."
+    },
+    {
+      "title": "Hardware Ray Tracing Optimization Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "RayTracing"
+      ],
+      "path": "posts/unreal-summary/Rendering/RayTracing/HardwareRayTracing.md",
+      "summary": "**Hardware Ray Tracing (HWRT)** 은 실시간 광선 추적을 GPU 하드웨어로 가속하는 기술입니다. The Witcher 4 Demo에서는 **60 FPS 유지**를 위해 공격적인 최적화를 적용했습니다."
+    },
+    {
+      "title": "HLOD System Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "World",
+      "tags": [
+        "unreal",
+        "World"
+      ],
+      "path": "posts/unreal-summary/World/HLOD_System_Deep_Dive.md",
+      "summary": "**HLOD**는 먼 거리 오브젝트를 단순화된 Proxy Mesh로 대체하여 Draw Call을 줄입니다."
+    },
+    {
+      "title": "Gameplay Ability System (GAS) Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Gameplay",
+      "tags": [
+        "unreal",
+        "Gameplay"
+      ],
+      "path": "posts/unreal-summary/Gameplay/Gameplay_Ability_System_Deep_Dive.md",
+      "summary": "**Gameplay Ability System (GAS)** 는 능력 기반 게임플레이 프레임워크로, RPG/MOBA/Action 게임에 최적화되어 있습니다."
+    },
+    {
+      "title": "GameMode & GameState Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Gameplay",
+      "tags": [
+        "unreal",
+        "Gameplay"
+      ],
+      "path": "posts/unreal-summary/Gameplay/GameMode_And_GameState_Deep_Dive.md",
+      "summary": "**GameMode**는 게임 규칙(Server Only), **GameState**는 게임 상태(Replicated)를 관리합니다."
+    },
+    {
+      "title": "GPU Optimization Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Performance",
+      "tags": [
+        "unreal",
+        "Performance"
+      ],
+      "path": "posts/unreal-summary/Performance/GPU_Optimization_Deep_Dive.md",
+      "summary": "**GPU 최적화**는 렌더링 병목을 제거하여 GPU Frame Time을 줄입니다."
+    },
+    {
+      "title": "Environment Query System (EQS) Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "AI",
+      "tags": [
+        "unreal",
+        "AI"
+      ],
+      "path": "posts/unreal-summary/AI/Environment_Query_System_Deep_Dive.md",
+      "summary": "**EQS (Environment Query System)** 는 AI가 주변 환경을 분석하여 최적의 위치를 찾는 시스템입니다."
+    },
+    {
+      "title": "Enhanced Input System Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Gameplay",
+      "tags": [
+        "unreal",
+        "Gameplay"
+      ],
+      "path": "posts/unreal-summary/Gameplay/Enhanced_Input_System_Deep_Dive.md",
+      "summary": "**Enhanced Input**은 UE5의 표준 입력 시스템으로, 유연한 키 매핑과 Modifier/Trigger를 제공합니다."
+    },
+    {
+      "title": "Deferred Shading Pipeline Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Rendering",
+      "tags": [
+        "unreal",
+        "Rendering",
+        "Pipeline"
+      ],
+      "path": "posts/unreal-summary/Rendering/Pipeline/DeferredShading.md",
+      "summary": "Unreal Engine 5의 **Deferred Shading Pipeline**은 복잡한 조명과 고품질 시각 효과를 효율적으로 렌더링하기 위한 핵심 렌더링 아키텍처입니다."
+    },
+    {
+      "title": "Cooking & Packaging Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Build",
+      "tags": [
+        "unreal",
+        "Build"
+      ],
+      "path": "posts/unreal-summary/Build/CookingAndPackaging.md",
+      "summary": "**Cooking**은 에셋을 플랫폼별로 최적화하고, **Packaging**은 실행 파일을 생성합니다."
+    },
+    {
+      "title": "Control Rig System Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation"
+      ],
+      "path": "posts/unreal-summary/Animation/Control_Rig_System_Deep_Dive.md",
+      "summary": "**Control Rig**는 런타임/에디터에서 Bone을 프로시저럴하게 제어하는 시스템입니다."
+    },
+    {
+      "title": "Chaos Solver Deep Dive - PBD Rigids Evolution",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Physics",
+      "tags": [
+        "unreal",
+        "Physics"
+      ],
+      "path": "posts/unreal-summary/Physics/Chaos_Solver_Deep_Dive.md",
+      "summary": "Chaos는 Unreal Engine 5의 **실시간 물리 시뮬레이션 시스템**으로, Position Based Dynamics (PBD) 기반 강체 (Rigid Body) 솔버를 제공합니다."
+    },
+    {
+      "title": "Camera System Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Gameplay",
+      "tags": [
+        "unreal",
+        "Gameplay"
+      ],
+      "path": "posts/unreal-summary/Gameplay/Camera_System_Deep_Dive.md",
+      "summary": "**Camera System**은 플레이어 시점을 관리합니다."
+    },
+    {
+      "title": "CPU Optimization Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Performance",
+      "tags": [
+        "unreal",
+        "Performance"
+      ],
+      "path": "posts/unreal-summary/Performance/CPU_Optimization_Deep_Dive.md",
+      "summary": "**CPU 최적화**는 Game Thread 병목을 제거하여 프레임레이트를 향상시킵니다."
+    },
+    {
+      "title": "Blueprint Virtual Machine Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Scripting",
+      "tags": [
+        "unreal",
+        "Scripting"
+      ],
+      "path": "posts/unreal-summary/Scripting/Blueprint_Virtual_Machine_Deep_Dive.md",
+      "summary": "**Blueprint Virtual Machine (Kismet VM)** 은 Blueprint 스크립트를 실행하는 바이트코드 인터프리터입니다."
+    },
+    {
+      "title": "Behavior Tree Execution Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "AI",
+      "tags": [
+        "unreal",
+        "AI"
+      ],
+      "path": "posts/unreal-summary/AI/Behavior_Tree_Execution_Deep_Dive.md",
+      "summary": "**Behavior Tree**는 계층적 AI 의사결정 트리로, 조건과 행동을 노드로 구성합니다."
+    },
+    {
+      "title": "Asset Registry & AssetManager Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Asset",
+      "tags": [
+        "unreal",
+        "Asset"
+      ],
+      "path": "posts/unreal-summary/Asset/Asset_Registry_And_AssetManager_Deep_Dive.md",
+      "summary": "**Asset Registry**는 디스크의 모든 애셋 정보를 메모리에 캐싱하는 카탈로그 시스템이고, **AssetManager**는 Primary Asset의 로딩/언로딩을 관리하는 싱글톤 시스템입니다."
+    },
+    {
+      "title": "AnimGraph Compilation & Execution Deep Dive",
+      "date": "2025-01-22",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Animation",
+      "tags": [
+        "unreal",
+        "Animation"
+      ],
+      "path": "posts/unreal-summary/Animation/AnimGraph_Compilation_And_Execution_Deep_Dive.md",
+      "summary": "**AnimGraph**는 Unreal Engine의 **Animation Blueprint** 시스템에서 애니메이션 로직을 시각적으로 구성하는 노드 기반 그래프입니다. 이 문서는 에디터에서 작성한 AnimGraph가 **어떻게 컴파일되고 런타임에서 실행되는지** 분석합니다."
     }
   ],
   "languages": [
@@ -310,17 +3649,72 @@
   ],
   "categories": [
     "comparison",
+    "unreal-summary",
     "worklog"
   ],
   "tracks": [
+    "AI",
+    "Animation",
+    "Asset",
+    "Audio",
+    "Build",
+    "Core",
+    "CoreUObject",
+    "GameFramework",
+    "Gameplay",
+    "Integration",
+    "Lumen",
+    "Material",
+    "Meta",
+    "Movement",
+    "MuJoCoChaos",
+    "MultiThreading",
+    "Networking",
+    "Niagara",
+    "Performance",
+    "Physics",
+    "RealWorld",
+    "Rendering",
+    "Scripting",
+    "Shader",
+    "UI",
+    "VectorVM",
+    "World",
     "api-language",
     "gpu-architecture"
   ],
   "tags": {
+    "unreal": 219,
+    "Niagara": 39,
+    "Rendering": 35,
+    "Core": 29,
+    "Physics": 26,
+    "Animation": 17,
     "vulkan": 16,
+    "Lumen": 15,
+    "Nanite": 15,
     "nvidia": 15,
     "cuda": 14,
+    "GameFramework": 10,
+    "MuJoCoChaos": 10,
     "sass": 10,
+    "CoreUObject": 8,
+    "Shader": 8,
+    "AI": 7,
+    "AnimGraph": 5,
+    "Gameplay": 5,
+    "Blending": 4,
+    "Networking": 4,
+    "RenderGraph": 4,
+    "Performance": 3,
+    "UI": 3,
+    "World": 3,
+    "Asset": 2,
+    "Build": 2,
+    "Movement": 2,
+    "Pipeline": 2,
+    "RayTracing": 2,
+    "Virtualization": 2,
     "barrier": 2,
     "bda": 2,
     "bindless": 2,
@@ -332,6 +3726,17 @@
     "toolchain": 2,
     "vector-add": 2,
     "초기화": 2,
+    "Audio": 1,
+    "Effects": 1,
+    "Integration": 1,
+    "Material": 1,
+    "Materials": 1,
+    "Meta": 1,
+    "MultiThreading": 1,
+    "RealWorld": 1,
+    "Scripting": 1,
+    "Shadows": 1,
+    "VectorVM": 1,
     "ada": 1,
     "ampere": 1,
     "gpu-architecture": 1,

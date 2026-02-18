@@ -10,19 +10,22 @@ GPU 최적화, vAI 프로젝트, 컴퓨트/렌더 API 비교(Vulkan, CUDA, HIP, 
 
 - **사이트 데이터 빌드:** `python scripts/build_site.py` — `posts/` 하위의 `en.md`/`ko.md` 파일을 스캔하고 YAML frontmatter를 파싱하여 `site/posts.json` 생성
 - **배포:** `main` 브랜치에 push하면 GitHub Actions가 자동 배포 (`.github/workflows/deploy-pages.yml`). 수동 배포 불필요.
-- **로컬 미리보기:** 브라우저에서 `site/index.html`을 직접 열면 된다. 단, 포스트 뷰어(`site/post.html`)는 GitHub raw URL에서 마크다운을 가져오므로, 포스트 내용 확인은 `main`에 push된 상태여야 한다.
+- **로컬 미리보기:** `python scripts/build_site.py` 실행 후 브라우저에서 `site/index.html`을 열면 된다. 포스트 뷰어(`site/post.html`)는 `site/content/`에 복사된 마크다운을 우선 로드하므로, `main`에 push하지 않아도 로컬 변경 내용을 바로 확인할 수 있다(로컬 파일이 없으면 GitHub raw로 fallback).
 
 ## 아키텍처
 
 ### 콘텐츠 파이프라인
 1. 마크다운 포스트는 `posts/` 하위에 포스트별 디렉토리로 저장. 각 디렉토리에 `en.md`(영어)와/또는 `ko.md`(한국어) 파일 배치
 2. `scripts/build_site.py`가 모든 포스트의 YAML frontmatter를 파싱하여 `site/posts.json`에 메타데이터, 태그, 자동 추출 요약(첫 번째 비-제목/비-테이블 문단)을 기록
-3. 정적 사이트(`site/`)는 순수 vanilla JS — 프레임워크/번들러 없음. `app.js`가 인덱스 페이지의 클라이언트 사이드 필터링 담당, `post.js`가 GitHub raw 마크다운을 fetch하여 `marked.js`로 렌더링
+3. 정적 사이트(`site/`)는 순수 vanilla JS — 프레임워크/번들러 없음. `app.js`가 인덱스 페이지의 클라이언트 사이드 필터링 담당, `post.js`가 `site/content/`의 로컬 마크다운을 우선 fetch하고(없으면 GitHub raw로 fallback) `marked.js`로 렌더링
 
 ### 콘텐츠 구조
 - `posts/`: 발행용 포스트 (포스트별 디렉토리, `en.md`/`ko.md` + 선택적 `code/`, `build/`)
 - `worklog/`: 날짜 기반 실험 로그 (WIP 허용)
 - `comparisons/`: 안정화된 비교 문서 (사이트에 배포되지 않음)
+- `posts/unreal-summary/`: 언리얼 엔진 시스템별 요약 문서 (외부 리포에서 임포트)
+  - `scripts/import_unreal_summary.py`로 임포트, `scripts/inject_frontmatter.py`로 frontmatter 주입
+  - `site/unreal.html`에서 별도 UI 제공, category="unreal-summary"로 필터
 - `notes/`: 원시 메모 및 아이디어 캡처
 - `templates/`: worklog, comparison, note 작성 템플릿
 
