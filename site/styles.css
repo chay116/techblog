@@ -188,15 +188,16 @@ a:hover {
 }
 
 .hero {
-  max-width: 1400px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 1.8rem 2.5rem 0.6rem;
 }
 
 .layout.single {
-  max-width: 1400px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0 2.5rem 2rem;
+  grid-template-columns: 1fr;
 }
 
 .layout.single .content {
