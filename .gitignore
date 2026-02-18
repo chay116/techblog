@@ -6,3 +6,10 @@ build/
 coverage/
 .env
 .env.*
+
+# CUDA/Vulkan build artifacts
+*.sass
+*.ptx
+*.spv
+*.cubin
+pipeline_cache.bin

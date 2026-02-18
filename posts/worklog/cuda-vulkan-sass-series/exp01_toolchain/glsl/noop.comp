@@ -1,0 +1,10 @@
+// noop.comp — Minimal Vulkan compute shader for toolchain inspection.
+// Compiles to SPIR-V, then NVIDIA driver compiles to SASS at pipeline creation.
+#version 450
+
+layout(local_size_x = 64) in;
+
+void main() {
+    // Intentionally empty — SASS reveals the compute prologue/epilogue
+    // that the NVIDIA Vulkan driver always emits.
+}

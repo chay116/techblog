@@ -1,0 +1,20 @@
+// vector_add.comp — C[i] = A[i] + B[i]
+// Identical logic to cuda/vector_add.cu for 1:1 SASS comparison.
+#version 450
+
+layout(local_size_x = 256) in;
+
+layout(std430, binding = 0) readonly buffer BufA { float A[]; };
+layout(std430, binding = 1) readonly buffer BufB { float B[]; };
+layout(std430, binding = 2) writeonly buffer BufC { float C[]; };
+
+layout(push_constant) uniform PushConstants {
+    int N;
+};
+
+void main() {
+    uint idx = gl_GlobalInvocationID.x;
+    if (idx < N) {
+        C[idx] = A[idx] + B[idx];
+    }
+}

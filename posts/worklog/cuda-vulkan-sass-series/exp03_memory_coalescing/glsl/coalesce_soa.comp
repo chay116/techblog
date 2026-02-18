@@ -1,0 +1,18 @@
+// coalesce_soa.comp — Read x field from SoA layout (Vulkan).
+#version 450
+
+layout(local_size_x = 256) in;
+
+layout(std430, binding = 0) readonly buffer BufX { float x_arr[]; };
+layout(std430, binding = 1) writeonly buffer BufOut { float out_x[]; };
+
+layout(push_constant) uniform PushConstants {
+    int N;
+};
+
+void main() {
+    uint idx = gl_GlobalInvocationID.x;
+    if (idx < N) {
+        out_x[idx] = x_arr[idx];
+    }
+}

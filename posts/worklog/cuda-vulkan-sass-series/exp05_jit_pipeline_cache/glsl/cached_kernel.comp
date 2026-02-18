@@ -1,0 +1,18 @@
+// cached_kernel.comp — Vulkan compute shader for pipeline cache measurement.
+#version 450
+
+layout(local_size_x = 256) in;
+
+layout(std430, binding = 0) buffer BufData { float data[]; };
+
+layout(push_constant) uniform PushConstants {
+    float factor;
+    int N;
+};
+
+void main() {
+    uint idx = gl_GlobalInvocationID.x;
+    if (idx < N) {
+        data[idx] *= factor;
+    }
+}

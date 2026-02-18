@@ -1,0 +1,31 @@
+// bda_access.comp — Vulkan Buffer Device Address (BDA) access.
+// Uses VK_KHR_buffer_device_address to pass raw GPU pointers,
+// converging toward the CUDA pointer model.
+#version 450
+#extension GL_EXT_buffer_reference : require
+#extension GL_EXT_buffer_reference2 : require
+
+layout(local_size_x = 256) in;
+
+// Buffer references — these compile to raw 64-bit addresses in SASS
+layout(buffer_reference, std430, buffer_reference_align = 4) readonly buffer FloatBufIn {
+    float data[];
+};
+
+layout(buffer_reference, std430, buffer_reference_align = 4) writeonly buffer FloatBufOut {
+    float data[];
+};
+
+// Push the 64-bit device addresses via push constants
+layout(push_constant) uniform PushConstants {
+    FloatBufIn inPtr;
+    FloatBufOut outPtr;
+    int N;
+};
+
+void main() {
+    uint idx = gl_GlobalInvocationID.x;
+    if (idx < N) {
+        outPtr.data[idx] = inPtr.data[idx] * 2.0;
+    }
+}

@@ -1,0 +1,19 @@
+// ubo_access.comp — Traditional Vulkan descriptor-bound SSBO access.
+// The driver resolves the descriptor at dispatch time.
+#version 450
+
+layout(local_size_x = 256) in;
+
+layout(std430, binding = 0) readonly buffer BufIn { float data_in[]; };
+layout(std430, binding = 1) writeonly buffer BufOut { float data_out[]; };
+
+layout(push_constant) uniform PushConstants {
+    int N;
+};
+
+void main() {
+    uint idx = gl_GlobalInvocationID.x;
+    if (idx < N) {
+        data_out[idx] = data_in[idx] * 2.0;
+    }
+}

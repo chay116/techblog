@@ -1,6 +1,98 @@
 {
   "posts": [
     {
+      "title": "Worklog #07 - JIT Cache vs Pipeline Cache",
+      "date": "2026-02-22",
+      "status": "wip",
+      "project": "vAI",
+      "lang": "en",
+      "category": "worklog",
+      "track": "api-language",
+      "tags": [
+        "cuda",
+        "vulkan",
+        "nvidia",
+        "sass",
+        "jit",
+        "pipeline-cache"
+      ],
+      "path": "posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/en.md",
+      "summary": "Before any kernel runs, someone has to compile it to SASS. CUDA and Vulkan handle this compilation at different stages and cache results differently. This post measures the cold-start vs warm-start compilation cost and compares caching strategies."
+    },
+    {
+      "title": "Worklog #06 - Bindless, BDA, Raw Pointers",
+      "date": "2026-02-21",
+      "status": "wip",
+      "project": "vAI",
+      "lang": "en",
+      "category": "worklog",
+      "track": "api-language",
+      "tags": [
+        "cuda",
+        "vulkan",
+        "nvidia",
+        "sass",
+        "bda",
+        "bindless"
+      ],
+      "path": "posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/en.md",
+      "summary": "Sebastian Aaltonen's \"There Is No Graphics API\" thesis argues that as Vulkan adds features like Buffer Device Address (BDA), the programming model converges with CUDA at the hardware level. This post puts that claim to the ISA test: does BDA-based Vulkan SASS actually look like CUDA pointer SASS?"
+    },
+    {
+      "title": "Worklog #05 - Memory Coalescing at SASS Level",
+      "date": "2026-02-20",
+      "status": "wip",
+      "project": "vAI",
+      "lang": "en",
+      "category": "worklog",
+      "track": "api-language",
+      "tags": [
+        "cuda",
+        "vulkan",
+        "nvidia",
+        "sass",
+        "memory-coalescing"
+      ],
+      "path": "posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/en.md",
+      "summary": "Memory access patterns dominate GPU kernel performance. This post compares AoS (Array of Structures) vs SoA (Structure of Arrays) layouts in both CUDA and Vulkan at the SASS level, focusing on the load instructions the compiler generates."
+    },
+    {
+      "title": "Worklog #04 - Hello SASS: Vector Add",
+      "date": "2026-02-19",
+      "status": "wip",
+      "project": "vAI",
+      "lang": "en",
+      "category": "worklog",
+      "track": "api-language",
+      "tags": [
+        "cuda",
+        "vulkan",
+        "nvidia",
+        "sass",
+        "vector-add"
+      ],
+      "path": "posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/en.md",
+      "summary": "The simplest meaningful compute kernel is `C[i] = A[i] + B[i]`. By implementing identical logic in both CUDA and Vulkan, we get a 1:1 SASS comparison with minimal noise. This post examines the generated SASS and measures execution time."
+    },
+    {
+      "title": "Worklog #03 - CUDA vs Vulkan: Compilation Toolchain Anatomy",
+      "date": "2026-02-18",
+      "status": "wip",
+      "project": "vAI",
+      "lang": "en",
+      "category": "worklog",
+      "track": "api-language",
+      "tags": [
+        "cuda",
+        "vulkan",
+        "nvidia",
+        "sass",
+        "toolchain"
+      ],
+      "path": "posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/en.md",
+      "summary": "Both CUDA and Vulkan compute shaders end up as the same NVIDIA SASS (Shader ASSembly) instructions on the GPU. But the compilation paths that produce that SASS are radically different. This post maps the two pipelines side by side."
+    },
+    {
       "title": "Comparison - NVIDIA Ampere vs Ada (Template)",
       "date": "2026-02-17",
       "status": "wip",
@@ -133,17 +225,25 @@
     "gpu-architecture"
   ],
   "tags": {
-    "vulkan": 6,
-    "nvidia": 5,
-    "cuda": 4,
+    "vulkan": 11,
+    "nvidia": 10,
+    "cuda": 9,
+    "sass": 5,
     "barrier": 2,
     "compute": 2,
     "initialization": 2,
     "초기화": 2,
     "ada": 1,
     "ampere": 1,
+    "bda": 1,
+    "bindless": 1,
     "gpu-architecture": 1,
+    "jit": 1,
+    "memory-coalescing": 1,
+    "pipeline-cache": 1,
     "sync": 1,
-    "synchronization": 1
+    "synchronization": 1,
+    "toolchain": 1,
+    "vector-add": 1
   }
 }
