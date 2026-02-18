@@ -188,20 +188,20 @@ a:hover {
 }
 
 .hero {
-  max-width: 1100px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 1.8rem 1rem 0.6rem;
+  padding: 1.8rem 2.5rem 0.6rem;
 }
 
 .layout.single {
-  max-width: 1100px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 1rem 2rem;
+  padding: 0 2.5rem 2rem;
 }
 
 .layout.single .content {
-  padding-left: 1rem;
-  padding-right: 0.6rem;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .markdown {
