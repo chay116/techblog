@@ -14,7 +14,7 @@
         "ampere",
         "ada"
       ],
-      "path": "posts/comparison/gpu-architecture/2026-02-17-comparison-nvidia-ampere-vs-ada-template.md",
+      "path": "posts/comparison/gpu-architecture/2026-02-17-comparison-nvidia-ampere-vs-ada-template/en.md",
       "summary": "Architecture-level differences that may affect vAI kernels."
     },
     {
@@ -31,7 +31,7 @@
         "초기화",
         "nvidia"
       ],
-      "path": "posts-ko/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init-ko.md",
+      "path": "posts/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init/ko.md",
       "summary": "NVIDIA GPU 기준으로 초기화 복잡도와 첫 실행 특성을 비교한다."
     },
     {
@@ -48,7 +48,7 @@
         "initialization",
         "nvidia"
       ],
-      "path": "posts/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init.md",
+      "path": "posts/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init/en.md",
       "summary": "Initialization complexity and first execution behavior on NVIDIA GPU."
     },
     {
@@ -65,7 +65,7 @@
         "sync",
         "compute"
       ],
-      "path": "posts-ko/worklog/2026-02-15-worklog-02-vulkan-barrier-audit-ko.md",
+      "path": "posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit/ko.md",
       "summary": "현재 Vulkan compute 경로에서 배리어 범위가 과도할 가능성이 있다."
     },
     {
@@ -82,7 +82,7 @@
         "synchronization",
         "compute"
       ],
-      "path": "posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit.md",
+      "path": "posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit/en.md",
       "summary": "Barrier placement in the Vulkan compute path may be over-conservative, reducing overlap opportunities."
     },
     {
@@ -99,7 +99,7 @@
         "nvidia",
         "초기화"
       ],
-      "path": "posts-ko/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia-ko.md",
+      "path": "posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/ko.md",
       "summary": "vAI의 CUDA/Vulkan 백엔드에서 첫 실행 지연과 초기화 비용을 분리해서 확인한다."
     },
     {
@@ -116,7 +116,7 @@
         "nvidia",
         "initialization"
       ],
-      "path": "posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia.md",
+      "path": "posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/en.md",
       "summary": "vAI compute path starts with both CUDA and Vulkan backends. The immediate objective is to isolate one-time initialization cost and first-dispatch latency."
     }
   ],

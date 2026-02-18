@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-POSTS_DIRS = [ROOT / "posts", ROOT / "posts-ko"]
+POSTS_DIR = ROOT / "posts"
 SITE_DIR = ROOT / "site"
 
 
@@ -50,29 +50,30 @@ def extract_summary(body: str):
 
 def collect_posts():
     posts = []
-    for posts_dir in POSTS_DIRS:
-        if not posts_dir.exists():
+    if not POSTS_DIR.exists():
+        return posts
+    for path in sorted(POSTS_DIR.rglob("*.md")):
+        if path.name not in ("en.md", "ko.md"):
             continue
-        for path in sorted(posts_dir.rglob("*.md")):
-            text = path.read_text(encoding="utf-8")
-            frontmatter, body = parse_frontmatter(text)
-            rel = path.relative_to(ROOT).as_posix()
-            tags = frontmatter.get("tags", [])
-            if isinstance(tags, str):
-                tags = [tags]
-            post = {
-                "title": frontmatter.get("title", path.stem),
-                "date": frontmatter.get("date", ""),
-                "status": frontmatter.get("status", "wip"),
-                "project": frontmatter.get("project", ""),
-                "lang": frontmatter.get("lang", "en"),
-                "category": frontmatter.get("category", "other"),
-                "track": frontmatter.get("track", "other"),
-                "tags": tags,
-                "path": rel,
-                "summary": extract_summary(body),
-            }
-            posts.append(post)
+        text = path.read_text(encoding="utf-8")
+        frontmatter, body = parse_frontmatter(text)
+        rel = path.relative_to(ROOT).as_posix()
+        tags = frontmatter.get("tags", [])
+        if isinstance(tags, str):
+            tags = [tags]
+        post = {
+            "title": frontmatter.get("title", path.parent.name),
+            "date": frontmatter.get("date", ""),
+            "status": frontmatter.get("status", "wip"),
+            "project": frontmatter.get("project", ""),
+            "lang": frontmatter.get("lang", "en"),
+            "category": frontmatter.get("category", "other"),
+            "track": frontmatter.get("track", "other"),
+            "tags": tags,
+            "path": rel,
+            "summary": extract_summary(body),
+        }
+        posts.append(post)
 
     posts.sort(key=lambda x: (x["date"], x["title"]), reverse=True)
     return posts

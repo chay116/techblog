@@ -4,13 +4,12 @@ This repository is a research-oriented blog for optimization work, especially ar
 
 ## Structure
 
-- `posts/`: publish-ready temporary/final blog entries
+- `posts/`: publish-ready blog entries, organized as directories per post
+  - Each post is a directory containing `en.md` (English) and/or `ko.md` (Korean)
+  - Optional `code/` and `build/` subdirectories for related code and build artifacts
   - `worklog/`
   - `comparison/api-language/`
   - `comparison/gpu-architecture/`
-- `posts-ko/`: Korean version entries
-  - `worklog/`
-  - `comparison/api-language/`
 - `worklog/`: date-based experiment logs (WIP-friendly)
 - `comparisons/`: stable comparison notes (concept and performance oriented)
   - `gpu-architecture/`: architecture-level comparisons (e.g., NVIDIA vs AMD generations)
@@ -31,7 +30,7 @@ This repository is a research-oriented blog for optimization work, especially ar
 
 ## Naming Conventions
 
-- Worklog: `worklog-YYYY-MM-DD-<topic>.md`
+- Post directory: `YYYY-MM-DD-<type>-<NN>-<topic>/` containing `en.md` and/or `ko.md`
 - Comparison: `comparison-<domain>-<topic>.md`
 - Notes: `note-YYYY-MM-DD-<topic>.md`
 
