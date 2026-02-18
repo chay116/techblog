@@ -4,7 +4,7 @@ __pycache__/
 node_modules/
 .next/
 dist/
-build/
+/build/
 coverage/
 .env
 .env.*
