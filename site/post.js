@@ -190,7 +190,8 @@ async function main() {
   }
 
   // Sync nav-tabs active state based on origin page
-  const isFromUnreal = from && decodeURIComponent(from).includes("unreal");
+  let isFromUnreal = false;
+  try { isFromUnreal = !!from && decodeURIComponent(from).includes("unreal"); } catch (_) {}
   const navTabs = q("nav-tabs");
   if (navTabs) {
     const tabs = navTabs.querySelectorAll(".nav-tab");

@@ -38,11 +38,6 @@ body {
   color: var(--muted);
 }
 
-.nav {
-  margin: 0.55rem 0 0;
-  color: var(--muted);
-}
-
 .nav-tabs {
   display: flex;
   gap: 0;
