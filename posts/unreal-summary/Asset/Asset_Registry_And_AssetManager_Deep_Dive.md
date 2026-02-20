@@ -5,8 +5,8 @@ status: "stable"
 project: "UnrealEngine"
 lang: "ko"
 category: "unreal-summary"
-track: "Asset"
-tags: ["unreal", "Asset"]
+track: "CoreUObject"
+tags: ["unreal", "CoreUObject", "Asset"]
 engine_version: "Unreal Engine 5.7"
 ---
 # Asset Registry & AssetManager Deep Dive

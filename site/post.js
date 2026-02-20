@@ -152,13 +152,20 @@ function mapBrokenPath(resolvedPath) {
     "posts/unreal-summary/Physics/Chaos_Deep_Dive.md": "posts/unreal-summary/Physics/Chaos_Solver_Deep_Dive.md",
     "posts/unreal-summary/Physics/PBDSolver.md": "posts/unreal-summary/Physics/Chaos_Solver_Deep_Dive.md",
 
-    // Rendering / Lumen + RDG
-    "posts/unreal-summary/Rendering/Lumen/Lumen_Overview.md": "posts/unreal-summary/Rendering/Lumen/Architecture.md",
-    "posts/unreal-summary/Rendering/Lumen/Lumen_Advanced.md": "posts/unreal-summary/Rendering/Lumen/Architecture.md",
+    // Lumen + RDG
+    "posts/unreal-summary/Rendering/Lumen/Lumen_Overview.md": "posts/unreal-summary/Lumen/Architecture.md",
+    "posts/unreal-summary/Rendering/Lumen/Lumen_Advanced.md": "posts/unreal-summary/Lumen/Architecture.md",
+    "posts/unreal-summary/Rendering/Lumen/Architecture.md": "posts/unreal-summary/Lumen/Architecture.md",
+    "posts/unreal-summary/Rendering/Lumen/HZB_ScreenTracing.md": "posts/unreal-summary/Lumen/HZB_ScreenTracing.md",
+    "posts/unreal-summary/Rendering/Lumen/HardwareRayTracing.md": "posts/unreal-summary/Lumen/HardwareRayTracing.md",
+    "posts/unreal-summary/Rendering/Lumen/HitLighting.md": "posts/unreal-summary/Lumen/HitLighting.md",
+    "posts/unreal-summary/Rendering/Lumen/Optimization.md": "posts/unreal-summary/Lumen/Optimization.md",
+    "posts/unreal-summary/Rendering/Lumen/RadianceCache.md": "posts/unreal-summary/Lumen/RadianceCache.md",
+    "posts/unreal-summary/Rendering/Lumen/SurfaceCache.md": "posts/unreal-summary/Lumen/SurfaceCache.md",
     "posts/unreal-summary/Rendering/Lumen/RDG_Overview.md": "posts/unreal-summary/Rendering/RenderGraph/Architecture.md",
     "posts/unreal-summary/Rendering/Lumen/Lumen_RadianceCache_Deep_Dive.md":
-      "posts/unreal-summary/Rendering/Lumen/RadianceCache.md",
-    "posts/unreal-summary/Rendering/Lumen/Lumen_Optimization.md": "posts/unreal-summary/Rendering/Lumen/Optimization.md",
+      "posts/unreal-summary/Lumen/RadianceCache.md",
+    "posts/unreal-summary/Rendering/Lumen/Lumen_Optimization.md": "posts/unreal-summary/Lumen/Optimization.md",
   };
 
   return aliases[resolvedPath] || null;

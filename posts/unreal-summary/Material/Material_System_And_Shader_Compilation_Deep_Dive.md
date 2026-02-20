@@ -5,8 +5,8 @@ status: "stable"
 project: "UnrealEngine"
 lang: "ko"
 category: "unreal-summary"
-track: "Material"
-tags: ["unreal", "Material"]
+track: "Shader"
+tags: ["unreal", "Shader", "Material"]
 engine_version: "Unreal Engine 5.7"
 ---
 # Material System & Shader Compilation Deep Dive

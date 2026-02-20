@@ -5,8 +5,8 @@ status: "stable"
 project: "UnrealEngine"
 lang: "ko"
 category: "unreal-summary"
-track: "MultiThreading"
-tags: ["unreal", "MultiThreading"]
+track: "Core"
+tags: ["unreal", "Core", "MultiThreading"]
 engine_version: "Unreal Engine 5.7"
 ---
 # Task Graph System Deep Dive

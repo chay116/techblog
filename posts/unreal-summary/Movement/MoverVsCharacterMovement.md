@@ -5,8 +5,8 @@ status: "stable"
 project: "UnrealEngine"
 lang: "ko"
 category: "unreal-summary"
-track: "Movement"
-tags: ["unreal", "Movement"]
+track: "GameFramework"
+tags: ["unreal", "GameFramework", "Movement"]
 ---
 # 언리얼 엔진 무브먼트 시스템: Mover Plugin vs CharacterMovementComponent
 

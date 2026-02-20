@@ -5,8 +5,8 @@ status: "stable"
 project: "UnrealEngine"
 lang: "ko"
 category: "unreal-summary"
-track: "Rendering"
-tags: ["unreal", "Rendering", "Lumen"]
+track: "Lumen"
+tags: ["unreal", "Lumen"]
 ---
 # Lumen HZB (Hierarchical Z-Buffer) 스크린 스페이스 트레이싱
 

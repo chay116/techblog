@@ -5,8 +5,8 @@ status: "stable"
 project: "UnrealEngine"
 lang: "ko"
 category: "unreal-summary"
-track: "Scripting"
-tags: ["unreal", "Scripting"]
+track: "GameFramework"
+tags: ["unreal", "GameFramework", "Scripting"]
 engine_version: "Unreal Engine 5.7"
 ---
 # Blueprint Virtual Machine Deep Dive

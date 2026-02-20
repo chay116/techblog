@@ -5,8 +5,8 @@ status: "stable"
 project: "UnrealEngine"
 lang: "ko"
 category: "unreal-summary"
-track: "RealWorld"
-tags: ["unreal", "RealWorld"]
+track: "Rendering"
+tags: ["unreal", "Rendering", "RealWorld"]
 ---
 # Avowed GPU Technology Postmortem Deep Dive
 

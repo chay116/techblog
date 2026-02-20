@@ -131,6 +131,21 @@
       "summary": "[워크로그 #03](/posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/)에서 CUDA와 Vulkan이 동일한 NVIDIA 백엔드 컴파일러로 합류한다는 것을 확인했다. 빈 커널은 동일한 SASS를 생성한다. 그러면 실제로 *무언가를 하는* 커널은 어떨까?"
     },
     {
+      "title": "World (월드 관리)",
+      "date": "2026-02-19",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "World",
+      "tags": [
+        "unreal",
+        "World"
+      ],
+      "path": "posts/unreal-summary/World/Overview.md",
+      "summary": "언리얼 엔진의 **월드 관리** 카테고리는 오픈 월드 레벨의 분할, 스트리밍, LOD 관리를 다룹니다. World Partition 기반의 그리드 스트리밍 시스템과 HLOD(Hierarchical Level of Detail)를 통해 대규모 맵의 효율적인 로드/언로드를 구현합니다."
+    },
+    {
       "title": "Worklog #04 - Hello SASS: Vector Add",
       "date": "2026-02-19",
       "status": "wip",
@@ -147,6 +162,52 @@
       ],
       "path": "posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/en.md",
       "summary": "In [Worklog #03](/posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/) we established that CUDA and Vulkan feed into the same NVIDIA backend compiler. An empty kernel produces identical SASS. But what about a kernel that actually *does* something?"
+    },
+    {
+      "title": "Performance (성능 최적화)",
+      "date": "2026-02-19",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Performance",
+      "tags": [
+        "unreal",
+        "Performance"
+      ],
+      "path": "posts/unreal-summary/Performance/Overview.md",
+      "summary": "언리얼 엔진의 **성능 최적화** 카테고리는 CPU/GPU 병목 진단 및 해결 방법을 다룹니다. 프로파일링 도구 사용법부터 Game Thread 최적화, Draw Call 감소, Overdraw 관리 등 실전 최적화 기법을 포괄합니다."
+    },
+    {
+      "title": "Movement (이동 시스템)",
+      "date": "2026-02-19",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "GameFramework",
+      "tags": [
+        "unreal",
+        "GameFramework",
+        "Movement"
+      ],
+      "path": "posts/unreal-summary/Movement/Overview.md",
+      "summary": "언리얼 엔진의 **이동 시스템** 카테고리는 캐릭터 이동과 네트워크 동기화를 다룹니다. 기존 CharacterMovementComponent와 차세대 Mover Plugin의 비교 분석, 그리고 네트워크 예측(Client-Side Prediction) 및 서버 보정(Reconciliation) 메커니즘을 포괄합니다."
+    },
+    {
+      "title": "AI (Artificial Intelligence)",
+      "date": "2026-02-19",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "AI",
+      "tags": [
+        "unreal",
+        "AI"
+      ],
+      "path": "posts/unreal-summary/AI/Overview.md",
+      "summary": "언리얼 엔진의 **AI 시스템** 카테고리는 NPC 의사결정, 대규모 군중 시뮬레이션, 환경 쿼리 등 AI 관련 핵심 서브시스템을 다룹니다. Behavior Tree, State Tree 같은 전통적 AI 프레임워크부터 Mass Entity 기반의 데이터 지향 ECS 아키텍처까지 포괄합니다."
     },
     {
       "title": "🗓️ 버전 이력",
@@ -266,9 +327,25 @@
       "project": "UnrealEngine",
       "lang": "ko",
       "category": "unreal-summary",
-      "track": "VectorVM",
+      "track": "Niagara",
       "tags": [
         "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/VectorVM.md",
+      "summary": "VectorVM은 **Unreal Engine의 SIMD 기반 가상 머신**으로, 주로 **Niagara 파티클 시스템**에서 고성능 데이터 병렬 연산을 수행하기 위해 설계되었습니다."
+    },
+    {
+      "title": "VectorVM Overview",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara",
         "VectorVM"
       ],
       "path": "posts/unreal-summary/VectorVM/Overview.md",
@@ -425,6 +502,21 @@
         "Niagara"
       ],
       "path": "posts/unreal-summary/Niagara/Optimization.md",
+      "summary": "Niagara의 Scalability 시스템은 **성능과 품질 사이의 균형을 자동으로 관리**하는 핵심 시스템입니다. 이 시스템은 실시간으로 이펙트의 중요도를 평가하고, 거리, 가시성, 인스턴스 수, GPU 예산 등 다양한 기준에 따라 이펙트를 선택적으로 비활성화(Culling)합니다."
+    },
+    {
+      "title": "Niagara Scalability System",
+      "date": "2026-02-18",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Niagara",
+      "tags": [
+        "unreal",
+        "Niagara"
+      ],
+      "path": "posts/unreal-summary/Niagara/Scalability.md",
       "summary": "Niagara의 Scalability 시스템은 **성능과 품질 사이의 균형을 자동으로 관리**하는 핵심 시스템입니다. 이 시스템은 실시간으로 이펙트의 중요도를 평가하고, 거리, 가시성, 인스턴스 수, GPU 예산 등 다양한 기준에 따라 이펙트를 선택적으로 비활성화(Culling)합니다."
     },
     {
@@ -650,13 +742,12 @@
       "project": "UnrealEngine",
       "lang": "ko",
       "category": "unreal-summary",
-      "track": "Rendering",
+      "track": "Lumen",
       "tags": [
         "unreal",
-        "Rendering",
         "Lumen"
       ],
-      "path": "posts/unreal-summary/Rendering/Lumen/HardwareRayTracing.md",
+      "path": "posts/unreal-summary/Lumen/HardwareRayTracing.md",
       "summary": "Lumen Hardware Ray Tracing (HWRT) Mode는 Unreal Engine 5.0+에서 도입된 DXR/Vulkan Ray Tracing API를 활용한 고품질 광선 추적 모드입니다. 기본 Software Ray Tracing (Distance Field + Screen Traces)을 대체하여 훨씬 정확한 지오메트리 표현과 향상된 시각적 품질을 제공합니다."
     },
     {
@@ -803,9 +894,10 @@
       "project": "UnrealEngine",
       "lang": "ko",
       "category": "unreal-summary",
-      "track": "Movement",
+      "track": "GameFramework",
       "tags": [
         "unreal",
+        "GameFramework",
         "Movement"
       ],
       "path": "posts/unreal-summary/Movement/CharacterMovement_NetworkPrediction_Deep_Dive.md",
@@ -1493,13 +1585,12 @@
       "project": "UnrealEngine",
       "lang": "ko",
       "category": "unreal-summary",
-      "track": "Rendering",
+      "track": "Lumen",
       "tags": [
         "unreal",
-        "Rendering",
         "Lumen"
       ],
-      "path": "posts/unreal-summary/Rendering/Lumen/HZB_ScreenTracing.md",
+      "path": "posts/unreal-summary/Lumen/HZB_ScreenTracing.md",
       "summary": "Lumen은 **Closest HZB**(가장 가까운 깊이값의 계층 구조)를 사용하여 스크린 스페이스에서 효율적인 레이 트레이싱을 수행합니다. 이는 Screen Probe Gather, Reflections, Bent Normal 계산에 활용됩니다."
     },
     {
@@ -1569,9 +1660,10 @@
       "project": "UnrealEngine",
       "lang": "ko",
       "category": "unreal-summary",
-      "track": "Integration",
+      "track": "Networking",
       "tags": [
         "unreal",
+        "Networking",
         "Integration"
       ],
       "path": "posts/unreal-summary/Integration/WebView_CSharp_Server_Complete_Integration.md",
@@ -1807,13 +1899,12 @@
       "project": "UnrealEngine",
       "lang": "ko",
       "category": "unreal-summary",
-      "track": "Rendering",
+      "track": "Lumen",
       "tags": [
         "unreal",
-        "Rendering",
         "Lumen"
       ],
-      "path": "posts/unreal-summary/Rendering/Lumen/Architecture.md",
+      "path": "posts/unreal-summary/Lumen/Architecture.md",
       "summary": "Lumen은 **하드웨어 레이 트레이싱(DXR)의 근본적인 한계**를 극복하기 위해 설계된 소프트웨어 기반 글로벌 일루미네이션 시스템입니다."
     },
     {
@@ -1853,9 +1944,10 @@
       "project": "UnrealEngine",
       "lang": "ko",
       "category": "unreal-summary",
-      "track": "RealWorld",
+      "track": "Rendering",
       "tags": [
         "unreal",
+        "Rendering",
         "RealWorld"
       ],
       "path": "posts/unreal-summary/RealWorld/Avowed_GPU_Technology_Postmortem_Deep_Dive.md",
@@ -2103,51 +2195,18 @@
       "summary": "Niagara의 메모리 관리 시스템은 **FNiagaraDataBuffer**와 **FNiagaraDataSet**를 중심으로 파티클 데이터를 효율적으로 관리하며, **UNiagaraComponentPool**을 통해 Component 재사용을 최적화합니다. 이 시스템은 CPU/GPU 메모리를 분리 관리하고, SoA(Structure of Arrays) 레이아웃을 사용하여 SIMD 성능을 최대화합니다."
     },
     {
-      "title": "Lumen Surface Cache - Deep Dive",
-      "date": "2025-11-22",
-      "status": "stable",
-      "project": "UnrealEngine",
-      "lang": "ko",
-      "category": "unreal-summary",
-      "track": "Rendering",
-      "tags": [
-        "unreal",
-        "Rendering",
-        "Lumen"
-      ],
-      "path": "posts/unreal-summary/Rendering/Lumen/SurfaceCache.md",
-      "summary": "Lumen Surface Cache의 **내부 구현**과 **세부 동작 원리**를 다룹니다."
-    },
-    {
-      "title": "Lumen Radiance Cache Deep Dive",
-      "date": "2025-11-22",
-      "status": "stable",
-      "project": "UnrealEngine",
-      "lang": "ko",
-      "category": "unreal-summary",
-      "track": "Rendering",
-      "tags": [
-        "unreal",
-        "Rendering",
-        "Lumen"
-      ],
-      "path": "posts/unreal-summary/Rendering/Lumen/RadianceCache.md",
-      "summary": "**Radiance Cache**는 Lumen의 핵심 캐싱 시스템으로, 월드 공간에 배치된 Probe들이 주변의 Radiance를 저장하여 간접광 계산을 가속화합니다. Surface Cache가 표면 기반 캐싱이라면, Radiance Cache는 **볼륨 기반 캐싱**입니다."
-    },
-    {
       "title": "Lumen - 최적화",
       "date": "2025-11-22",
       "status": "stable",
       "project": "UnrealEngine",
       "lang": "ko",
       "category": "unreal-summary",
-      "track": "Rendering",
+      "track": "Lumen",
       "tags": [
         "unreal",
-        "Rendering",
         "Lumen"
       ],
-      "path": "posts/unreal-summary/Rendering/Lumen/Optimization.md",
+      "path": "posts/unreal-summary/Lumen/Optimization.md",
       "summary": "Lumen의 **성능 최적화**, **Scalability**, **다른 시스템과의 통합**을 다룹니다."
     },
     {
@@ -2353,9 +2412,10 @@
       "project": "UnrealEngine",
       "lang": "ko",
       "category": "unreal-summary",
-      "track": "Movement",
+      "track": "GameFramework",
       "tags": [
         "unreal",
+        "GameFramework",
         "Movement"
       ],
       "path": "posts/unreal-summary/Movement/MoverVsCharacterMovement.md",
@@ -3103,9 +3163,10 @@
       "project": "UnrealEngine",
       "lang": "ko",
       "category": "unreal-summary",
-      "track": "MultiThreading",
+      "track": "Core",
       "tags": [
         "unreal",
+        "Core",
         "MultiThreading"
       ],
       "path": "posts/unreal-summary/MultiThreading/Task_Graph_System_Deep_Dive.md",
@@ -3256,9 +3317,10 @@
       "project": "UnrealEngine",
       "lang": "ko",
       "category": "unreal-summary",
-      "track": "Asset",
+      "track": "CoreUObject",
       "tags": [
         "unreal",
+        "CoreUObject",
         "Asset"
       ],
       "path": "posts/unreal-summary/Asset/Package_Serialization_And_Linker_Deep_Dive.md",
@@ -3301,9 +3363,10 @@
       "project": "UnrealEngine",
       "lang": "ko",
       "category": "unreal-summary",
-      "track": "Material",
+      "track": "Shader",
       "tags": [
         "unreal",
+        "Shader",
         "Material"
       ],
       "path": "posts/unreal-summary/Material/Material_System_And_Shader_Compilation_Deep_Dive.md",
@@ -3361,13 +3424,12 @@
       "project": "UnrealEngine",
       "lang": "ko",
       "category": "unreal-summary",
-      "track": "Rendering",
+      "track": "Lumen",
       "tags": [
         "unreal",
-        "Rendering",
         "Lumen"
       ],
-      "path": "posts/unreal-summary/Rendering/Lumen/HitLighting.md",
+      "path": "posts/unreal-summary/Lumen/HitLighting.md",
       "summary": "**Lumen Hit Lighting**은 Ray가 표면에 Hit했을 때 해당 위치의 **최종 조명을 계산**하는 시스템입니다."
     },
     {
@@ -3589,9 +3651,10 @@
       "project": "UnrealEngine",
       "lang": "ko",
       "category": "unreal-summary",
-      "track": "Scripting",
+      "track": "GameFramework",
       "tags": [
         "unreal",
+        "GameFramework",
         "Scripting"
       ],
       "path": "posts/unreal-summary/Scripting/Blueprint_Virtual_Machine_Deep_Dive.md",
@@ -3619,9 +3682,10 @@
       "project": "UnrealEngine",
       "lang": "ko",
       "category": "unreal-summary",
-      "track": "Asset",
+      "track": "CoreUObject",
       "tags": [
         "unreal",
+        "CoreUObject",
         "Asset"
       ],
       "path": "posts/unreal-summary/Asset/Asset_Registry_And_AssetManager_Deep_Dive.md",
@@ -3655,63 +3719,55 @@
   "tracks": [
     "AI",
     "Animation",
-    "Asset",
     "Audio",
     "Build",
     "Core",
     "CoreUObject",
     "GameFramework",
     "Gameplay",
-    "Integration",
     "Lumen",
-    "Material",
     "Meta",
-    "Movement",
     "MuJoCoChaos",
-    "MultiThreading",
     "Networking",
     "Niagara",
     "Performance",
     "Physics",
-    "RealWorld",
     "Rendering",
-    "Scripting",
     "Shader",
     "UI",
-    "VectorVM",
     "World",
     "api-language",
     "gpu-architecture"
   ],
   "tags": {
-    "unreal": 219,
-    "Niagara": 39,
-    "Rendering": 35,
-    "Core": 29,
+    "unreal": 223,
+    "Niagara": 42,
+    "Core": 30,
+    "Rendering": 29,
     "Physics": 26,
     "Animation": 17,
     "vulkan": 16,
-    "Lumen": 15,
     "Nanite": 15,
     "nvidia": 15,
+    "GameFramework": 14,
     "cuda": 14,
-    "GameFramework": 10,
+    "Lumen": 13,
+    "CoreUObject": 10,
     "MuJoCoChaos": 10,
     "sass": 10,
-    "CoreUObject": 8,
-    "Shader": 8,
-    "AI": 7,
+    "Shader": 9,
+    "AI": 8,
     "AnimGraph": 5,
     "Gameplay": 5,
+    "Networking": 5,
     "Blending": 4,
-    "Networking": 4,
+    "Performance": 4,
     "RenderGraph": 4,
-    "Performance": 3,
+    "World": 4,
+    "Movement": 3,
     "UI": 3,
-    "World": 3,
     "Asset": 2,
     "Build": 2,
-    "Movement": 2,
     "Pipeline": 2,
     "RayTracing": 2,
     "Virtualization": 2,

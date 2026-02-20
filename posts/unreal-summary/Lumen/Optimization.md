@@ -5,8 +5,8 @@ status: "stable"
 project: "UnrealEngine"
 lang: "ko"
 category: "unreal-summary"
-track: "Rendering"
-tags: ["unreal", "Rendering", "Lumen"]
+track: "Lumen"
+tags: ["unreal", "Lumen"]
 ---
 # Lumen - 최적화
 

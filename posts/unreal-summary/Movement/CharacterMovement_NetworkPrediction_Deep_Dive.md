@@ -5,8 +5,8 @@ status: "stable"
 project: "UnrealEngine"
 lang: "ko"
 category: "unreal-summary"
-track: "Movement"
-tags: ["unreal", "Movement"]
+track: "GameFramework"
+tags: ["unreal", "GameFramework", "Movement"]
 ---
 # CharacterMovement Network Prediction Deep Dive
 
