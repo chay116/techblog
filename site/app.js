@@ -238,6 +238,14 @@ async function main() {
   const resp = await fetch("./posts.json");
   state.data = await resp.json();
 
+  // Exclude unreal-summary posts — they live on unreal.html
+  state.data.posts = state.data.posts.filter(p => p.category !== "unreal-summary");
+  state.data.categories = [...new Set(state.data.posts.map(p => p.category))].sort();
+  state.data.tracks = [...new Set(state.data.posts.map(p => p.track))].sort();
+  const tagCounts = {};
+  state.data.posts.forEach(p => (p.tags || []).forEach(t => { tagCounts[t] = (tagCounts[t] || 0) + 1; }));
+  state.data.tags = Object.fromEntries(Object.entries(tagCounts).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])));
+
   const params = parseQuery();
   applyQueryToState(params);
   validateStateAgainstData();

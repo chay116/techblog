@@ -189,6 +189,17 @@ async function main() {
     }
   }
 
+  // Sync nav-tabs active state based on origin page
+  const isFromUnreal = from && decodeURIComponent(from).includes("unreal");
+  const navTabs = q("nav-tabs");
+  if (navTabs) {
+    const tabs = navTabs.querySelectorAll(".nav-tab");
+    tabs.forEach(tab => {
+      const isUnrealTab = tab.href && tab.href.includes("unreal.html");
+      tab.classList.toggle("active", isFromUnreal ? isUnrealTab : !isUnrealTab);
+    });
+  }
+
   const siteData = await loadSiteData();
   const posts = siteData.posts || [];
   const pathSet = new Set(posts.map((p) => p.path));
