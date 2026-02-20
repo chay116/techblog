@@ -1,5 +1,5 @@
 ---
-title: "BlendSpace"
+title: "BlendSpace (블렌드 스페이스)"
 date: "2025-11-21"
 status: "stable"
 project: "UnrealEngine"

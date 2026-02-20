@@ -1,5 +1,5 @@
 ---
-title: "AnimMontage"
+title: "AnimMontage (애님 몽타주)"
 date: "2025-11-21"
 status: "stable"
 project: "UnrealEngine"

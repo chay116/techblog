@@ -1,5 +1,5 @@
 ---
-title: "Inertialization"
+title: "Inertialization (관성 블렌딩)"
 date: "2026-02-18"
 status: "stable"
 project: "UnrealEngine"
@@ -8,6 +8,8 @@ category: "unreal-summary"
 track: "Animation"
 tags: ["unreal", "Animation", "Blending"]
 ---
+# Inertialization (관성 블렌딩)
+
 ## 요청 시스템 (Request System)
 
 ### 요청 API 상세 설명

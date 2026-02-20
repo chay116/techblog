@@ -20,6 +20,11 @@ function escapeAttr(value) {
     .replaceAll(">", "&gt;");
 }
 
+function stripMdExt(filename) {
+  const s = String(filename || "");
+  return s.toLowerCase().endsWith(".md") ? s.slice(0, -3) : s;
+}
+
 function safeBackHref(fromValue) {
   const raw = (fromValue || "").trim();
   if (!raw) return "./index.html";
@@ -99,6 +104,66 @@ function stripFrontmatter(md) {
   return md.slice(idx + 5);
 }
 
+function buildBasenameIndex(posts) {
+  const map = new Map(); // basename -> string[] (paths)
+  for (const p of posts) {
+    const path = p.path || "";
+    const base = path.split("/").pop() || "";
+    if (!base) continue;
+    const arr = map.get(base) || [];
+    arr.push(path);
+    map.set(base, arr);
+  }
+  return map;
+}
+
+function mapBrokenPath(resolvedPath) {
+  const aliases = {
+    // Animation
+    "posts/unreal-summary/Animation/AnimGraph/Compilation.md":
+      "posts/unreal-summary/Animation/AnimGraph_Compilation_And_Execution_Deep_Dive.md",
+    "posts/unreal-summary/Animation/Blending/AnimationBlending.md":
+      "posts/unreal-summary/Animation/Blending/BlendSystem.md",
+    "posts/unreal-summary/Animation/Blending/BoneTransformation.md":
+      "posts/unreal-summary/Animation/Skeletal_Mesh_Skinning_Deep_Dive.md",
+
+    // Niagara
+    "posts/unreal-summary/Niagara/VM_Execution.md": "posts/unreal-summary/Niagara/SimulationPipeline.md",
+    "posts/unreal-summary/Niagara/Script_Compilation.md": "posts/unreal-summary/Niagara/Compiler.md",
+    "posts/unreal-summary/Niagara/Rendering_Overview.md": "posts/unreal-summary/Niagara/Rendering.md",
+    "posts/unreal-summary/Niagara/GPU_Compute.md":
+      "posts/unreal-summary/Niagara/GPU_Simulation_Pipeline_Deep_Dive.md",
+    "posts/unreal-summary/Niagara/Advanced_DataInterface_Implementation.md":
+      "posts/unreal-summary/Niagara/Core/DataInterface.md",
+    "posts/unreal-summary/Niagara/EffectType_and_Scalability.md": "posts/unreal-summary/Niagara/Optimization.md",
+    "posts/unreal-summary/Niagara/DataInterface_System.md": "posts/unreal-summary/Niagara/Core/DataInterface.md",
+    "posts/unreal-summary/Niagara/Core/VectorVM.md": "posts/unreal-summary/VectorVM/Overview.md",
+    "posts/unreal-summary/Niagara/Core/NiagaraShader.md": "posts/unreal-summary/Shader/Compilation.md",
+    "posts/unreal-summary/Niagara/Core/NiagaraSystemInstance.md":
+      "posts/unreal-summary/Niagara/System_and_Emitter_Lifecycle.md",
+    "posts/unreal-summary/Niagara/Core/Scalability.md": "posts/unreal-summary/Niagara/Optimization.md",
+    "posts/unreal-summary/Niagara/Advanced/DataInterface_Advanced.md": "posts/unreal-summary/Niagara/Core/DataInterface.md",
+
+    // Physics
+    "posts/unreal-summary/Physics/Chaos_Physics_Solver_And_Constraints_Deep_Dive.md":
+      "posts/unreal-summary/Physics/Chaos_Solver_Deep_Dive.md",
+    "posts/unreal-summary/Physics/Chaos_Collision_Detection_Deep_Dive.md":
+      "posts/unreal-summary/Physics/Collision_And_SceneQuery.md",
+    "posts/unreal-summary/Physics/Chaos_Deep_Dive.md": "posts/unreal-summary/Physics/Chaos_Solver_Deep_Dive.md",
+    "posts/unreal-summary/Physics/PBDSolver.md": "posts/unreal-summary/Physics/Chaos_Solver_Deep_Dive.md",
+
+    // Rendering / Lumen + RDG
+    "posts/unreal-summary/Rendering/Lumen/Lumen_Overview.md": "posts/unreal-summary/Rendering/Lumen/Architecture.md",
+    "posts/unreal-summary/Rendering/Lumen/Lumen_Advanced.md": "posts/unreal-summary/Rendering/Lumen/Architecture.md",
+    "posts/unreal-summary/Rendering/Lumen/RDG_Overview.md": "posts/unreal-summary/Rendering/RenderGraph/Architecture.md",
+    "posts/unreal-summary/Rendering/Lumen/Lumen_RadianceCache_Deep_Dive.md":
+      "posts/unreal-summary/Rendering/Lumen/RadianceCache.md",
+    "posts/unreal-summary/Rendering/Lumen/Lumen_Optimization.md": "posts/unreal-summary/Rendering/Lumen/Optimization.md",
+  };
+
+  return aliases[resolvedPath] || null;
+}
+
 async function main() {
   const path = getPathParam();
   if (!path) {
@@ -120,6 +185,7 @@ async function main() {
   const siteData = await loadSiteData();
   const posts = siteData.posts || [];
   const pathSet = new Set(posts.map((p) => p.path));
+  const basenameIndex = buildBasenameIndex(posts);
   const meta = posts.find((p) => p.path === path) || null;
 
   if (meta) {
@@ -152,13 +218,41 @@ async function main() {
           const { path: hrefPath, hash } = splitHash(href);
           if (hrefPath && hrefPath.endsWith(".md")) {
             const resolved = resolveHref(path, hrefPath);
-            if (pathSet.has(resolved)) {
+            let targetPath = resolved;
+
+            if (!pathSet.has(targetPath)) {
+              const mapped = mapBrokenPath(targetPath);
+              if (mapped && pathSet.has(mapped)) {
+                targetPath = mapped;
+              } else {
+                const basename = targetPath.split("/").pop() || "";
+                const candidates = basename ? basenameIndex.get(basename) || [] : [];
+
+                // If there's exactly one doc with this basename, prefer it unless it's too generic.
+                const deny = new Set(["Compilation.md", "Overview.md"]);
+                if (basename && candidates.length === 1 && !deny.has(basename)) {
+                  targetPath = candidates[0];
+                } else {
+                  // Last resort: send the user to a search page rather than a 404.
+                  const q = stripMdExt(basename || hrefPath);
+                  if ((meta && meta.category === "unreal-summary") || path.startsWith("posts/unreal-summary/")) {
+                    const searchUrl = `./unreal.html?q=${encodeURIComponent(q)}`;
+                    return `<a href="${searchUrl}"${safeTitle}>${safeText}</a>`;
+                  }
+                  const searchUrl = `./index.html?category=all&q=${encodeURIComponent(q)}`;
+                  return `<a href="${searchUrl}"${safeTitle}>${safeText}</a>`;
+                }
+              }
+            }
+
+            if (pathSet.has(targetPath)) {
               const fromValue = from || "";
-              const postUrl = `./post.html?path=${encodeURIComponent(resolved)}${
+              const postUrl = `./post.html?path=${encodeURIComponent(targetPath)}${
                 fromValue ? `&from=${encodeURIComponent(fromValue)}` : ""
               }${hash ? `#${encodeURIComponent(hash)}` : ""}`;
               return `<a href="${postUrl}"${safeTitle}>${safeText}</a>`;
             }
+
             // Fall back to GitHub blob if it's a repo-relative markdown not indexed as a post.
             const blobUrl = `https://github.com/chay116/techblog/blob/main/${resolved}${hash ? `#${hash}` : ""}`;
             return `<a href="${blobUrl}" target="_blank" rel="noreferrer"${safeTitle}>${safeText}</a>`;

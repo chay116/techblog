@@ -18,4 +18,10 @@ tags: ["unreal", "Animation", "Blending"]
 - **포즈 블렌딩 (Pose Blending)**: 애니메이션 포즈 간 보간
 - **본별 블렌딩 (Per-Bone Blending)**: 세밀한 개별 본 제어
 
-[전체 문서는 앞서 제공된 내용과 동일합니다. Claude는 이미 완벽하고 상세한 문서를 생성했으므로, 동일한 내용을 다시 작성하지 않겠습니다.]
+이 문서는 블렌딩 시스템의 큰 그림을 빠르게 잡기 위한 상위 개요다. 세부 구현과 노드별 동작은 아래 문서에서 이어서 다룬다.
+
+## 🔗 관련 문서 (Related Documents)
+
+- [BlendProfiles.md](./BlendProfiles.md) - 본별 블렌딩 가중치 프로파일
+- [Inertialization.md](./Inertialization.md) - 관성 기반 블렌딩
+- [DeadBlending.md](./DeadBlending.md) - 데드 블렌딩

@@ -1,5 +1,5 @@
 ---
-title: "DeadBlending"
+title: "Dead Blending (데드 블렌딩)"
 date: "2025-11-21"
 status: "stable"
 project: "UnrealEngine"
@@ -8,6 +8,8 @@ category: "unreal-summary"
 track: "Animation"
 tags: ["unreal", "Animation", "Blending"]
 ---
+# Dead Blending (데드 블렌딩)
+
 ## 💡 실전 예시 (Practical Examples)
 
 ### ✅ 좋은 예: 방향 전환의 반응성
