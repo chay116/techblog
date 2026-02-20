@@ -285,8 +285,15 @@ async function main() {
       },
     };
 
-    marked.use({ renderer });
+    marked.use({ renderer, gfm: true, breaks: false });
     q("markdown").innerHTML = marked.parse(body);
+
+    // Apply syntax highlighting to all code blocks
+    if (typeof hljs !== "undefined") {
+      document.querySelectorAll("#markdown pre code").forEach((block) => {
+        hljs.highlightElement(block);
+      });
+    }
   } catch (err) {
     q("markdown").innerHTML = `<p>Failed to load post content.</p><pre>${String(err)}</pre>`;
   }
