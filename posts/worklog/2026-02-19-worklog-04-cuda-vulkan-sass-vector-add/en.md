@@ -9,6 +9,26 @@ track: "api-language"
 series: "gpu"
 tags: ["cuda", "vulkan", "nvidia", "sass", "vector-add"]
 ---
+# 1. Executive Summary
+
+- Core claim: In [Worklog #03](/posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/) we established that CUDA and Vulkan feed into the same NVIDIA backend compiler. An empty kernel produces identical SASS. But what about a kernel that actually *does* something?
+- Why it matters for vAI: this topic affects reliability of performance decisions in `gpu` workflows.
+- Scope: `worklog` / `api-language`
+- Current status: `wip`
+
+# 2. Problem and Scope
+
+- Problem statement: this post documents a concrete issue and the reasoning path used to analyze it.
+- In scope: the key mechanism, evidence path, and practical implications.
+- Out of scope: exhaustive architecture-wide benchmarking unless explicitly included below.
+
+# 3. Method and Setup
+
+- Category/Track/Series: `worklog` / `api-language` / `gpu`
+- Validation approach: tie claims to code, metrics, and profiler or compiler evidence where available.
+- Reproducibility target: make each major claim testable with explicit setup and follow-up actions.
+
+# 4. Detailed Notes
 
 In [Worklog #03](/posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/) we established that CUDA and Vulkan feed into the same NVIDIA backend compiler. An empty kernel produces identical SASS. But what about a kernel that actually *does* something?
 
@@ -300,3 +320,22 @@ cmake --build build --target exp02_vector_add
 # Next
 
 In [Worklog #05](/posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/) we graduate from this toy kernel to one where SASS differences actually impact performance: memory coalescing with AoS vs SoA data layouts.
+
+# 5. Decision and Next Actions
+
+- Decision: keep this post as `wip` until all major claims are backed by explicit measurable evidence.
+
+1. Convert the key claims above into a compact metric or evidence table.
+2. Add at least one reproducible command sequence (build/run/profile).
+3. Add one explicit follow-up experiment with pass/fail criteria.
+
+# 6. Diagram (Optional)
+
+```plantuml
+@startuml
+title Analysis flow
+Problem --> Method
+Method --> Evidence
+Evidence --> Decision
+@enduml
+```

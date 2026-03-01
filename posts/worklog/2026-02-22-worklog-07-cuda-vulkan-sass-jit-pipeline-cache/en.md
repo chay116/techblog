@@ -9,6 +9,26 @@ track: "api-language"
 series: "gpu"
 tags: ["cuda", "vulkan", "nvidia", "sass", "jit", "pipeline-cache"]
 ---
+# 1. Executive Summary
+
+- Core claim: Over the past four posts, we have established that CUDA and Vulkan produce nearly identical SASS on NVIDIA GPUs. The arithmetic, the memory accesses, the coalescing behavior — all the same. With BDA, even the binding model converges.
+- Why it matters for vAI: this topic affects reliability of performance decisions in `gpu` workflows.
+- Scope: `worklog` / `api-language`
+- Current status: `wip`
+
+# 2. Problem and Scope
+
+- Problem statement: this post documents a concrete issue and the reasoning path used to analyze it.
+- In scope: the key mechanism, evidence path, and practical implications.
+- Out of scope: exhaustive architecture-wide benchmarking unless explicitly included below.
+
+# 3. Method and Setup
+
+- Category/Track/Series: `worklog` / `api-language` / `gpu`
+- Validation approach: tie claims to code, metrics, and profiler or compiler evidence where available.
+- Reproducibility target: make each major claim testable with explicit setup and follow-up actions.
+
+# 4. Detailed Notes
 
 Over the past four posts, we have established that CUDA and Vulkan produce nearly identical SASS on NVIDIA GPUs. The arithmetic, the memory accesses, the coalescing behavior — all the same. With BDA, even the binding model converges.
 
@@ -325,3 +345,22 @@ Here is what we found:
 **The GPU does not care which API you use.** CUDA and Vulkan are different frontends to the same hardware. The choice between them should be based on ecosystem needs (portability, tooling, library support) rather than performance assumptions.
 
 For vAI, we will use both: CUDA for the NVIDIA-optimized fast path, Vulkan with BDA for the portable path. As this series has shown, the performance difference is negligible when the right patterns (SoA, BDA, pipeline caching) are applied.
+
+# 5. Decision and Next Actions
+
+- Decision: keep this post as `wip` until all major claims are backed by explicit measurable evidence.
+
+1. Convert the key claims above into a compact metric or evidence table.
+2. Add at least one reproducible command sequence (build/run/profile).
+3. Add one explicit follow-up experiment with pass/fail criteria.
+
+# 6. Diagram (Optional)
+
+```plantuml
+@startuml
+title Analysis flow
+Problem --> Method
+Method --> Evidence
+Evidence --> Decision
+@enduml
+```

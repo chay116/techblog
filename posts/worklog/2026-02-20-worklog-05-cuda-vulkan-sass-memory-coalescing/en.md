@@ -9,6 +9,26 @@ track: "api-language"
 series: "gpu"
 tags: ["cuda", "vulkan", "nvidia", "sass", "memory-coalescing"]
 ---
+# 1. Executive Summary
+
+- Core claim: In the previous two posts, we saw that CUDA and Vulkan produce nearly identical SASS for simple kernels, with the only difference being descriptor binding overhead. But for the vector add kernel, that did not matter because the kernel was purely bandwidth-bound and the computation was trivial.
+- Why it matters for vAI: this topic affects reliability of performance decisions in `gpu` workflows.
+- Scope: `worklog` / `api-language`
+- Current status: `wip`
+
+# 2. Problem and Scope
+
+- Problem statement: this post documents a concrete issue and the reasoning path used to analyze it.
+- In scope: the key mechanism, evidence path, and practical implications.
+- Out of scope: exhaustive architecture-wide benchmarking unless explicitly included below.
+
+# 3. Method and Setup
+
+- Category/Track/Series: `worklog` / `api-language` / `gpu`
+- Validation approach: tie claims to code, metrics, and profiler or compiler evidence where available.
+- Reproducibility target: make each major claim testable with explicit setup and follow-up actions.
+
+# 4. Detailed Notes
 
 In the previous two posts, we saw that CUDA and Vulkan produce nearly identical SASS for simple kernels, with the only difference being descriptor binding overhead. But for the vector add kernel, that did not matter because the kernel was purely bandwidth-bound and the computation was trivial.
 
@@ -328,3 +348,22 @@ cuda-vulkan-sass-series/exp03_memory_coalescing/
 # Next
 
 In [Worklog #06](/posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/) we tackle the descriptor indirection problem directly: can Vulkan's Buffer Device Address (BDA) eliminate the descriptor table lookup and produce CUDA-identical SASS?
+
+# 5. Decision and Next Actions
+
+- Decision: keep this post as `wip` until all major claims are backed by explicit measurable evidence.
+
+1. Convert the key claims above into a compact metric or evidence table.
+2. Add at least one reproducible command sequence (build/run/profile).
+3. Add one explicit follow-up experiment with pass/fail criteria.
+
+# 6. Diagram (Optional)
+
+```plantuml
+@startuml
+title Analysis flow
+Problem --> Method
+Method --> Evidence
+Evidence --> Decision
+@enduml
+```

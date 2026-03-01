@@ -9,6 +9,26 @@ track: "api-language"
 series: "gpu"
 tags: ["cuda", "vulkan", "initialization", "nvidia"]
 ---
+# 1. Executive Summary
+
+- Core claim: Initialization complexity and first execution behavior on NVIDIA GPU.
+- Why it matters for vAI: this topic affects reliability of performance decisions in `gpu` workflows.
+- Scope: `comparison` / `api-language`
+- Current status: `wip`
+
+# 2. Problem and Scope
+
+- Problem statement: this post documents a concrete issue and the reasoning path used to analyze it.
+- In scope: the key mechanism, evidence path, and practical implications.
+- Out of scope: exhaustive architecture-wide benchmarking unless explicitly included below.
+
+# 3. Method and Setup
+
+- Category/Track/Series: `comparison` / `api-language` / `gpu`
+- Validation approach: tie claims to code, metrics, and profiler or compiler evidence where available.
+- Reproducibility target: make each major claim testable with explicit setup and follow-up actions.
+
+# 4. Detailed Notes
 
 # Scope
 
@@ -40,3 +60,22 @@ Initialization complexity and first execution behavior on NVIDIA GPU.
 |---|---|---|
 | CUDA init path is shorter in host code | `src/compute/cuda/` | CUDA Runtime API |
 | Vulkan sync/resource control is more explicit | `src/compute/vulkan/` | Vulkan 1.3 spec |
+
+# 5. Decision and Next Actions
+
+- Decision: keep this post as `wip` until all major claims are backed by explicit measurable evidence.
+
+1. Convert the key claims above into a compact metric or evidence table.
+2. Add at least one reproducible command sequence (build/run/profile).
+3. Add one explicit follow-up experiment with pass/fail criteria.
+
+# 6. Diagram (Optional)
+
+```plantuml
+@startuml
+title Analysis flow
+Problem --> Method
+Method --> Evidence
+Evidence --> Decision
+@enduml
+```

@@ -9,6 +9,26 @@ track: "api-language"
 series: "gpu"
 tags: ["cuda", "vulkan", "nvidia", "sass", "bda", "bindless"]
 ---
+# 1. Executive Summary
+
+- Core claim: In [Worklog #04](/posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/) we identified the one structural SASS difference between CUDA and Vulkan: the descriptor indirection. CUDA passes buffer addresses directly through the constant bank. Vulkan fetches them from a descriptor table in global memory, adding extra `LDG` instructions.
+- Why it matters for vAI: this topic affects reliability of performance decisions in `gpu` workflows.
+- Scope: `worklog` / `api-language`
+- Current status: `wip`
+
+# 2. Problem and Scope
+
+- Problem statement: this post documents a concrete issue and the reasoning path used to analyze it.
+- In scope: the key mechanism, evidence path, and practical implications.
+- Out of scope: exhaustive architecture-wide benchmarking unless explicitly included below.
+
+# 3. Method and Setup
+
+- Category/Track/Series: `worklog` / `api-language` / `gpu`
+- Validation approach: tie claims to code, metrics, and profiler or compiler evidence where available.
+- Reproducibility target: make each major claim testable with explicit setup and follow-up actions.
+
+# 4. Detailed Notes
 
 In [Worklog #04](/posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/) we identified the one structural SASS difference between CUDA and Vulkan: the descriptor indirection. CUDA passes buffer addresses directly through the constant bank. Vulkan fetches them from a descriptor table in global memory, adding extra `LDG` instructions.
 
@@ -330,3 +350,22 @@ cuda-vulkan-sass-series/exp04_bindless_bda/
 # Next
 
 In [Worklog #07](/posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/) we examine the last major difference: compilation caching. The SASS may be identical, but how much does it cost to produce that SASS, and how do CUDA and Vulkan cache the result?
+
+# 5. Decision and Next Actions
+
+- Decision: keep this post as `wip` until all major claims are backed by explicit measurable evidence.
+
+1. Convert the key claims above into a compact metric or evidence table.
+2. Add at least one reproducible command sequence (build/run/profile).
+3. Add one explicit follow-up experiment with pass/fail criteria.
+
+# 6. Diagram (Optional)
+
+```plantuml
+@startuml
+title Analysis flow
+Problem --> Method
+Method --> Evidence
+Evidence --> Decision
+@enduml
+```

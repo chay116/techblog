@@ -56,7 +56,7 @@
         "pipeline-cache"
       ],
       "path": "posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/ko.md",
-      "summary": "지난 네 글에서 CUDA와 Vulkan이 NVIDIA GPU에서 거의 동일한 SASS를 생성한다는 것을 확인했다. 산술, 메모리 접근, 코얼레싱 동작 — 모두 동일. BDA를 사용하면 바인딩 모델까지 수렴한다."
+      "summary": "- ?? ??: 지난 네 글에서 CUDA와 Vulkan이 NVIDIA GPU에서 거의 동일한 SASS를 생성한다는 것을 확인했다. 산술, 메모리 접근, 코얼레싱 동작 — 모두 동일. BDA를 사용하면 바인딩 모델까지 수렴한다."
     },
     {
       "title": "Worklog #07 - JIT Cache vs Pipeline Cache",
@@ -76,7 +76,7 @@
         "pipeline-cache"
       ],
       "path": "posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/en.md",
-      "summary": "Over the past four posts, we have established that CUDA and Vulkan produce nearly identical SASS on NVIDIA GPUs. The arithmetic, the memory accesses, the coalescing behavior — all the same. With BDA, even the binding model converges."
+      "summary": "- Core claim: Over the past four posts, we have established that CUDA and Vulkan produce nearly identical SASS on NVIDIA GPUs. The arithmetic, the memory accesses, the coalescing behavior — all the same. With BDA, even the binding model converges."
     },
     {
       "title": "워크로그 #06 - 바인드리스, BDA, 원시 포인터",
@@ -96,7 +96,7 @@
         "bindless"
       ],
       "path": "posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/ko.md",
-      "summary": "[워크로그 #04](/posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/)에서 CUDA와 Vulkan 사이의 유일한 구조적 SASS 차이를 확인했다: 디스크립터 간접 참조. CUDA는 상수 뱅크를 통해 버퍼 주소를 직접 전달한다. Vulkan은 글로벌 메모리의 디스크립터 테이블에서 가져오면서 추가 `LDG` 명령어가 발생한다."
+      "summary": "- ?? ??: [워크로그 #04](/posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/)에서 CUDA와 Vulkan 사이의 유일한 구조적 SASS 차이를 확인했다: 디스크립터 간접 참조. CUDA는 상수 뱅크를 통해 버퍼 주소를 직접 전달한다. Vulkan은 글로벌 메모리의 디스크립터 테이블에서 가져오면서 추가 `LDG` 명령어가 발생한다."
     },
     {
       "title": "Worklog #06 - Bindless, BDA, Raw Pointers",
@@ -116,7 +116,7 @@
         "bindless"
       ],
       "path": "posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/en.md",
-      "summary": "In [Worklog #04](/posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/) we identified the one structural SASS difference between CUDA and Vulkan: the descriptor indirection. CUDA passes buffer addresses directly through the constant bank. Vulkan fetches them from a descriptor table in global memory, adding extra `LDG` instructions."
+      "summary": "- Core claim: In [Worklog #04](/posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/) we identified the one structural SASS difference between CUDA and Vulkan: the descriptor indirection. CUDA passes buffer addresses directly through the constant bank. Vulkan fetches them from a descriptor table in global memory, adding extra `LDG` instructions."
     },
     {
       "title": "워크로그 #05 - SASS 레벨에서 본 메모리 코얼레싱",
@@ -135,7 +135,7 @@
         "memory-coalescing"
       ],
       "path": "posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/ko.md",
-      "summary": "이전 두 글에서 CUDA와 Vulkan이 단순 커널에서 거의 동일한 SASS를 생성하며, 유일한 차이가 디스크립터 바인딩 오버헤드라는 것을 확인했다. 벡터 덧셈 커널에서는 순수 대역폭 바운드여서 그것이 문제가 되지 않았다."
+      "summary": "- ?? ??: 이전 두 글에서 CUDA와 Vulkan이 단순 커널에서 거의 동일한 SASS를 생성하며, 유일한 차이가 디스크립터 바인딩 오버헤드라는 것을 확인했다. 벡터 덧셈 커널에서는 순수 대역폭 바운드여서 그것이 문제가 되지 않았다."
     },
     {
       "title": "Worklog #05 - Memory Coalescing at SASS Level",
@@ -154,7 +154,7 @@
         "memory-coalescing"
       ],
       "path": "posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/en.md",
-      "summary": "In the previous two posts, we saw that CUDA and Vulkan produce nearly identical SASS for simple kernels, with the only difference being descriptor binding overhead. But for the vector add kernel, that did not matter because the kernel was purely bandwidth-bound and the computation was trivial."
+      "summary": "- Core claim: In the previous two posts, we saw that CUDA and Vulkan produce nearly identical SASS for simple kernels, with the only difference being descriptor binding overhead. But for the vector add kernel, that did not matter because the kernel was purely bandwidth-bound and the computation was trivial."
     },
     {
       "title": "워크로그 #04 - Hello SASS: 벡터 덧셈",
@@ -173,7 +173,7 @@
         "vector-add"
       ],
       "path": "posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/ko.md",
-      "summary": "[워크로그 #03](/posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/)에서 CUDA와 Vulkan이 동일한 NVIDIA 백엔드 컴파일러로 합류한다는 것을 확인했다. 빈 커널은 동일한 SASS를 생성한다. 그러면 실제로 *무언가를 하는* 커널은 어떨까?"
+      "summary": "- ?? ??: [워크로그 #03](/posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/)에서 CUDA와 Vulkan이 동일한 NVIDIA 백엔드 컴파일러로 합류한다는 것을 확인했다. 빈 커널은 동일한 SASS를 생성한다. 그러면 실제로 *무언가를 하는* 커널은 어떨까?"
     },
     {
       "title": "Worklog #04 - Hello SASS: Vector Add",
@@ -192,7 +192,7 @@
         "vector-add"
       ],
       "path": "posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/en.md",
-      "summary": "In [Worklog #03](/posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/) we established that CUDA and Vulkan feed into the same NVIDIA backend compiler. An empty kernel produces identical SASS. But what about a kernel that actually *does* something?"
+      "summary": "- Core claim: In [Worklog #03](/posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/) we established that CUDA and Vulkan feed into the same NVIDIA backend compiler. An empty kernel produces identical SASS. But what about a kernel that actually *does* something?"
     },
     {
       "title": "워크로그 #03 - CUDA vs Vulkan: 컴파일 툴체인 해부",
@@ -211,7 +211,7 @@
         "toolchain"
       ],
       "path": "posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/ko.md",
-      "summary": "CUDA든 Vulkan이든, 디스패치하는 모든 컴퓨트 워크로드는 결국 동일한 NVIDIA SASS 명령어로 같은 실리콘 위에서 실행된다. GPU는 어떤 API가 작업을 제출했는지 모른다. 그러나 소스 코드에서 SASS까지의 여정은 두 에코시스템 사이에서 근본적으로 다르며, 그 여정을 이해하는 것이 두 API가 동일한 하드웨어를 대상으로 함에도 왜 그토록 다르게 느껴지는지를 이해하는 열쇠다."
+      "summary": "- ?? ??: CUDA든 Vulkan이든, 디스패치하는 모든 컴퓨트 워크로드는 결국 동일한 NVIDIA SASS 명령어로 같은 실리콘 위에서 실행된다. GPU는 어떤 API가 작업을 제출했는지 모른다. 그러나 소스 코드에서 SASS까지의 여정은 두 에코시스템 사이에서 근본적으로 다르며, 그 여정을 이해하는 것이 두 API가 동일한 하드웨어를 대상으로 함에도 왜 그토록 다르게 느껴지는지를 이해하는 열쇠다."
     },
     {
       "title": "Worklog #03 - CUDA vs Vulkan: Compilation Toolchain Anatomy",
@@ -230,7 +230,7 @@
         "toolchain"
       ],
       "path": "posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/en.md",
-      "summary": "Every compute workload you dispatch — whether through CUDA or Vulkan — ends up as the same NVIDIA SASS instructions on the same silicon. The GPU does not know which API submitted the work. Yet the journey from your source code to those SASS instructions is fundamentally different between the two ecosystems, and understanding that journey is the key to understanding why the two APIs feel so different despite targeting identical hardware."
+      "summary": "- Core claim: Every compute workload you dispatch — whether through CUDA or Vulkan — ends up as the same NVIDIA SASS instructions on the same silicon. The GPU does not know which API submitted the work. Yet the journey from your source code to those SASS instructions is fundamentally different between the two ecosystems, and understanding that journey is the key to understanding why the two APIs feel so different despite targeting identical hardware."
     },
     {
       "title": "Comparison - NVIDIA Ampere vs Ada (Template)",
@@ -248,7 +248,7 @@
         "ada"
       ],
       "path": "posts/comparison/gpu-architecture/2026-02-17-comparison-nvidia-ampere-vs-ada-template/en.md",
-      "summary": "Architecture-level differences that may affect vAI kernels."
+      "summary": "- Core claim: Architecture-level differences that may affect vAI kernels."
     },
     {
       "title": "비교 - CUDA vs Vulkan 초기화",
@@ -266,7 +266,7 @@
         "nvidia"
       ],
       "path": "posts/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init/ko.md",
-      "summary": "NVIDIA GPU 기준으로 초기화 복잡도와 첫 실행 특성을 비교한다."
+      "summary": "- ?? ??: NVIDIA GPU 기준으로 초기화 복잡도와 첫 실행 특성을 비교한다."
     },
     {
       "title": "Comparison - CUDA vs Vulkan Initialization",
@@ -284,7 +284,7 @@
         "nvidia"
       ],
       "path": "posts/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init/en.md",
-      "summary": "Initialization complexity and first execution behavior on NVIDIA GPU."
+      "summary": "- Core claim: Initialization complexity and first execution behavior on NVIDIA GPU."
     },
     {
       "title": "워크로그 #02 - Vulkan Compute 배리어 점검",
@@ -302,7 +302,7 @@
         "compute"
       ],
       "path": "posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit/ko.md",
-      "summary": "현재 Vulkan compute 경로에서 배리어 범위가 과도할 가능성이 있다."
+      "summary": "- ?? ??: 현재 Vulkan compute 경로에서 배리어 범위가 과도할 가능성이 있다."
     },
     {
       "title": "Worklog #02 - Vulkan Barrier Audit for Compute",
@@ -320,7 +320,7 @@
         "compute"
       ],
       "path": "posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit/en.md",
-      "summary": "Barrier placement in the Vulkan compute path may be over-conservative, reducing overlap opportunities."
+      "summary": "- Core claim: Barrier placement in the Vulkan compute path may be over-conservative, reducing overlap opportunities."
     },
     {
       "title": "워크로그 #01 - NVIDIA에서 CUDA vs Vulkan 초기화",
@@ -338,7 +338,7 @@
         "초기화"
       ],
       "path": "posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/ko.md",
-      "summary": "vAI의 CUDA/Vulkan 백엔드에서 첫 실행 지연과 초기화 비용을 분리해서 확인한다."
+      "summary": "- ?? ??: vAI의 CUDA/Vulkan 백엔드에서 첫 실행 지연과 초기화 비용을 분리해서 확인한다."
     },
     {
       "title": "Worklog #01 - CUDA vs Vulkan Initialization on NVIDIA",
@@ -356,7 +356,7 @@
         "initialization"
       ],
       "path": "posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/en.md",
-      "summary": "vAI compute path starts with both CUDA and Vulkan backends. The immediate objective is to isolate one-time initialization cost and first-dispatch latency."
+      "summary": "- Core claim: vAI compute path starts with both CUDA and Vulkan backends. The immediate objective is to isolate one-time initialization cost and first-dispatch latency."
     }
   ],
   "languages": [

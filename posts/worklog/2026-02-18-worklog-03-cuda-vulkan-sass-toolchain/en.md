@@ -9,6 +9,26 @@ track: "api-language"
 series: "gpu"
 tags: ["cuda", "vulkan", "nvidia", "sass", "toolchain"]
 ---
+# 1. Executive Summary
+
+- Core claim: Every compute workload you dispatch — whether through CUDA or Vulkan — ends up as the same NVIDIA SASS instructions on the same silicon. The GPU does not know which API submitted the work. Yet the journey from your source code to those SASS instructions is fundamentally different between the two ecosystems, and understanding that journey is the key to understanding why the two APIs feel so different despite targeting identical hardware.
+- Why it matters for vAI: this topic affects reliability of performance decisions in `gpu` workflows.
+- Scope: `worklog` / `api-language`
+- Current status: `wip`
+
+# 2. Problem and Scope
+
+- Problem statement: this post documents a concrete issue and the reasoning path used to analyze it.
+- In scope: the key mechanism, evidence path, and practical implications.
+- Out of scope: exhaustive architecture-wide benchmarking unless explicitly included below.
+
+# 3. Method and Setup
+
+- Category/Track/Series: `worklog` / `api-language` / `gpu`
+- Validation approach: tie claims to code, metrics, and profiler or compiler evidence where available.
+- Reproducibility target: make each major claim testable with explicit setup and follow-up actions.
+
+# 4. Detailed Notes
 
 Every compute workload you dispatch — whether through CUDA or Vulkan — ends up as the same NVIDIA SASS instructions on the same silicon. The GPU does not know which API submitted the work. Yet the journey from your source code to those SASS instructions is fundamentally different between the two ecosystems, and understanding that journey is the key to understanding why the two APIs feel so different despite targeting identical hardware.
 
@@ -441,3 +461,22 @@ cmake --build build
 # Next
 
 In [Worklog #04](/posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/), we move from noop to the simplest real kernel — `C[i] = A[i] + B[i]` — and do a line-by-line SASS comparison with execution time measurements.
+
+# 5. Decision and Next Actions
+
+- Decision: keep this post as `wip` until all major claims are backed by explicit measurable evidence.
+
+1. Convert the key claims above into a compact metric or evidence table.
+2. Add at least one reproducible command sequence (build/run/profile).
+3. Add one explicit follow-up experiment with pass/fail criteria.
+
+# 6. Diagram (Optional)
+
+```plantuml
+@startuml
+title Analysis flow
+Problem --> Method
+Method --> Evidence
+Evidence --> Decision
+@enduml
+```
