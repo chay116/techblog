@@ -77,6 +77,60 @@ function isExternalHref(href) {
   return s.startsWith("http://") || s.startsWith("https://") || s.startsWith("mailto:") || s.startsWith("tel:");
 }
 
+function isPlantUmlClassName(className) {
+  const classes = String(className || "")
+    .split(/\s+/)
+    .map((x) => x.trim().toLowerCase())
+    .filter(Boolean);
+  return classes.some((name) =>
+    ["language-plantuml", "language-puml", "language-uml", "lang-plantuml", "lang-puml", "lang-uml"].includes(name)
+  );
+}
+
+async function renderPlantUmlBlocks(container) {
+  if (!container) return;
+
+  const codeNodes = Array.from(container.querySelectorAll("pre code"));
+  const plantUmlNodes = codeNodes.filter((code) => isPlantUmlClassName(code.className));
+
+  await Promise.all(
+    plantUmlNodes.map(async (code) => {
+      const source = (code.textContent || "").trim();
+      const pre = code.closest("pre");
+      if (!source || !pre) return;
+
+      try {
+        const resp = await fetch("https://kroki.io/plantuml/svg", {
+          method: "POST",
+          headers: { "Content-Type": "text/plain; charset=utf-8" },
+          body: source,
+        });
+        if (!resp.ok) throw new Error(`PlantUML render failed (${resp.status})`);
+
+        const blob = await resp.blob();
+        const blobUrl = URL.createObjectURL(blob);
+
+        const figure = document.createElement("figure");
+        figure.className = "plantuml";
+
+        const img = document.createElement("img");
+        img.className = "plantuml-diagram";
+        img.alt = "PlantUML diagram";
+        img.loading = "lazy";
+        img.src = blobUrl;
+        img.addEventListener("load", () => URL.revokeObjectURL(blobUrl), { once: true });
+        img.addEventListener("error", () => URL.revokeObjectURL(blobUrl), { once: true });
+
+        figure.appendChild(img);
+        pre.replaceWith(figure);
+      } catch (err) {
+        console.warn(err);
+        pre.setAttribute("data-plantuml-error", "1");
+      }
+    })
+  );
+}
+
 async function loadSiteData() {
   const resp = await fetch("./posts.json");
   return resp.json();
@@ -287,7 +341,11 @@ async function main() {
     };
 
     marked.use({ renderer, gfm: true, breaks: false });
-    q("markdown").innerHTML = marked.parse(body);
+    const container = q("markdown");
+    if (container) {
+      container.innerHTML = marked.parse(body);
+      await renderPlantUmlBlocks(container);
+    }
 
     // Apply syntax highlighting to all code blocks
     if (typeof hljs !== "undefined") {

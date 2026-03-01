@@ -91,6 +91,21 @@ python scripts/audit_unreal_summary.py
 
 This validates frontmatter consistency (`track/category`) and checks internal markdown links against the current viewer resolution rules.
 
+## Diagram Blocks (PlantUML)
+
+`site/post.js` supports PlantUML fenced code blocks:
+
+````markdown
+```plantuml
+@startuml
+Alice -> Bob: hello
+@enduml
+```
+````
+
+At render time, the blog requests SVG from Kroki (`https://kroki.io/plantuml/svg`).
+If rendering fails, the original code block remains visible.
+
 ## Comparison Document Policy
 
 Every file under `comparisons/` must include:

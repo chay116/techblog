@@ -13,6 +13,14 @@ tags: ["gpu"]
 
 # Details
 
+# Diagram (Optional)
+
+```plantuml
+@startuml
+Alice -> Bob: hello
+@enduml
+```
+
 # Code to Inspect
 
 - 
