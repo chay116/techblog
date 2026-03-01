@@ -3,13 +3,46 @@ title: "Note - <topic>"
 date: "YYYY-MM-DD"
 status: "wip"
 project: "vAI"
-tags: ["note"]
+lang: "en" # en | ko
+series: "other" # compiler | gpu | other
+tags: ["note", "<topic>"]
 ---
 
-# Raw Observation
+# 1. Observation Snapshot
 
-# Evidence
+- One-line observation:
+- Why this might matter:
+- Urgency (high/medium/low):
 
-# Why it might matter
+# 2. Context
 
-# Follow-up experiment
+- Where did this come from (bug report, profiling, reading, experiment)?
+- Related module/component:
+- Related previous post or note:
+
+# 3. Evidence Collected
+
+- Evidence item 1:
+- Evidence item 2:
+- Links/artifacts:
+  - ``
+
+# 4. Initial Interpretation
+
+- Most likely cause:
+- Alternative explanation:
+- Unknowns:
+
+# 5. Candidate Experiments
+
+| Experiment | Cost | Expected signal |
+|---|---|---|
+| A |  |  |
+| B |  |  |
+| C |  |  |
+
+# 6. Promotion Criteria
+
+- Promote to worklog when:
+- Drop/defer when:
+- Owner and due date:

@@ -60,6 +60,20 @@ Run the checklist in `docs/weekly-review-checklist.md` once per week.
 - Main index: `docs/post-index.md`
 - Post template: `docs/post-template.md`
 
+## Writing Templates
+
+- Detailed worklog template: `templates/worklog-template.md`
+- Detailed comparison template: `templates/comparison-template.md`
+- Research note template: `templates/note-template.md`
+
+Recommended writing order for depth:
+
+1. Executive summary with one numeric headline.
+2. Reproducible setup and method.
+3. Evidence (metrics + profiler/IR/ISA when relevant).
+4. Analysis with tradeoffs and limits.
+5. Decision and explicit next actions.
+
 ## GitHub Pages
 
 - Site source: `site/`

@@ -1,7 +1,7 @@
 {
   "posts": [
     {
-      "title": "워크로그 #08 - 컴파일러 IR의 SSA 기초",
+      "title": "워크로그 #08 - 컴파일러 IR에서 SSA 기초",
       "date": "2026-03-01",
       "status": "wip",
       "project": "vAI",
@@ -17,7 +17,7 @@
         "optimization"
       ],
       "path": "posts/worklog/2026-03-01-worklog-08-compiler-ssa-basics/ko.md",
-      "summary": "SSA(Static Single Assignment)는 컴파일러 중간표현(IR)을 이해할 때 가장 먼저 잡아야 하는 개념이다."
+      "summary": "- 핵심 주장: SSA는 컴파일러 최적화 결과를 일관되게 해석하기 위한 최소 단위 모델이다."
     },
     {
       "title": "Worklog #08 - SSA Basics in Compiler IR",
@@ -36,7 +36,7 @@
         "optimization"
       ],
       "path": "posts/worklog/2026-03-01-worklog-08-compiler-ssa-basics/en.md",
-      "summary": "SSA (Static Single Assignment) is one of the first concepts to understand when reading compiler IR."
+      "summary": "- Core claim: SSA is the minimum abstraction required to reason about compiler optimization behavior with confidence."
     },
     {
       "title": "워크로그 #07 - JIT 캐시 vs 파이프라인 캐시",
