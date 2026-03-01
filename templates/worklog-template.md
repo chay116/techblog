@@ -3,6 +3,7 @@ title: "Worklog #XX - <short title>"
 date: "YYYY-MM-DD"
 status: "wip"
 project: "vAI"
+series: "gpu" # compiler | gpu | other
 tags: ["worklog", "gpu", "optimization"]
 ---
 

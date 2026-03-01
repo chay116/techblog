@@ -6,6 +6,7 @@ project: "vAI"
 lang: "en"
 category: "worklog"
 track: "tooling"
+series: "compiler"
 tags: ["compiler", "ssa", "llvm", "ir", "optimization"]
 ---
 

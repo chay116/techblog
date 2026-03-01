@@ -27,18 +27,18 @@
       <div class="layout">
         <aside class="sidebar">
           <details class="filter-box" id="filter-details" open>
-            <summary>Filter posts</summary>
+            <summary id="filter-summary">Filter posts</summary>
             <div class="filter-body">
-              <h3>Search</h3>
+              <h3 id="filter-search-label">Search</h3>
               <input id="search-input" class="search" type="search" placeholder="Search title, summary, tags..." />
 
-              <h3>Category</h3>
+              <h3 id="filter-category-label">Category</h3>
               <div id="category-filters" class="chips"></div>
 
-              <h3>Track</h3>
+              <h3 id="filter-track-label">Track</h3>
               <div id="track-filters" class="chips"></div>
 
-              <h3>Tags</h3>
+              <h3 id="filter-tags-label">Tags</h3>
               <div id="tag-filters" class="chips"></div>
 
               <button id="clear-btn" class="clear-btn" type="button">Clear filters</button>
@@ -47,8 +47,13 @@
         </aside>
 
         <section class="main-col">
+          <section class="series-row">
+            <span class="label" id="series-label">Series</span>
+            <div class="chips" id="series-filters"></div>
+          </section>
+
           <section class="mode-row">
-            <span class="label">Language</span>
+            <span class="label" id="lang-label">Language</span>
             <div class="mode-switch" id="lang-switch"></div>
           </section>
 

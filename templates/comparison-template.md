@@ -3,6 +3,7 @@ title: "Comparison - <topic>"
 date: "YYYY-MM-DD"
 status: "stable"
 project: "vAI"
+series: "gpu" # compiler | gpu | other
 tags: ["comparison", "gpu"]
 ---
 

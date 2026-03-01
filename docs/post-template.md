@@ -5,6 +5,7 @@ status: "wip"
 project: "vAI"
 category: "worklog" # worklog | comparison
 track: "api-language" # api-language | gpu-architecture | runtime-framework | tooling
+series: "gpu" # compiler | gpu | other
 tags: ["gpu"]
 ---
 

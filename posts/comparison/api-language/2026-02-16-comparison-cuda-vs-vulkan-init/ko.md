@@ -6,6 +6,7 @@ project: "vAI"
 lang: "ko"
 category: "comparison"
 track: "api-language"
+series: "gpu"
 tags: ["cuda", "vulkan", "초기화", "nvidia"]
 ---
 

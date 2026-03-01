@@ -6,6 +6,7 @@ project: "vAI"
 lang: "en"
 category: "worklog"
 track: "api-language"
+series: "gpu"
 tags: ["cuda", "vulkan", "nvidia", "sass", "memory-coalescing"]
 ---
 

@@ -6,6 +6,7 @@ project: "vAI"
 lang: "en"
 category: "comparison"
 track: "gpu-architecture"
+series: "gpu"
 tags: ["nvidia", "gpu-architecture", "ampere", "ada"]
 ---
 

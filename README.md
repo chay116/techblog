@@ -44,6 +44,9 @@ title: ""
 date: "YYYY-MM-DD"
 status: "wip" # wip | stable
 project: "vAI"
+category: "worklog" # worklog | comparison
+track: "api-language" # api-language | gpu-architecture | runtime-framework | tooling
+series: "gpu" # compiler | gpu | other
 tags: ["gpu", "optimization"]
 ---
 ```
@@ -61,9 +64,32 @@ Run the checklist in `docs/weekly-review-checklist.md` once per week.
 
 - Site source: `site/`
 - Data build script: `scripts/build_site.py`
+- Unreal audit script: `scripts/audit_unreal_summary.py`
 - Deploy workflow: `.github/workflows/deploy-pages.yml`
+- Public Unreal toggle: `UNREAL_PUBLIC_ENABLED` (`true` | `false`)
 
 When `main` is updated, GitHub Actions builds `site/posts.json` from `posts/` and deploys the static page.
+The deploy workflow sets `UNREAL_PUBLIC_ENABLED=false`.
+
+Local examples:
+
+```bash
+# Unreal excluded (default)
+python scripts/build_site.py
+
+# Unreal included
+UNREAL_PUBLIC_ENABLED=true python scripts/build_site.py
+```
+
+## Unreal Summary Maintenance
+
+Use this command before publishing Unreal summary updates:
+
+```bash
+python scripts/audit_unreal_summary.py
+```
+
+This validates frontmatter consistency (`track/category`) and checks internal markdown links against the current viewer resolution rules.
 
 ## Comparison Document Policy
 

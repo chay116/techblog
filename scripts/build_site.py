@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import os
 import shutil
 from pathlib import Path
 
@@ -8,6 +9,37 @@ POSTS_DIR = ROOT / "posts"
 SITE_DIR = ROOT / "site"
 UNREAL_SUMMARY_DIR = POSTS_DIR / "unreal-summary"
 CONTENT_DIR = SITE_DIR / "content"
+SERIES_ORDER = ["compiler", "gpu", "other"]
+SERIES_ALIASES = {
+    "compiler-series": "compiler",
+    "compilers": "compiler",
+    "gpu-series": "gpu",
+    "graphics": "gpu",
+    "general": "other",
+    "misc": "other",
+}
+SERIES_BY_TRACK = {
+    "gpu-architecture": "gpu",
+    "api-language": "gpu",
+    "runtime-framework": "gpu",
+}
+COMPILER_TAG_HINTS = {"compiler", "ssa", "llvm", "ir", "optimization"}
+GPU_TAG_HINTS = {"gpu", "cuda", "vulkan", "glsl", "sass", "shader", "nvidia", "amd"}
+
+
+def env_flag(name: str, default: bool) -> bool:
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    val = raw.strip().lower()
+    if val in {"1", "true", "yes", "on"}:
+        return True
+    if val in {"0", "false", "no", "off"}:
+        return False
+    return default
+
+
+UNREAL_PUBLIC_ENABLED = env_flag("UNREAL_PUBLIC_ENABLED", default=False)
 
 
 def parse_frontmatter(text: str):
@@ -66,6 +98,33 @@ def extract_summary(body: str):
     return ""
 
 
+def normalize_series(value):
+    if not isinstance(value, str):
+        return None
+    slug = value.strip().lower().replace(" ", "-")
+    if slug in SERIES_ALIASES:
+        slug = SERIES_ALIASES[slug]
+    if slug in SERIES_ORDER:
+        return slug
+    return None
+
+
+def infer_series(frontmatter, tags):
+    explicit = normalize_series(frontmatter.get("series"))
+    if explicit:
+        return explicit
+
+    lowered_tags = {str(tag).strip().lower() for tag in tags}
+    if lowered_tags & COMPILER_TAG_HINTS:
+        return "compiler"
+    if lowered_tags & GPU_TAG_HINTS:
+        return "gpu"
+
+    track = str(frontmatter.get("track", "")).strip().lower()
+    if track in SERIES_BY_TRACK:
+        return SERIES_BY_TRACK[track]
+    return "other"
+
 
 def collect_posts():
     posts = []
@@ -77,6 +136,8 @@ def collect_posts():
         rel = path.relative_to(ROOT).as_posix()
 
         if path.is_relative_to(UNREAL_SUMMARY_DIR):
+            if not UNREAL_PUBLIC_ENABLED:
+                continue
             # unreal-summary accepts any .md filename (not just en.md/ko.md).
             # All metadata comes from frontmatter injected by inject_frontmatter.py.
             if not frontmatter:
@@ -94,6 +155,7 @@ def collect_posts():
                 "lang": frontmatter.get("lang", "ko"),
                 "category": frontmatter.get("category", "unreal-summary"),
                 "track": frontmatter.get("track", "Meta"),
+                "series": infer_series(frontmatter, tags),
                 "tags": tags,
                 "path": rel,
                 "summary": extract_summary(body),
@@ -116,6 +178,7 @@ def collect_posts():
             "lang": frontmatter.get("lang", "en"),
             "category": frontmatter.get("category", "other"),
             "track": frontmatter.get("track", "other"),
+            "series": infer_series(frontmatter, tags),
             "tags": tags,
             "path": rel,
             "summary": extract_summary(body),
@@ -132,6 +195,13 @@ def build_tags(posts):
         for t in p.get("tags", []):
             out[t] = out.get(t, 0) + 1
     return dict(sorted(out.items(), key=lambda kv: (-kv[1], kv[0])))
+
+
+def build_series(posts):
+    present = {p.get("series", "other") for p in posts}
+    ordered = [series for series in SERIES_ORDER if series in present]
+    extras = sorted(series for series in present if series not in SERIES_ORDER)
+    return ordered + extras
 
 
 def materialize_content(posts):
@@ -167,6 +237,7 @@ def main():
         "languages": sorted({p["lang"] for p in posts}),
         "categories": sorted({p["category"] for p in posts}),
         "tracks": sorted({p["track"] for p in posts}),
+        "series": build_series(posts),
         "tags": build_tags(posts),
     }
     (SITE_DIR / "posts.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
