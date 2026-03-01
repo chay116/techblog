@@ -12,9 +12,9 @@ tags: ["cuda", "vulkan", "nvidia", "sass", "toolchain"]
 # 1. Executive Summary
 
 - Core claim: Every compute workload you dispatch — whether through CUDA or Vulkan — ends up as the same NVIDIA SASS instructions on the same silicon. The GPU does not know which API submitted the work. Yet the journey from your source code to those SASS instructions is fundamentally different between the two ecosystems, and understanding that journey is the key to understanding why the two APIs feel so different despite targeting identical hardware.
-- Why it matters for vAI: this topic affects reliability of performance decisions in `gpu` workflows.
-- Scope: `worklog` / `api-language`
-- Current status: `wip`
+- Primary metric: `kernel time (ms) or throughput (ops/s)`
+- Baseline -> current: `TBD -> TBD` (delta `TBD%`)
+- Evidence status: `in progress (wip)`; attach profiler/IR/benchmark logs before marking stable.
 
 # 2. Problem and Scope
 

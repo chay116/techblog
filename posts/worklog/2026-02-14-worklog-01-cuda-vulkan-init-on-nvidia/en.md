@@ -12,9 +12,9 @@ tags: ["cuda", "vulkan", "nvidia", "initialization"]
 # 1. Executive Summary
 
 - Core claim: vAI compute path starts with both CUDA and Vulkan backends. The immediate objective is to isolate one-time initialization cost and first-dispatch latency.
-- Why it matters for vAI: this topic affects reliability of performance decisions in `gpu` workflows.
-- Scope: `worklog` / `api-language`
-- Current status: `wip`
+- Primary metric: `kernel time (ms) or throughput (ops/s)`
+- Baseline -> current: `TBD -> TBD` (delta `TBD%`)
+- Evidence status: `in progress (wip)`; attach profiler/IR/benchmark logs before marking stable.
 
 # 2. Problem and Scope
 

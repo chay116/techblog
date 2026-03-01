@@ -12,9 +12,9 @@ tags: ["cuda", "vulkan", "nvidia", "sass", "bda", "bindless"]
 # 1. Executive Summary
 
 - Core claim: In [Worklog #04](/posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/) we identified the one structural SASS difference between CUDA and Vulkan: the descriptor indirection. CUDA passes buffer addresses directly through the constant bank. Vulkan fetches them from a descriptor table in global memory, adding extra `LDG` instructions.
-- Why it matters for vAI: this topic affects reliability of performance decisions in `gpu` workflows.
-- Scope: `worklog` / `api-language`
-- Current status: `wip`
+- Primary metric: `kernel time (ms) or throughput (ops/s)`
+- Baseline -> current: `TBD -> TBD` (delta `TBD%`)
+- Evidence status: `in progress (wip)`; attach profiler/IR/benchmark logs before marking stable.
 
 # 2. Problem and Scope
 

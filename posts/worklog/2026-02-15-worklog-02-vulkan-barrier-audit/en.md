@@ -12,9 +12,9 @@ tags: ["vulkan", "barrier", "synchronization", "compute"]
 # 1. Executive Summary
 
 - Core claim: Barrier placement in the Vulkan compute path may be over-conservative, reducing overlap opportunities.
-- Why it matters for vAI: this topic affects reliability of performance decisions in `gpu` workflows.
-- Scope: `worklog` / `api-language`
-- Current status: `wip`
+- Primary metric: `kernel time (ms) or throughput (ops/s)`
+- Baseline -> current: `TBD -> TBD` (delta `TBD%`)
+- Evidence status: `in progress (wip)`; attach profiler/IR/benchmark logs before marking stable.
 
 # 2. Problem and Scope
 

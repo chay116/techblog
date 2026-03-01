@@ -12,9 +12,9 @@ tags: ["cuda", "vulkan", "initialization", "nvidia"]
 # 1. Executive Summary
 
 - Core claim: Initialization complexity and first execution behavior on NVIDIA GPU.
-- Why it matters for vAI: this topic affects reliability of performance decisions in `gpu` workflows.
-- Scope: `comparison` / `api-language`
-- Current status: `wip`
+- Primary metric: `kernel time (ms) or throughput (ops/s)`
+- Baseline -> current: `TBD -> TBD` (delta `TBD%`)
+- Evidence status: `in progress (wip)`; attach profiler/IR/benchmark logs before marking stable.
 
 # 2. Problem and Scope
 

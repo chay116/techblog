@@ -12,9 +12,9 @@ tags: ["cuda", "vulkan", "nvidia", "sass", "jit", "pipeline-cache"]
 # 1. Executive Summary
 
 - Core claim: Over the past four posts, we have established that CUDA and Vulkan produce nearly identical SASS on NVIDIA GPUs. The arithmetic, the memory accesses, the coalescing behavior — all the same. With BDA, even the binding model converges.
-- Why it matters for vAI: this topic affects reliability of performance decisions in `gpu` workflows.
-- Scope: `worklog` / `api-language`
-- Current status: `wip`
+- Primary metric: `kernel time (ms) or throughput (ops/s)`
+- Baseline -> current: `TBD -> TBD` (delta `TBD%`)
+- Evidence status: `in progress (wip)`; attach profiler/IR/benchmark logs before marking stable.
 
 # 2. Problem and Scope
 

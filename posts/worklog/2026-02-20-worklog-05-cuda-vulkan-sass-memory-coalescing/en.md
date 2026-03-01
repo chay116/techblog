@@ -12,9 +12,9 @@ tags: ["cuda", "vulkan", "nvidia", "sass", "memory-coalescing"]
 # 1. Executive Summary
 
 - Core claim: In the previous two posts, we saw that CUDA and Vulkan produce nearly identical SASS for simple kernels, with the only difference being descriptor binding overhead. But for the vector add kernel, that did not matter because the kernel was purely bandwidth-bound and the computation was trivial.
-- Why it matters for vAI: this topic affects reliability of performance decisions in `gpu` workflows.
-- Scope: `worklog` / `api-language`
-- Current status: `wip`
+- Primary metric: `kernel time (ms) or throughput (ops/s)`
+- Baseline -> current: `TBD -> TBD` (delta `TBD%`)
+- Evidence status: `in progress (wip)`; attach profiler/IR/benchmark logs before marking stable.
 
 # 2. Problem and Scope
 
