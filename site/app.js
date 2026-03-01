@@ -223,6 +223,22 @@ function renderStaticText() {
   if (search) search.placeholder = t("searchPlaceholder");
 }
 
+function currentNavMode() {
+  if (state.series === "gpu") return "gpu";
+  if (state.series === "compiler") return "compiler";
+  return "home";
+}
+
+function renderNavTabs() {
+  const nav = byId("nav-tabs");
+  if (!nav) return;
+
+  const mode = currentNavMode();
+  nav.querySelectorAll(".nav-tab[data-nav]").forEach((tab) => {
+    tab.classList.toggle("active", tab.dataset.nav === mode);
+  });
+}
+
 function renderSeriesFilters() {
   const root = byId("series-filters");
   if (!root) return;
@@ -368,6 +384,7 @@ function renderPosts() {
 }
 
 function renderLoadError() {
+  renderNavTabs();
   renderLanguageSwitch();
   renderStaticText();
 
@@ -387,6 +404,7 @@ function renderLoadError() {
 }
 
 function renderAll() {
+  renderNavTabs();
   renderLanguageSwitch();
   renderStaticText();
   renderSeriesFilters();
