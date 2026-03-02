@@ -239,6 +239,13 @@ function renderNavTabs() {
   });
 }
 
+function renderHomeIntro() {
+  const intro = byId("home-intro");
+  if (!intro) return;
+
+  intro.hidden = currentNavMode() !== "home";
+}
+
 function renderSeriesFilters() {
   const root = byId("series-filters");
   if (!root) return;
@@ -385,6 +392,7 @@ function renderPosts() {
 
 function renderLoadError() {
   renderNavTabs();
+  renderHomeIntro();
   renderLanguageSwitch();
   renderStaticText();
 
@@ -405,6 +413,7 @@ function renderLoadError() {
 
 function renderAll() {
   renderNavTabs();
+  renderHomeIntro();
   renderLanguageSwitch();
   renderStaticText();
   renderSeriesFilters();
