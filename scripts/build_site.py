@@ -25,6 +25,11 @@ SERIES_BY_TRACK = {
 }
 COMPILER_TAG_HINTS = {"compiler", "ssa", "llvm", "ir", "optimization"}
 GPU_TAG_HINTS = {"gpu", "cuda", "vulkan", "glsl", "sass", "shader", "nvidia", "amd"}
+SERIES_BOOK_TITLES = {
+    "compiler": "Compiler Series",
+    "gpu": "GPU Series",
+    "other": "General Series",
+}
 
 
 def env_flag(name: str, default: bool) -> bool:
@@ -109,6 +114,21 @@ def normalize_series(value):
     return None
 
 
+def parse_int(value):
+    if value is None:
+        return None
+    try:
+        return int(str(value).strip())
+    except (TypeError, ValueError):
+        return None
+
+
+def normalize_book(value, series):
+    if isinstance(value, str) and value.strip():
+        return value.strip()
+    return SERIES_BOOK_TITLES.get(series, "General Series")
+
+
 def infer_series(frontmatter, tags):
     explicit = normalize_series(frontmatter.get("series"))
     if explicit:
@@ -146,16 +166,24 @@ def collect_posts():
             tags = frontmatter.get("tags", [])
             if isinstance(tags, str):
                 tags = [tags]
+            series = infer_series(frontmatter, tags)
+            order = parse_int(frontmatter.get("order"))
+            track = frontmatter.get("track", "Meta")
+            title = frontmatter.get("title", path.stem)
 
             post = {
-                "title": frontmatter.get("title", path.stem),
+                "title": title,
                 "date": frontmatter.get("date", ""),
                 "status": frontmatter.get("status", "stable"),
                 "project": frontmatter.get("project", "UnrealEngine"),
                 "lang": frontmatter.get("lang", "ko"),
                 "category": frontmatter.get("category", "unreal-summary"),
-                "track": frontmatter.get("track", "Meta"),
-                "series": infer_series(frontmatter, tags),
+                "track": track,
+                "series": series,
+                "book": normalize_book(frontmatter.get("book"), series),
+                "part": str(frontmatter.get("part", track)).strip() or "General",
+                "chapter": str(frontmatter.get("chapter", title)).strip() or title,
+                "order": order,
                 "tags": tags,
                 "path": rel,
                 "summary": extract_summary(body),
@@ -170,15 +198,23 @@ def collect_posts():
         tags = frontmatter.get("tags", [])
         if isinstance(tags, str):
             tags = [tags]
+        series = infer_series(frontmatter, tags)
+        order = parse_int(frontmatter.get("order"))
+        track = frontmatter.get("track", "other")
+        title = frontmatter.get("title", path.parent.name)
         post = {
-            "title": frontmatter.get("title", path.parent.name),
+            "title": title,
             "date": frontmatter.get("date", ""),
             "status": frontmatter.get("status", "wip"),
             "project": frontmatter.get("project", ""),
             "lang": frontmatter.get("lang", "en"),
             "category": frontmatter.get("category", "other"),
-            "track": frontmatter.get("track", "other"),
-            "series": infer_series(frontmatter, tags),
+            "track": track,
+            "series": series,
+            "book": normalize_book(frontmatter.get("book"), series),
+            "part": str(frontmatter.get("part", track)).strip() or "General",
+            "chapter": str(frontmatter.get("chapter", title)).strip() or title,
+            "order": order,
             "tags": tags,
             "path": rel,
             "summary": extract_summary(body),
@@ -202,6 +238,67 @@ def build_series(posts):
     ordered = [series for series in SERIES_ORDER if series in present]
     extras = sorted(series for series in present if series not in SERIES_ORDER)
     return ordered + extras
+
+
+def chapter_sort_key(post):
+    order = post.get("order")
+    date = str(post.get("date", ""))
+    title = str(post.get("title", ""))
+    path = str(post.get("path", ""))
+    if order is not None:
+        return (0, order, date, title, path)
+    return (1, date, title, path)
+
+
+def build_series_toc(posts):
+    series_toc = {}
+    series_list = build_series(posts)
+
+    for series in series_list:
+        series_posts = [
+            p
+            for p in posts
+            if p.get("series") == series and p.get("category") != "unreal-summary"
+        ]
+        if not series_posts:
+            continue
+
+        by_lang = {}
+        langs = sorted({p.get("lang", "en") for p in series_posts})
+        for lang in langs:
+            lang_posts = [p for p in series_posts if p.get("lang", "en") == lang]
+            lang_posts.sort(key=chapter_sort_key)
+
+            entries = []
+            total = len(lang_posts)
+            for idx, post in enumerate(lang_posts):
+                prev_path = lang_posts[idx - 1]["path"] if idx > 0 else None
+                next_path = lang_posts[idx + 1]["path"] if idx + 1 < total else None
+                entries.append(
+                    {
+                        "index": idx + 1,
+                        "total": total,
+                        "path": post["path"],
+                        "title": post.get("title", ""),
+                        "date": post.get("date", ""),
+                        "lang": post.get("lang", "en"),
+                        "category": post.get("category", "other"),
+                        "track": post.get("track", "other"),
+                        "status": post.get("status", "wip"),
+                        "book": post.get("book", SERIES_BOOK_TITLES.get(series, "General Series")),
+                        "part": post.get("part", "General"),
+                        "chapter": post.get("chapter", post.get("title", "")),
+                        "order": post.get("order"),
+                        "prev_path": prev_path,
+                        "next_path": next_path,
+                    }
+                )
+
+            by_lang[lang] = entries
+
+        series_toc[series] = by_lang
+
+    return series_toc
 
 
 def materialize_content(posts):
@@ -238,6 +335,7 @@ def main():
         "categories": sorted({p["category"] for p in posts}),
         "tracks": sorted({p["track"] for p in posts}),
         "series": build_series(posts),
+        "series_toc": build_series_toc(posts),
         "tags": build_tags(posts),
     }
     (SITE_DIR / "posts.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")

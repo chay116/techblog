@@ -1,6 +1,13 @@
 const LANG_MODE_KEY = "blog_lang_mode";
 const FILTER_OPEN_KEY = "blog_filter_open";
+const READER_PROGRESS_KEY = "blog_reader_progress";
 const SERIES_ORDER = ["compiler", "gpu", "other"];
+const SERIES_CARD_ORDER = ["gpu", "compiler"];
+const SERIES_DESCRIPTIONS = {
+  gpu: "Practical notes on GPU architecture, CUDA/Vulkan, and SASS-level analysis.",
+  compiler: "Compiler fundamentals and optimization notes, from SSA to pass reasoning.",
+  other: "General systems notes.",
+};
 
 const I18N = {
   en: {
@@ -23,6 +30,12 @@ const I18N = {
     seriesCompiler: "Compiler",
     seriesGpu: "GPU",
     seriesOther: "Other",
+    bookshelf: "Bookshelf",
+    startReading: "Start reading",
+    continueReading: "Continue",
+    openToc: "Open table of contents",
+    chapter: "Chapter",
+    tocTitle: "Table of Contents",
   },
   ko: {
     all: "전체",
@@ -153,6 +166,36 @@ function syncUrl() {
   }
 }
 
+function readProgressMap() {
+  const raw = safeStorageGet(READER_PROGRESS_KEY, "{}");
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === "object") return parsed;
+  } catch (_) {
+    // ignore parse failures
+  }
+  return {};
+}
+
+function progressKey(series, lang) {
+  return `${series || "other"}:${lang || "en"}`;
+}
+
+function getProgress(series, lang) {
+  const map = readProgressMap();
+  const entry = map[progressKey(series, lang)];
+  if (!entry || typeof entry !== "object") return null;
+  if (!entry.path) return null;
+  return entry;
+}
+
+function buildPostUrl(path) {
+  const from = window.location.search || "";
+  return from.length > 1
+    ? `./post.html?path=${encodeURIComponent(path)}&from=${encodeURIComponent(from)}`
+    : `./post.html?path=${encodeURIComponent(path)}`;
+}
+
 function createChip(text, active, onClick, className = "chip") {
   const btn = document.createElement("button");
   btn.className = `${className} ${active ? "active" : ""}`;
@@ -244,6 +287,179 @@ function renderHomeIntro() {
   if (!intro) return;
 
   intro.hidden = currentNavMode() !== "home";
+}
+
+function seriesEntries(series, lang) {
+  if (!state.data || !state.data.seriesToc) return [];
+  const bySeries = state.data.seriesToc[series];
+  if (!bySeries || typeof bySeries !== "object") return [];
+  const direct = bySeries[lang];
+  if (Array.isArray(direct)) return direct;
+  return [];
+}
+
+function firstAvailableSeriesEntries(series) {
+  if (!state.data || !state.data.seriesToc) return [];
+  const bySeries = state.data.seriesToc[series];
+  if (!bySeries || typeof bySeries !== "object") return [];
+
+  const langs = Object.keys(bySeries).sort();
+  for (const lang of langs) {
+    if (Array.isArray(bySeries[lang]) && bySeries[lang].length > 0) return bySeries[lang];
+  }
+  return [];
+}
+
+function renderBookshelf() {
+  const root = byId("bookshelf");
+  if (!root) return;
+
+  const show = currentNavMode() === "home";
+  root.hidden = !show;
+  if (!show || !state.data) {
+    root.innerHTML = "";
+    return;
+  }
+
+  root.innerHTML = "";
+  const title = document.createElement("h2");
+  title.textContent = t("bookshelf");
+  root.appendChild(title);
+
+  const cards = document.createElement("div");
+  cards.className = "series-cards";
+
+  const ordered = SERIES_CARD_ORDER.concat(
+    state.data.series.filter((entry) => !SERIES_CARD_ORDER.includes(entry))
+  );
+
+  ordered.forEach((series) => {
+    const entries = seriesEntries(series, state.lang);
+    const fallback = firstAvailableSeriesEntries(series);
+    const targetEntries = entries.length > 0 ? entries : fallback;
+    if (targetEntries.length === 0) return;
+
+    const first = targetEntries[0];
+    const progress = getProgress(series, state.lang);
+    const continueEntry = progress ? targetEntries.find((entry) => entry.path === progress.path) || null : null;
+
+    const card = document.createElement("article");
+    card.className = "series-card";
+
+    const h3 = document.createElement("h3");
+    h3.textContent = seriesLabel(series);
+    card.appendChild(h3);
+
+    const desc = document.createElement("p");
+    desc.className = "muted";
+    desc.textContent = SERIES_DESCRIPTIONS[series] || SERIES_DESCRIPTIONS.other;
+    card.appendChild(desc);
+
+    const count = document.createElement("p");
+    count.className = "sub";
+    count.textContent = `${targetEntries.length} chapters`;
+    card.appendChild(count);
+
+    const actions = document.createElement("p");
+    actions.className = "series-actions";
+
+    const start = document.createElement("a");
+    start.href = buildPostUrl(first.path);
+    start.textContent = t("startReading");
+    actions.appendChild(start);
+
+    if (continueEntry) {
+      const sep = document.createElement("span");
+      sep.textContent = " · ";
+      actions.appendChild(sep);
+
+      const cont = document.createElement("a");
+      cont.href = buildPostUrl(continueEntry.path);
+      cont.textContent = t("continueReading");
+      actions.appendChild(cont);
+    }
+
+    const sep2 = document.createElement("span");
+    sep2.textContent = " · ";
+    actions.appendChild(sep2);
+
+    const toc = document.createElement("a");
+    toc.href = `./index.html?series=${encodeURIComponent(series)}&category=all`;
+    toc.textContent = t("openToc");
+    actions.appendChild(toc);
+
+    card.appendChild(actions);
+    cards.appendChild(card);
+  });
+
+  root.appendChild(cards);
+}
+
+function renderSeriesReader() {
+  const root = byId("series-reader");
+  if (!root) return;
+
+  const show = Boolean(state.series);
+  root.hidden = !show;
+  if (!show || !state.data) {
+    root.innerHTML = "";
+    return;
+  }
+
+  const entries = seriesEntries(state.series, state.lang);
+  const targetEntries = entries.length > 0 ? entries : firstAvailableSeriesEntries(state.series);
+  root.innerHTML = "";
+
+  if (targetEntries.length === 0) return;
+
+  const heading = document.createElement("h3");
+  heading.textContent = `${seriesLabel(state.series)} ${t("tocTitle")}`;
+  root.appendChild(heading);
+
+  const topActions = document.createElement("p");
+  topActions.className = "series-actions";
+
+  const start = document.createElement("a");
+  start.href = buildPostUrl(targetEntries[0].path);
+  start.textContent = t("startReading");
+  topActions.appendChild(start);
+
+  const progress = getProgress(state.series, state.lang);
+  const progressEntry = progress ? targetEntries.find((entry) => entry.path === progress.path) || null : null;
+  if (progressEntry) {
+    const sep = document.createElement("span");
+    sep.textContent = " · ";
+    topActions.appendChild(sep);
+
+    const cont = document.createElement("a");
+    cont.href = buildPostUrl(progressEntry.path);
+    cont.textContent = t("continueReading");
+    topActions.appendChild(cont);
+  }
+  root.appendChild(topActions);
+
+  const list = document.createElement("ol");
+  list.className = "series-toc";
+
+  targetEntries.forEach((entry) => {
+    const li = document.createElement("li");
+    if (progressEntry && progressEntry.path === entry.path) li.className = "current";
+
+    const link = document.createElement("a");
+    link.href = buildPostUrl(entry.path);
+    link.textContent = entry.title || "(untitled)";
+
+    const meta = document.createElement("span");
+    meta.className = "sub";
+    const bits = [entry.date, entry.track].filter(Boolean);
+    meta.textContent = bits.length > 0 ? `(${bits.join(" · ")})` : "";
+
+    li.appendChild(link);
+    li.appendChild(meta);
+    list.appendChild(li);
+  });
+
+  root.appendChild(list);
 }
 
 function renderSeriesFilters() {
@@ -341,11 +557,23 @@ function filteredPosts() {
 }
 
 function renderPosts() {
-  const posts = filteredPosts();
+  let posts = filteredPosts();
   const list = byId("post-list");
   const meta = byId("meta");
   const modeTitle = byId("mode-title");
   if (!list || !meta || !modeTitle) return;
+
+  if (state.series) {
+    const entries = seriesEntries(state.series, state.lang);
+    const targetEntries = entries.length > 0 ? entries : firstAvailableSeriesEntries(state.series);
+    const orderMap = new Map(targetEntries.map((entry, idx) => [entry.path, idx]));
+    posts = posts.slice().sort((a, b) => {
+      const ia = orderMap.has(a.path) ? orderMap.get(a.path) : Number.MAX_SAFE_INTEGER;
+      const ib = orderMap.has(b.path) ? orderMap.get(b.path) : Number.MAX_SAFE_INTEGER;
+      if (ia !== ib) return ia - ib;
+      return (a.date || "").localeCompare(b.date || "") || (a.title || "").localeCompare(b.title || "");
+    });
+  }
 
   modeTitle.textContent = state.lang === "ko" ? t("langKo") : t("langEn");
   meta.textContent = formatPostCount(posts.length);
@@ -362,12 +590,7 @@ function renderPosts() {
   posts.forEach((post) => {
     const item = document.createElement("article");
     item.className = "post";
-
-    const from = window.location.search || "";
-    const postUrl =
-      from.length > 1
-        ? `./post.html?path=${encodeURIComponent(post.path)}&from=${encodeURIComponent(from)}`
-        : `./post.html?path=${encodeURIComponent(post.path)}`;
+    const postUrl = buildPostUrl(post.path);
 
     const metaBits = [post.date, post.series, post.category, post.track, post.status].filter(Boolean);
     const h3 = document.createElement("h3");
@@ -393,6 +616,8 @@ function renderPosts() {
 function renderLoadError() {
   renderNavTabs();
   renderHomeIntro();
+  renderBookshelf();
+  renderSeriesReader();
   renderLanguageSwitch();
   renderStaticText();
 
@@ -414,12 +639,69 @@ function renderLoadError() {
 function renderAll() {
   renderNavTabs();
   renderHomeIntro();
+  renderBookshelf();
+  renderSeriesReader();
   renderLanguageSwitch();
   renderStaticText();
   renderSeriesFilters();
   renderFilters();
   renderPosts();
   syncUrl();
+}
+
+function chapterSortKey(post) {
+  const parsedOrder = Number(post.order);
+  const order = Number.isFinite(parsedOrder) ? parsedOrder : null;
+  const date = post.date || "";
+  const title = post.title || "";
+  const path = post.path || "";
+  if (order !== null) return [0, order, date, title, path];
+  return [1, date, title, path];
+}
+
+function compareSortKey(a, b) {
+  const n = Math.max(a.length, b.length);
+  for (let i = 0; i < n; i += 1) {
+    const av = a[i] ?? "";
+    const bv = b[i] ?? "";
+    if (av < bv) return -1;
+    if (av > bv) return 1;
+  }
+  return 0;
+}
+
+function buildSeriesTocFallback(posts, seriesList) {
+  const out = {};
+  seriesList.forEach((series) => {
+    const bySeries = posts.filter((post) => post.series === series);
+    if (bySeries.length === 0) return;
+
+    const byLang = {};
+    const langs = [...new Set(bySeries.map((post) => post.lang || "en"))].sort();
+    langs.forEach((lang) => {
+      const langPosts = bySeries.filter((post) => (post.lang || "en") === lang);
+      langPosts.sort((a, b) => compareSortKey(chapterSortKey(a), chapterSortKey(b)));
+      byLang[lang] = langPosts.map((post, idx) => ({
+        index: idx + 1,
+        total: langPosts.length,
+        path: post.path,
+        title: post.title || "",
+        date: post.date || "",
+        lang: post.lang || "en",
+        category: post.category || "other",
+        track: post.track || "other",
+        status: post.status || "wip",
+        book: post.book || `${seriesLabel(series)} Series`,
+        part: post.part || post.track || "General",
+        chapter: post.chapter || post.title || "",
+        order: Number.isFinite(Number(post.order)) ? Number(post.order) : null,
+        prev_path: idx > 0 ? langPosts[idx - 1].path : null,
+        next_path: idx + 1 < langPosts.length ? langPosts[idx + 1].path : null,
+      }));
+    });
+    out[series] = byLang;
+  });
+  return out;
 }
 
 function normalizeData(rawData) {
@@ -440,11 +722,17 @@ function normalizeData(rawData) {
     });
   });
 
+  const seriesToc =
+    data.series_toc && typeof data.series_toc === "object"
+      ? data.series_toc
+      : buildSeriesTocFallback(posts, series.concat(extraSeries));
+
   return {
     posts,
     categories,
     tracks,
     series: series.concat(extraSeries),
+    seriesToc,
     tags: Object.fromEntries(
       Object.entries(tagCounts).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
     ),

@@ -2,6 +2,8 @@ function q(id) {
   return document.getElementById(id);
 }
 
+const READER_PROGRESS_KEY = "blog_reader_progress";
+
 function getPathParam() {
   const params = new URLSearchParams(window.location.search);
   return params.get("path");
@@ -10,6 +12,25 @@ function getPathParam() {
 function getFromParam() {
   const params = new URLSearchParams(window.location.search);
   return params.get("from");
+}
+
+function safeStorageGetMap(key) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch (_) {
+    return {};
+  }
+}
+
+function safeStorageSetMap(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (_) {
+    // ignore storage failures
+  }
 }
 
 function escapeAttr(value) {
@@ -77,6 +98,143 @@ function isExternalHref(href) {
   return s.startsWith("http://") || s.startsWith("https://") || s.startsWith("mailto:") || s.startsWith("tel:");
 }
 
+function chapterSortKey(post) {
+  const parsedOrder = Number(post.order);
+  const order = Number.isFinite(parsedOrder) ? parsedOrder : null;
+  const date = post.date || "";
+  const title = post.title || "";
+  const path = post.path || "";
+  if (order !== null) return [0, order, date, title, path];
+  return [1, date, title, path];
+}
+
+function compareSortKey(a, b) {
+  const n = Math.max(a.length, b.length);
+  for (let i = 0; i < n; i += 1) {
+    const av = a[i] ?? "";
+    const bv = b[i] ?? "";
+    if (av < bv) return -1;
+    if (av > bv) return 1;
+  }
+  return 0;
+}
+
+function buildSeriesTocFallback(posts) {
+  const out = {};
+  const nonUnreal = (posts || []).filter((post) => post.category !== "unreal-summary");
+  const seriesSet = new Set(nonUnreal.map((post) => post.series || "other"));
+  const seriesList = [...seriesSet].sort();
+
+  seriesList.forEach((series) => {
+    const bySeries = nonUnreal.filter((post) => (post.series || "other") === series);
+    if (bySeries.length === 0) return;
+
+    const byLang = {};
+    const langs = [...new Set(bySeries.map((post) => post.lang || "en"))].sort();
+    langs.forEach((lang) => {
+      const langPosts = bySeries.filter((post) => (post.lang || "en") === lang);
+      langPosts.sort((a, b) => compareSortKey(chapterSortKey(a), chapterSortKey(b)));
+      byLang[lang] = langPosts.map((post, idx) => ({
+        index: idx + 1,
+        total: langPosts.length,
+        path: post.path,
+        title: post.title || "",
+        date: post.date || "",
+        lang: post.lang || "en",
+        track: post.track || "other",
+        prev_path: idx > 0 ? langPosts[idx - 1].path : null,
+        next_path: idx + 1 < langPosts.length ? langPosts[idx + 1].path : null,
+      }));
+    });
+    out[series] = byLang;
+  });
+  return out;
+}
+
+function postHref(path, fromValue) {
+  if (!path) return "#";
+  const from = (fromValue || "").trim();
+  return from
+    ? `./post.html?path=${encodeURIComponent(path)}&from=${encodeURIComponent(from)}`
+    : `./post.html?path=${encodeURIComponent(path)}`;
+}
+
+function readerTocLink(series) {
+  if (!series) return "./index.html";
+  return `./index.html?series=${encodeURIComponent(series)}&category=all`;
+}
+
+function renderChapterNav(siteData, meta, currentPath, fromValue) {
+  const nav = q("chapter-nav");
+  const prev = q("chapter-prev");
+  const toc = q("chapter-toc");
+  const next = q("chapter-next");
+  if (!nav || !prev || !toc || !next) return null;
+
+  const tocMap =
+    siteData && siteData.series_toc && typeof siteData.series_toc === "object"
+      ? siteData.series_toc
+      : buildSeriesTocFallback((siteData && siteData.posts) || []);
+
+  const series = meta && meta.series ? meta.series : null;
+  if (!series || !tocMap[series] || typeof tocMap[series] !== "object") {
+    nav.hidden = true;
+    return null;
+  }
+
+  const byLang = tocMap[series];
+  const lang = (meta && meta.lang) || "en";
+  const entries =
+    Array.isArray(byLang[lang]) && byLang[lang].length > 0
+      ? byLang[lang]
+      : Object.values(byLang).find((arr) => Array.isArray(arr) && arr.length > 0) || [];
+
+  const current = entries.find((entry) => entry.path === currentPath);
+  if (!current) {
+    nav.hidden = true;
+    return null;
+  }
+
+  const fallbackFrom = `?series=${encodeURIComponent(series)}&category=all`;
+  const fromForLinks = fromValue || fallbackFrom;
+
+  toc.href = readerTocLink(series);
+  if (current.prev_path) {
+    prev.hidden = false;
+    prev.href = postHref(current.prev_path, fromForLinks);
+  } else {
+    prev.hidden = true;
+    prev.removeAttribute("href");
+  }
+
+  if (current.next_path) {
+    next.hidden = false;
+    next.href = postHref(current.next_path, fromForLinks);
+  } else {
+    next.hidden = true;
+    next.removeAttribute("href");
+  }
+
+  nav.hidden = false;
+  return current;
+}
+
+function saveReadingProgress(meta, currentPath, chapterInfo) {
+  if (!meta || !meta.series || !currentPath) return;
+
+  const key = `${meta.series}:${meta.lang || "en"}`;
+  const map = safeStorageGetMap(READER_PROGRESS_KEY);
+  map[key] = {
+    path: currentPath,
+    title: meta.title || "",
+    date: meta.date || "",
+    index: chapterInfo && chapterInfo.index ? chapterInfo.index : null,
+    total: chapterInfo && chapterInfo.total ? chapterInfo.total : null,
+    updatedAt: new Date().toISOString(),
+  };
+  safeStorageSetMap(READER_PROGRESS_KEY, map);
+}
+
 function isPlantUmlClassName(className) {
   const classes = String(className || "")
     .split(/\s+/)
@@ -132,7 +290,8 @@ async function renderPlantUmlBlocks(container) {
 }
 
 async function loadSiteData() {
-  const resp = await fetch("./posts.json");
+  const resp = await fetch("./posts.json", { cache: "no-store" });
+  if (!resp.ok) throw new Error(`Failed to fetch posts.json (${resp.status})`);
   return resp.json();
 }
 
@@ -207,6 +366,9 @@ function mapBrokenPath(resolvedPath) {
     "posts/unreal-summary/Physics/PBDSolver.md": "posts/unreal-summary/Physics/Chaos_Solver_Deep_Dive.md",
 
     // Lumen + RDG
+    "posts/unreal-summary/Lumen/Lumen_Overview.md": "posts/unreal-summary/Lumen/Architecture.md",
+    "posts/unreal-summary/Lumen/Lumen_Advanced.md": "posts/unreal-summary/Lumen/Architecture.md",
+    "posts/unreal-summary/Lumen/RDG_Overview.md": "posts/unreal-summary/Rendering/RenderGraph/Architecture.md",
     "posts/unreal-summary/Rendering/Lumen/Lumen_Overview.md": "posts/unreal-summary/Lumen/Architecture.md",
     "posts/unreal-summary/Rendering/Lumen/Lumen_Advanced.md": "posts/unreal-summary/Lumen/Architecture.md",
     "posts/unreal-summary/Rendering/Lumen/Architecture.md": "posts/unreal-summary/Lumen/Architecture.md",
@@ -220,59 +382,92 @@ function mapBrokenPath(resolvedPath) {
     "posts/unreal-summary/Rendering/Lumen/Lumen_RadianceCache_Deep_Dive.md":
       "posts/unreal-summary/Lumen/RadianceCache.md",
     "posts/unreal-summary/Rendering/Lumen/Lumen_Optimization.md": "posts/unreal-summary/Lumen/Optimization.md",
+
+    // Legacy/root aliases
+    "posts/unreal-summary/AnimGraph_Compilation_And_Execution_Deep_Dive.md":
+      "posts/unreal-summary/Animation/AnimGraph_Compilation_And_Execution_Deep_Dive.md",
+    "posts/unreal-summary/VectorVM/Compiler.md": "posts/unreal-summary/Niagara/Compiler.md",
+    "posts/unreal-summary/VectorVM/SimulationPipeline.md": "posts/unreal-summary/Niagara/SimulationPipeline.md",
+    "posts/unreal-summary/VectorVM/Core/NiagaraScript.md":
+      "posts/unreal-summary/Niagara/Core/NiagaraScript.md",
   };
 
   return aliases[resolvedPath] || null;
 }
 
+function renderError(message) {
+  const title = q("title");
+  const meta = q("meta");
+  const body = q("markdown");
+  const nav = q("chapter-nav");
+  if (title) title.textContent = "Unavailable";
+  if (meta) meta.textContent = "";
+  if (body) body.innerHTML = `<p>${escapeAttr(message)}</p>`;
+  if (nav) nav.hidden = true;
+}
+
 async function main() {
-  const path = getPathParam();
-  if (!path) {
-    q("title").textContent = "Invalid post path";
-    return;
-  }
-
-  const from = getFromParam();
-  const backLink = q("back-link");
-  if (backLink) {
-    try {
-      const decoded = from ? decodeURIComponent(from) : "";
-      backLink.href = safeBackHref(decoded);
-    } catch (_) {
-      backLink.href = "./index.html";
+  try {
+    const path = getPathParam();
+    if (!path) {
+      renderError("Invalid post path");
+      return;
     }
-  }
 
-  // Sync nav-tabs active state based on origin page
-  let isFromUnreal = false;
-  try { isFromUnreal = !!from && decodeURIComponent(from).includes("unreal"); } catch (_) {}
-  const navTabs = q("nav-tabs");
-  if (navTabs) {
-    const tabs = navTabs.querySelectorAll(".nav-tab");
-    tabs.forEach(tab => {
-      const isUnrealTab = tab.href && tab.href.includes("unreal.html");
-      tab.classList.toggle("active", isFromUnreal ? isUnrealTab : !isUnrealTab);
-    });
-  }
+    const from = getFromParam();
+    let fromDecoded = "";
+    try {
+      fromDecoded = from ? decodeURIComponent(from) : "";
+    } catch (_) {}
 
-  const siteData = await loadSiteData();
-  const posts = siteData.posts || [];
-  const pathSet = new Set(posts.map((p) => p.path));
-  const basenameIndex = buildBasenameIndex(posts);
-  const meta = posts.find((p) => p.path === path) || null;
+    const backLink = q("back-link");
+    if (backLink) {
+      try {
+        backLink.href = safeBackHref(fromDecoded);
+      } catch (_) {
+        backLink.href = "./index.html";
+      }
+    }
 
-  if (meta) {
+    // Sync nav-tabs active state based on incoming filter context.
+    const navMode = fromDecoded.includes("series=compiler")
+      ? "compiler"
+      : fromDecoded.includes("series=gpu")
+        ? "gpu"
+        : "home";
+    const navTabs = q("nav-tabs");
+    if (navTabs) {
+      const tabs = navTabs.querySelectorAll(".nav-tab[data-nav]");
+      tabs.forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.nav === navMode);
+      });
+    }
+
+    const siteData = await loadSiteData();
+    const posts = siteData.posts || [];
+    const pathSet = new Set(posts.map((p) => p.path));
+    if (!pathSet.has(path)) {
+      renderError("Unknown post path");
+      return;
+    }
+
+    const basenameIndex = buildBasenameIndex(posts);
+    const meta = posts.find((p) => p.path === path) || null;
+    if (!meta) {
+      renderError("Post metadata not found");
+      return;
+    }
+
     document.title = meta.title;
     q("title").textContent = meta.title;
     q("meta").textContent = `${meta.date} · ${meta.category} · ${meta.track} · ${meta.status}`;
-  } else {
-    q("title").textContent = path;
-  }
 
-  const githubUrl = `https://github.com/chay116/techblog/blob/main/${path}`;
-  q("github-link").href = githubUrl;
+    const githubUrl = `https://github.com/chay116/techblog/blob/main/${path}`;
+    q("github-link").href = githubUrl;
 
-  try {
+    const chapterInfo = renderChapterNav(siteData, meta, path, from || "");
+    saveReadingProgress(meta, path, chapterInfo);
+
     const { text } = await loadMarkdown(path);
     const body = stripFrontmatter(text);
 
@@ -354,7 +549,8 @@ async function main() {
       });
     }
   } catch (err) {
-    q("markdown").innerHTML = `<p>Failed to load post content.</p><pre>${String(err)}</pre>`;
+    console.error(err);
+    renderError(`Failed to load post content: ${String(err)}`);
   }
 }
 

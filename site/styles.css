@@ -61,6 +61,75 @@ body {
   gap: 0.75rem;
 }
 
+.bookshelf {
+  margin-top: 0.9rem;
+}
+
+.bookshelf h2 {
+  margin: 0 0 0.55rem;
+  font-size: 1.25rem;
+}
+
+.bookshelf[hidden] {
+  display: none !important;
+}
+
+.series-cards {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.series-card {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.8rem 0.9rem;
+  background: #fff;
+}
+
+.series-card h3 {
+  margin: 0;
+  font-size: 1.06rem;
+}
+
+.series-actions {
+  margin: 0.35rem 0 0;
+}
+
+.series-reader {
+  margin-top: 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  background: #fff;
+}
+
+.series-reader h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.series-reader[hidden] {
+  display: none !important;
+}
+
+.series-toc {
+  margin: 0.55rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.series-toc li {
+  margin: 0.28rem 0;
+}
+
+.series-toc li.current > a {
+  font-weight: 700;
+}
+
+.series-toc li .sub {
+  margin-left: 0.45rem;
+}
+
 .nav-tabs {
   display: flex;
   gap: 0;
@@ -278,6 +347,21 @@ a:hover {
 .layout.single .content {
   padding-left: 0;
   padding-right: 0;
+}
+
+.chapter-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin: 1rem 0;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f9fbff;
+}
+
+.chapter-nav[hidden] {
+  display: none !important;
 }
 
 .markdown {
