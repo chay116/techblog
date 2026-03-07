@@ -16,16 +16,29 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
+    <div class="top-controls">
+      <div class="lang-control" id="lang-switch" aria-label="Language switch"></div>
+      <div class="theme-control">
+        <label class="theme-switch" for="theme-toggle">
+          <input id="theme-toggle" class="theme-toggle" type="checkbox" role="switch" aria-label="Toggle dark mode" />
+          <span class="theme-track">
+            <span class="theme-icon sun" aria-hidden="true">&#9728;</span>
+            <span class="theme-thumb" aria-hidden="true"></span>
+            <span class="theme-icon moon" aria-hidden="true">&#9790;</span>
+          </span>
+        </label>
+      </div>
+    </div>
+
     <main class="page">
       <header class="site-head">
         <h1>Chaeyoung Lim</h1>
-        <p class="subtitle">Worklog and research notes on GPU optimization, graphics APIs, and systems engineering.</p>
+        <p class="subtitle" id="site-subtitle">Worklog and research notes on GPU optimization, graphics APIs, and systems engineering.</p>
         <nav class="nav-tabs" id="nav-tabs">
-          <a href="./index.html" class="nav-tab active" data-nav="home">Home</a>
-          <a href="./index.html?tab=gpu" class="nav-tab" data-nav="gpu">GPU</a>
-          <a href="./index.html?tab=compiler" class="nav-tab" data-nav="compiler">Compiler</a>
-          <a href="./index.html?tab=recent" class="nav-tab" data-nav="recent">Recent</a>
-          <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">Dark</button>
+          <a href="./index.html" class="nav-tab active" data-nav="home" data-i18n="tabHome">Home</a>
+          <a href="./index.html?tab=gpu" class="nav-tab" data-nav="gpu" data-i18n="tabGpu">GPU</a>
+          <a href="./index.html?tab=compiler" class="nav-tab" data-nav="compiler" data-i18n="tabCompiler">Compiler</a>
+          <a href="./index.html?tab=recent" class="nav-tab" data-nav="recent" data-i18n="tabRecent">Recent</a>
         </nav>
       </header>
 
@@ -53,8 +66,8 @@
 
         <section class="main-col">
           <section class="home-intro" id="home-intro">
-            <h2>About This Blog</h2>
-            <p>I study GPU architecture and compiler internals, and I organize practical notes here.</p>
+            <h2 id="home-title">About This Blog</h2>
+            <p id="home-body">I study GPU architecture and compiler internals, and I organize practical notes here.</p>
             <p class="home-links">
               <a href="https://www.linkedin.com/in/chaeyoung-lim-6b0046132/" target="_blank" rel="noreferrer">LinkedIn</a>
               <a href="https://github.com/chay116" target="_blank" rel="noreferrer">GitHub</a>
@@ -68,11 +81,6 @@
           <section class="series-row">
             <span class="label" id="series-label">Series</span>
             <div class="chips" id="series-filters"></div>
-          </section>
-
-          <section class="mode-row">
-            <span class="label" id="lang-label">Language</span>
-            <div class="mode-switch" id="lang-switch"></div>
           </section>
 
           <section class="post-section">

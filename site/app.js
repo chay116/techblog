@@ -4,9 +4,16 @@ const READER_PROGRESS_KEY = "blog_reader_progress";
 const SERIES_ORDER = ["compiler", "gpu", "other"];
 const SERIES_CARD_ORDER = ["gpu", "compiler"];
 const SERIES_DESCRIPTIONS = {
-  gpu: "Practical notes on GPU architecture, CUDA/Vulkan, and SASS-level analysis.",
-  compiler: "Compiler fundamentals and optimization notes, from SSA to pass reasoning.",
-  other: "General systems notes.",
+  en: {
+    gpu: "Practical notes on GPU architecture, CUDA/Vulkan, and SASS-level analysis.",
+    compiler: "Compiler fundamentals and optimization notes, from SSA to pass reasoning.",
+    other: "General systems notes.",
+  },
+  ko: {
+    gpu: "GPU 구조, CUDA/Vulkan, SASS 레벨 분석을 정리한 실전 노트입니다.",
+    compiler: "SSA부터 최적화 패스 사고 방식까지 다루는 컴파일러 학습 노트입니다.",
+    other: "시스템 일반 주제 노트입니다.",
+  },
 };
 
 const I18N = {
@@ -14,6 +21,13 @@ const I18N = {
     all: "All",
     language: "Language",
     series: "Series",
+    tabHome: "Home",
+    tabGpu: "GPU",
+    tabCompiler: "Compiler",
+    tabRecent: "Recent",
+    siteSubtitle: "Worklog and research notes on GPU optimization, graphics APIs, and systems engineering.",
+    aboutTitle: "About This Blog",
+    aboutBody: "I study GPU architecture and compiler internals, and I organize practical notes here.",
     filterPosts: "Filter posts",
     search: "Search",
     category: "Category",
@@ -23,6 +37,7 @@ const I18N = {
     searchPlaceholder: "Search title, summary, tags...",
     noPosts: "No posts for current filters.",
     noSummary: "No summary",
+    untitled: "(untitled)",
     loadErrorTitle: "Unavailable",
     loadErrorBody: "Failed to load posts data. Refresh and try again.",
     langEn: "English",
@@ -36,11 +51,19 @@ const I18N = {
     openToc: "Open table of contents",
     chapter: "Chapter",
     tocTitle: "Table of Contents",
+    chapterUnit: "chapters",
   },
   ko: {
     all: "전체",
     language: "언어",
     series: "시리즈",
+    tabHome: "홈",
+    tabGpu: "GPU",
+    tabCompiler: "컴파일러",
+    tabRecent: "최신",
+    siteSubtitle: "GPU 최적화, 그래픽스 API, 시스템 엔지니어링 관련 작업 기록과 연구 노트입니다.",
+    aboutTitle: "블로그 소개",
+    aboutBody: "GPU 아키텍처와 컴파일러 내부 동작을 공부하며, 실전 중심 노트를 정리합니다.",
     filterPosts: "필터",
     search: "검색",
     category: "카테고리",
@@ -50,6 +73,7 @@ const I18N = {
     searchPlaceholder: "제목, 요약, 태그 검색...",
     noPosts: "현재 필터에 해당하는 글이 없습니다.",
     noSummary: "요약 없음",
+    untitled: "(제목 없음)",
     loadErrorTitle: "불러오기 실패",
     loadErrorBody: "게시글 데이터를 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.",
     langEn: "영어",
@@ -57,6 +81,13 @@ const I18N = {
     seriesCompiler: "컴파일러",
     seriesGpu: "GPU",
     seriesOther: "기타",
+    bookshelf: "시리즈",
+    startReading: "읽기 시작",
+    continueReading: "이어 읽기",
+    openToc: "목차 보기",
+    chapter: "챕터",
+    tocTitle: "목차",
+    chapterUnit: "개 챕터",
   },
 };
 
@@ -104,8 +135,17 @@ function seriesLabel(value) {
   return t("seriesOther");
 }
 
+function seriesDescription(value) {
+  const table = SERIES_DESCRIPTIONS[state.lang] || SERIES_DESCRIPTIONS.en;
+  return table[value] || table.other || SERIES_DESCRIPTIONS.en.other;
+}
+
 function formatPostCount(n) {
   return state.lang === "ko" ? `${n}개 글` : `${n} posts`;
+}
+
+function formatChapterCount(n) {
+  return state.lang === "ko" ? `${n}${t("chapterUnit")}` : `${n} ${t("chapterUnit")}`;
 }
 
 function parseQuery() {
@@ -232,35 +272,50 @@ function renderLanguageSwitch() {
   const root = byId("lang-switch");
   if (!root) return;
 
+  root.setAttribute("aria-label", t("language"));
   root.innerHTML = "";
-  root.appendChild(
-    createChip(
-      t("langEn"),
-      state.lang === "en",
-      () => {
-        state.lang = "en";
-        safeStorageSet(LANG_MODE_KEY, "en");
-        renderAll();
-      },
-      "mode-chip"
-    )
+  const en = createChip(
+    "EN",
+    state.lang === "en",
+    () => {
+      state.lang = "en";
+      safeStorageSet(LANG_MODE_KEY, "en");
+      renderAll();
+    },
+    "mode-chip"
   );
+  en.title = t("langEn");
+  root.appendChild(en);
 
-  root.appendChild(
-    createChip(
-      t("langKo"),
-      state.lang === "ko",
-      () => {
-        state.lang = "ko";
-        safeStorageSet(LANG_MODE_KEY, "ko");
-        renderAll();
-      },
-      "mode-chip"
-    )
+  const ko = createChip(
+    "KO",
+    state.lang === "ko",
+    () => {
+      state.lang = "ko";
+      safeStorageSet(LANG_MODE_KEY, "ko");
+      renderAll();
+    },
+    "mode-chip"
   );
+  ko.title = t("langKo");
+  root.appendChild(ko);
 }
 
 function renderStaticText() {
+  const subtitle = byId("site-subtitle");
+  if (subtitle) subtitle.textContent = t("siteSubtitle");
+
+  const homeTitle = byId("home-title");
+  if (homeTitle) homeTitle.textContent = t("aboutTitle");
+
+  const homeBody = byId("home-body");
+  if (homeBody) homeBody.textContent = t("aboutBody");
+
+  document.querySelectorAll(".nav-tab[data-i18n]").forEach((tab) => {
+    const key = tab.dataset.i18n;
+    if (key) tab.textContent = t(key);
+  });
+
   const seriesLabelNode = byId("series-label");
   if (seriesLabelNode) seriesLabelNode.textContent = t("series");
 
@@ -418,12 +473,12 @@ function renderBookshelf() {
 
     const desc = document.createElement("p");
     desc.className = "muted";
-    desc.textContent = SERIES_DESCRIPTIONS[series] || SERIES_DESCRIPTIONS.other;
+    desc.textContent = seriesDescription(series);
     card.appendChild(desc);
 
     const count = document.createElement("p");
     count.className = "sub";
-    count.textContent = `${targetEntries.length} chapters`;
+    count.textContent = formatChapterCount(targetEntries.length);
     card.appendChild(count);
 
     const actions = document.createElement("p");
@@ -514,7 +569,7 @@ function renderSeriesReader() {
 
     const link = document.createElement("a");
     link.href = buildPostUrl(entry.path);
-    link.textContent = entry.title || "(untitled)";
+    link.textContent = entry.title || t("untitled");
 
     const meta = document.createElement("span");
     meta.className = "sub";
@@ -675,7 +730,7 @@ function renderPosts() {
     const h3 = document.createElement("h3");
     const link = document.createElement("a");
     link.href = postUrl;
-    link.textContent = post.title || "(untitled)";
+    link.textContent = post.title || t("untitled");
     h3.appendChild(link);
 
     const sub = document.createElement("p");

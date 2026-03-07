@@ -16,6 +16,19 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
+    <div class="top-controls">
+      <div class="theme-control">
+        <label class="theme-switch" for="theme-toggle">
+          <input id="theme-toggle" class="theme-toggle" type="checkbox" role="switch" aria-label="Toggle dark mode" />
+          <span class="theme-track">
+            <span class="theme-icon sun" aria-hidden="true">&#9728;</span>
+            <span class="theme-thumb" aria-hidden="true"></span>
+            <span class="theme-icon moon" aria-hidden="true">&#9790;</span>
+          </span>
+        </label>
+      </div>
+    </div>
+
     <main class="page">
       <header class="site-head">
         <h1>Unreal Summary</h1>
@@ -25,7 +38,6 @@
           <a href="./index.html?tab=gpu" class="nav-tab" data-nav="gpu">GPU</a>
           <a href="./index.html?tab=compiler" class="nav-tab" data-nav="compiler">Compiler</a>
           <a href="./index.html?tab=recent" class="nav-tab" data-nav="recent">Recent</a>
-          <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">Dark</button>
         </nav>
       </header>
 

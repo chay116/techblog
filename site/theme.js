@@ -32,11 +32,15 @@ function syncHighlightTheme(theme) {
 }
 
 function syncThemeToggle(theme) {
-  const btn = document.getElementById("theme-toggle");
-  if (!btn) return;
+  const input = document.getElementById("theme-toggle");
+  if (!input) return;
   const isDark = theme === "dark";
-  btn.textContent = isDark ? "Light" : "Dark";
-  btn.setAttribute("aria-pressed", isDark ? "true" : "false");
+  if (input instanceof HTMLInputElement && input.type === "checkbox") {
+    input.checked = isDark;
+    input.setAttribute("aria-checked", isDark ? "true" : "false");
+    return;
+  }
+  input.setAttribute("aria-pressed", isDark ? "true" : "false");
 }
 
 function applyTheme(theme) {
@@ -54,19 +58,26 @@ function persistTheme(theme) {
   }
 }
 
-function toggleTheme() {
-  const current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
-  const next = current === "dark" ? "light" : "dark";
-  applyTheme(next);
-  persistTheme(next);
-}
-
 function initTheme() {
   applyTheme(resolveTheme());
 
-  const btn = document.getElementById("theme-toggle");
-  if (btn) {
-    btn.addEventListener("click", toggleTheme);
+  const input = document.getElementById("theme-toggle");
+  if (input) {
+    const handleChange = () => {
+      const next =
+        input instanceof HTMLInputElement && input.type === "checkbox" && input.checked ? "dark" : "light";
+      applyTheme(next);
+      persistTheme(next);
+    };
+    input.addEventListener("change", handleChange);
+    input.addEventListener("click", () => {
+      if (!(input instanceof HTMLInputElement)) {
+        const current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+        const next = current === "dark" ? "light" : "dark";
+        applyTheme(next);
+        persistTheme(next);
+      }
+    });
   }
 
   try {

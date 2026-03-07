@@ -181,20 +181,91 @@ body {
   border-bottom-color: var(--accent);
 }
 
-.theme-toggle {
-  margin-left: auto;
-  margin-bottom: 0.3rem;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--ink);
-  border-radius: 999px;
-  padding: 0.22rem 0.72rem;
+.top-controls {
+  position: fixed;
+  top: 0.95rem;
+  right: 1rem;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.theme-control {
+  position: relative;
+}
+
+.theme-switch {
+  display: inline-block;
   cursor: pointer;
 }
 
-.theme-toggle:hover {
-  border-color: var(--accent);
+.theme-toggle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.theme-track {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  width: 78px;
+  height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  padding: 0 0.4rem;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.lang-control {
+  display: inline-flex;
+  gap: 0.25rem;
+  padding: 0.18rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.theme-icon {
+  font-size: 0.88rem;
+  line-height: 1;
+  user-select: none;
+  color: var(--muted);
+  z-index: 1;
+}
+
+.theme-thumb {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition: transform 0.2s ease;
+}
+
+.theme-toggle:checked + .theme-track .theme-thumb {
+  transform: translateX(42px);
+}
+
+.theme-toggle:checked + .theme-track .moon {
   color: var(--accent);
+}
+
+.theme-toggle:not(:checked) + .theme-track .sun {
+  color: var(--accent);
+}
+
+.theme-toggle:focus-visible + .theme-track {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
 }
 
 a {
@@ -265,6 +336,12 @@ a:hover {
   border-color: var(--accent);
   background: var(--accent);
   color: var(--accent-ink);
+}
+
+.lang-control .mode-chip {
+  border: 0;
+  padding: 0.2rem 0.62rem;
+  font-size: 0.82rem;
 }
 
 .filter-box {
@@ -575,6 +652,26 @@ a:hover {
 }
 
 @media (max-width: 760px) {
+  .top-controls {
+    top: 0.6rem;
+    right: 0.75rem;
+    gap: 0.35rem;
+  }
+
+  .theme-track {
+    width: 70px;
+    height: 32px;
+  }
+
+  .theme-thumb {
+    width: 22px;
+    height: 22px;
+  }
+
+  .theme-toggle:checked + .theme-track .theme-thumb {
+    transform: translateX(38px);
+  }
+
   .page,
   .hero,
   .layout.single {
