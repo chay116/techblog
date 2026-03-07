@@ -4,9 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Post</title>
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem("blog_theme");
+          var dark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (_) {}
+      })();
+    </script>
     <link rel="stylesheet" href="./styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/github.min.css" />
+    <link
+      id="hljs-theme-light"
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/github.min.css"
+    />
+    <link
+      id="hljs-theme-dark"
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/github-dark.min.css"
+      disabled
+    />
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
   </head>
   <body>
@@ -16,6 +35,7 @@
         <a href="./index.html?tab=gpu" class="nav-tab" data-nav="gpu">GPU</a>
         <a href="./index.html?tab=compiler" class="nav-tab" data-nav="compiler">Compiler</a>
         <a href="./index.html?tab=recent" class="nav-tab" data-nav="recent">Recent</a>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">Dark</button>
       </nav>
       <h1 id="title">Loading...</h1>
       <p id="meta" class="sub"></p>
@@ -35,6 +55,7 @@
       </article>
     </main>
 
+    <script src="./theme.js"></script>
     <script src="./post.js"></script>
   </body>
 </html>

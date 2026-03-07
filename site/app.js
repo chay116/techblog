@@ -320,6 +320,7 @@ function applyModeState() {
 function renderLayoutMode() {
   const mode = currentNavMode();
   const showFilter = mode === "recent";
+  const showPostFeed = mode !== "home";
 
   const layout = document.querySelector(".layout");
   if (layout) layout.classList.toggle("no-sidebar", !showFilter);
@@ -329,6 +330,12 @@ function renderLayoutMode() {
 
   const seriesRow = document.querySelector(".series-row");
   if (seriesRow) seriesRow.hidden = !showFilter;
+
+  const modeRow = document.querySelector(".mode-row");
+  if (modeRow) modeRow.hidden = !showPostFeed;
+
+  const postSection = document.querySelector(".post-section");
+  if (postSection) postSection.hidden = !showPostFeed;
 }
 
 function renderNavTabs() {

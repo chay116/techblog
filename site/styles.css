@@ -1,9 +1,31 @@
 :root {
+  color-scheme: light;
   --bg: #ffffff;
   --ink: #1f1f1f;
   --muted: #666;
   --line: #e5e5e5;
   --accent: #164ea6;
+  --accent-ink: #ffffff;
+  --surface: #ffffff;
+  --surface-soft: #f9fbff;
+  --surface-muted: #f6f8fa;
+  --inline-code-bg: rgba(175, 184, 193, 0.2);
+  --focus-ring: rgba(22, 78, 166, 0.25);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0f131a;
+  --ink: #e6ecf4;
+  --muted: #a5afbd;
+  --line: #2a3441;
+  --accent: #7cb3ff;
+  --accent-ink: #0f131a;
+  --surface: #151b24;
+  --surface-soft: #131a26;
+  --surface-muted: #111821;
+  --inline-code-bg: rgba(124, 179, 255, 0.22);
+  --focus-ring: rgba(124, 179, 255, 0.35);
 }
 
 * { box-sizing: border-box; }
@@ -38,7 +60,7 @@ body {
   padding: 0.8rem 0.95rem;
   border: 1px solid var(--line);
   border-radius: 10px;
-  background: #f9fbff;
+  background: var(--surface-soft);
 }
 
 .home-intro h2 {
@@ -84,7 +106,7 @@ body {
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 0.8rem 0.9rem;
-  background: #fff;
+  background: var(--surface);
 }
 
 .series-card h3 {
@@ -101,7 +123,7 @@ body {
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 0.75rem 0.9rem;
-  background: #fff;
+  background: var(--surface);
 }
 
 .series-reader h3 {
@@ -132,9 +154,11 @@ body {
 
 .nav-tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 0;
   margin: 0.8rem 0 0;
   border-bottom: 2px solid var(--line);
+  align-items: flex-end;
 }
 
 .nav-tab {
@@ -155,6 +179,22 @@ body {
 .nav-tab.active {
   color: var(--accent);
   border-bottom-color: var(--accent);
+}
+
+.theme-toggle {
+  margin-left: auto;
+  margin-bottom: 0.3rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.22rem 0.72rem;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 a {
@@ -214,7 +254,7 @@ a:hover {
 
 .mode-chip {
   border: 1px solid var(--line);
-  background: #fff;
+  background: var(--surface);
   color: var(--ink);
   border-radius: 999px;
   padding: 0.22rem 0.72rem;
@@ -224,14 +264,14 @@ a:hover {
 .mode-chip.active {
   border-color: var(--accent);
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-ink);
 }
 
 .filter-box {
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 0.5rem 0.65rem;
-  background: #fff;
+  background: var(--surface);
 }
 
 .filter-box summary {
@@ -259,7 +299,7 @@ a:hover {
 }
 
 .search:focus {
-  outline: 2px solid rgba(22, 78, 166, 0.25);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -271,7 +311,7 @@ a:hover {
 
 .chip {
   border: 1px solid var(--line);
-  background: #fff;
+  background: var(--surface);
   color: var(--ink);
   border-radius: 999px;
   padding: 0.18rem 0.58rem;
@@ -286,7 +326,7 @@ a:hover {
 .clear-btn {
   margin-top: 0.7rem;
   border: 1px solid var(--line);
-  background: #fff;
+  background: var(--surface);
   border-radius: 6px;
   padding: 0.3rem 0.55rem;
   cursor: pointer;
@@ -361,7 +401,7 @@ a:hover {
   padding: 0.7rem 0.8rem;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #f9fbff;
+  background: var(--surface-soft);
 }
 
 .chapter-nav[hidden] {
@@ -379,7 +419,7 @@ a:hover {
 }
 
 .markdown pre {
-  background: #f6f8fa;
+  background: var(--surface-muted);
   border: 1px solid var(--line);
   border-radius: 6px;
   padding: 1rem;
@@ -396,7 +436,7 @@ a:hover {
 }
 
 .markdown code {
-  background: rgba(175, 184, 193, 0.2);
+  background: var(--inline-code-bg);
   border-radius: 4px;
   padding: 0.15rem 0.35rem;
   font-size: 0.88em;
@@ -414,7 +454,7 @@ a:hover {
 }
 
 .markdown thead {
-  background: #f6f8fa;
+  background: var(--surface-muted);
 }
 
 .markdown th,
@@ -429,7 +469,7 @@ a:hover {
 }
 
 .markdown tr:nth-child(even) {
-  background: #f6f8fa;
+  background: var(--surface-muted);
 }
 
 /* Blockquotes */
@@ -437,7 +477,7 @@ a:hover {
   margin: 1rem 0;
   padding: 0.5rem 1rem;
   border-left: 4px solid var(--accent);
-  background: #f6f8fa;
+  background: var(--surface-muted);
   color: var(--muted);
 }
 
@@ -464,7 +504,7 @@ a:hover {
   padding: 0.75rem;
   border: 1px solid var(--line);
   border-radius: 6px;
-  background: #fff;
+  background: var(--surface);
   overflow-x: auto;
 }
 
