@@ -205,9 +205,9 @@ function syncUrl() {
   if (mode !== "home") params.set("tab", mode);
   if (state.lang && state.lang !== "en") params.set("lang", state.lang);
 
-  if (mode === "recent") {
+  if (mode === "recent" || mode === "gpu" || mode === "compiler") {
     if (state.series) params.set("series", state.series);
-    if (state.category) params.set("category", state.category);
+    if (mode === "recent" && state.category) params.set("category", state.category);
     if (state.track) params.set("track", state.track);
     if (state.tag) params.set("tag", state.tag);
     if (state.q) params.set("q", state.q);
@@ -355,9 +355,6 @@ function applyModeState() {
   if (mode === "gpu" || mode === "compiler") {
     state.series = mode;
     state.category = "all";
-    state.track = null;
-    state.tag = null;
-    state.q = "";
     return;
   }
 
@@ -374,7 +371,8 @@ function applyModeState() {
 
 function renderLayoutMode() {
   const mode = currentNavMode();
-  const showFilter = mode === "recent";
+  const showFilter = mode === "recent" || mode === "gpu" || mode === "compiler";
+  const showSeriesFilter = mode === "recent";
   const showPostFeed = mode !== "home";
 
   const layout = document.querySelector(".layout");
@@ -384,7 +382,7 @@ function renderLayoutMode() {
   if (sidebar) sidebar.hidden = !showFilter;
 
   const seriesRow = document.querySelector(".series-row");
-  if (seriesRow) seriesRow.hidden = !showFilter;
+  if (seriesRow) seriesRow.hidden = !showSeriesFilter;
 
   const modeRow = document.querySelector(".mode-row");
   if (modeRow) modeRow.hidden = !showPostFeed;
@@ -461,8 +459,6 @@ function renderBookshelf() {
     if (targetEntries.length === 0) return;
 
     const first = targetEntries[0];
-    const progress = getProgress(series, state.lang);
-    const continueEntry = progress ? targetEntries.find((entry) => entry.path === progress.path) || null : null;
 
     const card = document.createElement("article");
     card.className = "series-card";
@@ -489,20 +485,9 @@ function renderBookshelf() {
     start.textContent = t("startReading");
     actions.appendChild(start);
 
-    if (continueEntry) {
-      const sep = document.createElement("span");
-      sep.textContent = " · ";
-      actions.appendChild(sep);
-
-      const cont = document.createElement("a");
-      cont.href = buildPostUrl(continueEntry.path);
-      cont.textContent = t("continueReading");
-      actions.appendChild(cont);
-    }
-
-    const sep2 = document.createElement("span");
-    sep2.textContent = " · ";
-    actions.appendChild(sep2);
+    const sep = document.createElement("span");
+    sep.textContent = " · ";
+    actions.appendChild(sep);
 
     const toc = document.createElement("a");
     toc.href = buildSeriesTocHref(series);
@@ -545,19 +530,6 @@ function renderSeriesReader() {
   start.href = buildPostUrl(targetEntries[0].path);
   start.textContent = t("startReading");
   topActions.appendChild(start);
-
-  const progress = getProgress(state.series, state.lang);
-  const progressEntry = progress ? targetEntries.find((entry) => entry.path === progress.path) || null : null;
-  if (progressEntry) {
-    const sep = document.createElement("span");
-    sep.textContent = " · ";
-    topActions.appendChild(sep);
-
-    const cont = document.createElement("a");
-    cont.href = buildPostUrl(progressEntry.path);
-    cont.textContent = t("continueReading");
-    topActions.appendChild(cont);
-  }
   root.appendChild(topActions);
 
   const list = document.createElement("ol");
@@ -565,7 +537,6 @@ function renderSeriesReader() {
 
   targetEntries.forEach((entry) => {
     const li = document.createElement("li");
-    if (progressEntry && progressEntry.path === entry.path) li.className = "current";
 
     const link = document.createElement("a");
     link.href = buildPostUrl(entry.path);
@@ -614,26 +585,36 @@ function renderFilters() {
   const tagRoot = byId("tag-filters");
   if (!catRoot || !trackRoot || !tagRoot) return;
 
+  const mode = currentNavMode();
+  const showCategory = mode === "recent";
+  const isFilterMode = mode === "recent" || mode === "gpu" || mode === "compiler";
+
+  const categoryLabel = byId("filter-category-label");
+  if (categoryLabel) categoryLabel.hidden = !showCategory;
+  catRoot.hidden = !showCategory;
+
   catRoot.innerHTML = "";
   trackRoot.innerHTML = "";
   tagRoot.innerHTML = "";
-  if (currentNavMode() !== "recent") return;
+  if (!isFilterMode) return;
 
-  catRoot.appendChild(
-    createChip(t("all"), state.category === "all", () => {
-      state.category = state.category === "all" ? null : "all";
-      renderAll();
-    })
-  );
-
-  state.data.categories.forEach((category) => {
+  if (showCategory) {
     catRoot.appendChild(
-      createChip(category, state.category === category, () => {
-        state.category = state.category === category ? null : category;
+      createChip(t("all"), state.category === "all", () => {
+        state.category = state.category === "all" ? null : "all";
         renderAll();
       })
     );
-  });
+
+    state.data.categories.forEach((category) => {
+      catRoot.appendChild(
+        createChip(category, state.category === category, () => {
+          state.category = state.category === category ? null : category;
+          renderAll();
+        })
+      );
+    });
+  }
 
   state.data.tracks.forEach((track) => {
     trackRoot.appendChild(
