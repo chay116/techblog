@@ -64,6 +64,33 @@ function safeBackHref(fromValue) {
   return "./index.html";
 }
 
+function deriveNavMode(fromValue) {
+  const raw = (fromValue || "").trim();
+  if (!raw) return "home";
+
+  let query = "";
+  if (raw.startsWith("?")) {
+    query = raw.slice(1);
+  } else {
+    const idx = raw.indexOf("?");
+    query = idx >= 0 ? raw.slice(idx + 1) : raw;
+  }
+
+  try {
+    const params = new URLSearchParams(query);
+    const tab = params.get("tab");
+    if (tab === "home" || tab === "gpu" || tab === "compiler" || tab === "recent") return tab;
+
+    const series = params.get("series");
+    if (series === "gpu" || series === "compiler") return series;
+    if (params.has("category") || params.has("track") || params.has("tag") || params.has("q")) return "recent";
+  } catch (_) {
+    // ignore malformed query strings
+  }
+
+  return "home";
+}
+
 function normalizePosix(p) {
   const parts = String(p).split("/");
   const out = [];
@@ -161,7 +188,10 @@ function postHref(path, fromValue) {
 
 function readerTocLink(series) {
   if (!series) return "./index.html";
-  return `./index.html?series=${encodeURIComponent(series)}&category=all`;
+  if (series === "gpu" || series === "compiler") {
+    return `./index.html?tab=${encodeURIComponent(series)}`;
+  }
+  return `./index.html?tab=recent&series=${encodeURIComponent(series)}&category=all`;
 }
 
 function renderChapterNav(siteData, meta, currentPath, fromValue) {
@@ -195,7 +225,10 @@ function renderChapterNav(siteData, meta, currentPath, fromValue) {
     return null;
   }
 
-  const fallbackFrom = `?series=${encodeURIComponent(series)}&category=all`;
+  const fallbackFrom =
+    series === "gpu" || series === "compiler"
+      ? `?tab=${encodeURIComponent(series)}`
+      : `?tab=recent&series=${encodeURIComponent(series)}&category=all`;
   const fromForLinks = fromValue || fallbackFrom;
 
   toc.href = readerTocLink(series);
@@ -430,11 +463,7 @@ async function main() {
     }
 
     // Sync nav-tabs active state based on incoming filter context.
-    const navMode = fromDecoded.includes("series=compiler")
-      ? "compiler"
-      : fromDecoded.includes("series=gpu")
-        ? "gpu"
-        : "home";
+    const navMode = deriveNavMode(fromDecoded);
     const navTabs = q("nav-tabs");
     if (navTabs) {
       const tabs = navTabs.querySelectorAll(".nav-tab[data-nav]");

@@ -13,21 +13,22 @@
     <header class="hero">
       <nav class="nav-tabs" id="nav-tabs">
         <a href="./index.html" class="nav-tab active" data-nav="home">Home</a>
-        <a href="./index.html?series=gpu&category=all" class="nav-tab" data-nav="gpu">GPU</a>
-        <a href="./index.html?series=compiler&category=all" class="nav-tab" data-nav="compiler">Compiler</a>
+        <a href="./index.html?tab=gpu" class="nav-tab" data-nav="gpu">GPU</a>
+        <a href="./index.html?tab=compiler" class="nav-tab" data-nav="compiler">Compiler</a>
+        <a href="./index.html?tab=recent" class="nav-tab" data-nav="recent">Recent</a>
       </nav>
       <h1 id="title">Loading...</h1>
       <p id="meta" class="sub"></p>
-      <p><a id="back-link" href="./index.html">← Back to index</a></p>
+      <p><a id="back-link" href="./index.html">Back to index</a></p>
     </header>
 
     <main class="layout single">
       <article class="content">
         <div id="markdown" class="markdown"></div>
         <nav id="chapter-nav" class="chapter-nav" hidden>
-          <a id="chapter-prev" href="#" hidden>← Previous Chapter</a>
+          <a id="chapter-prev" href="#" hidden>&larr; Previous Chapter</a>
           <a id="chapter-toc" href="#">Table of Contents</a>
-          <a id="chapter-next" href="#" hidden>Next Chapter →</a>
+          <a id="chapter-next" href="#" hidden>Next Chapter &rarr;</a>
         </nav>
         <hr />
         <p><a id="github-link" href="#" target="_blank" rel="noreferrer">Open on GitHub</a></p>

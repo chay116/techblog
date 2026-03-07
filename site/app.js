@@ -79,6 +79,7 @@ function safeStorageSet(key, value) {
 
 const state = {
   lang: safeStorageGet(LANG_MODE_KEY, "en"),
+  nav: "home",
   series: null,
   category: null,
   track: null,
@@ -115,6 +116,14 @@ function parseQuery() {
   }
 }
 
+function inferNavMode(params, series) {
+  const tab = params.get("tab");
+  if (tab === "home" || tab === "gpu" || tab === "compiler" || tab === "recent") return tab;
+  if (series === "gpu" || series === "compiler") return series;
+  if (params.has("category") || params.has("track") || params.has("tag") || params.has("q")) return "recent";
+  return "home";
+}
+
 function applyQueryToState(params) {
   const lang = params.get("lang");
   if (lang === "en" || lang === "ko") {
@@ -124,6 +133,7 @@ function applyQueryToState(params) {
 
   const series = params.get("series");
   state.series = series || null;
+  state.nav = inferNavMode(params, series);
 
   state.explicitCategory = params.has("category");
   const category = params.get("category");
@@ -150,12 +160,18 @@ function validateStateAgainstData() {
 
 function syncUrl() {
   const params = new URLSearchParams();
+  const mode = currentNavMode();
+
+  if (mode !== "home") params.set("tab", mode);
   if (state.lang && state.lang !== "en") params.set("lang", state.lang);
-  if (state.series) params.set("series", state.series);
-  if (state.category) params.set("category", state.category);
-  if (state.track) params.set("track", state.track);
-  if (state.tag) params.set("tag", state.tag);
-  if (state.q) params.set("q", state.q);
+
+  if (mode === "recent") {
+    if (state.series) params.set("series", state.series);
+    if (state.category) params.set("category", state.category);
+    if (state.track) params.set("track", state.track);
+    if (state.tag) params.set("tag", state.tag);
+    if (state.q) params.set("q", state.q);
+  }
 
   const qs = params.toString();
   const next = `${window.location.pathname}${qs ? `?${qs}` : ""}`;
@@ -194,6 +210,13 @@ function buildPostUrl(path) {
   return from.length > 1
     ? `./post.html?path=${encodeURIComponent(path)}&from=${encodeURIComponent(from)}`
     : `./post.html?path=${encodeURIComponent(path)}`;
+}
+
+function buildSeriesTocHref(series) {
+  if (series === "gpu" || series === "compiler") {
+    return `./index.html?tab=${encodeURIComponent(series)}`;
+  }
+  return `./index.html?tab=recent&series=${encodeURIComponent(series)}&category=all`;
 }
 
 function createChip(text, active, onClick, className = "chip") {
@@ -267,9 +290,45 @@ function renderStaticText() {
 }
 
 function currentNavMode() {
-  if (state.series === "gpu") return "gpu";
-  if (state.series === "compiler") return "compiler";
+  if (state.nav === "recent" || state.nav === "gpu" || state.nav === "compiler") return state.nav;
   return "home";
+}
+
+function applyModeState() {
+  const mode = currentNavMode();
+
+  if (mode === "gpu" || mode === "compiler") {
+    state.series = mode;
+    state.category = "all";
+    state.track = null;
+    state.tag = null;
+    state.q = "";
+    return;
+  }
+
+  if (mode === "home") {
+    state.series = null;
+    state.track = null;
+    state.tag = null;
+    state.q = "";
+    if (!state.explicitCategory && state.data && state.data.categories.includes("worklog")) {
+      state.category = "worklog";
+    }
+  }
+}
+
+function renderLayoutMode() {
+  const mode = currentNavMode();
+  const showFilter = mode === "recent";
+
+  const layout = document.querySelector(".layout");
+  if (layout) layout.classList.toggle("no-sidebar", !showFilter);
+
+  const sidebar = document.querySelector(".sidebar");
+  if (sidebar) sidebar.hidden = !showFilter;
+
+  const seriesRow = document.querySelector(".series-row");
+  if (seriesRow) seriesRow.hidden = !showFilter;
 }
 
 function renderNavTabs() {
@@ -384,7 +443,7 @@ function renderBookshelf() {
     actions.appendChild(sep2);
 
     const toc = document.createElement("a");
-    toc.href = `./index.html?series=${encodeURIComponent(series)}&category=all`;
+    toc.href = buildSeriesTocHref(series);
     toc.textContent = t("openToc");
     actions.appendChild(toc);
 
@@ -399,7 +458,8 @@ function renderSeriesReader() {
   const root = byId("series-reader");
   if (!root) return;
 
-  const show = Boolean(state.series);
+  const mode = currentNavMode();
+  const show = mode === "gpu" || mode === "compiler";
   root.hidden = !show;
   if (!show || !state.data) {
     root.innerHTML = "";
@@ -467,6 +527,8 @@ function renderSeriesFilters() {
   if (!root) return;
 
   root.innerHTML = "";
+  if (currentNavMode() !== "recent") return;
+
   root.appendChild(
     createChip(t("all"), !state.series, () => {
       state.series = null;
@@ -493,6 +555,7 @@ function renderFilters() {
   catRoot.innerHTML = "";
   trackRoot.innerHTML = "";
   tagRoot.innerHTML = "";
+  if (currentNavMode() !== "recent") return;
 
   catRoot.appendChild(
     createChip(t("all"), state.category === "all", () => {
@@ -563,7 +626,16 @@ function renderPosts() {
   const modeTitle = byId("mode-title");
   if (!list || !meta || !modeTitle) return;
 
-  if (state.series) {
+  if (currentNavMode() === "recent") {
+    posts = posts
+      .slice()
+      .sort(
+        (a, b) =>
+          (b.date || "").localeCompare(a.date || "") ||
+          (a.title || "").localeCompare(b.title || "") ||
+          (a.path || "").localeCompare(b.path || "")
+      );
+  } else if (state.series) {
     const entries = seriesEntries(state.series, state.lang);
     const targetEntries = entries.length > 0 ? entries : firstAvailableSeriesEntries(state.series);
     const orderMap = new Map(targetEntries.map((entry, idx) => [entry.path, idx]));
@@ -614,7 +686,9 @@ function renderPosts() {
 }
 
 function renderLoadError() {
+  applyModeState();
   renderNavTabs();
+  renderLayoutMode();
   renderHomeIntro();
   renderBookshelf();
   renderSeriesReader();
@@ -637,7 +711,9 @@ function renderLoadError() {
 }
 
 function renderAll() {
+  applyModeState();
   renderNavTabs();
+  renderLayoutMode();
   renderHomeIntro();
   renderBookshelf();
   renderSeriesReader();
@@ -749,10 +825,7 @@ async function main() {
     const params = parseQuery();
     applyQueryToState(params);
     validateStateAgainstData();
-
-    if (!state.explicitCategory && !state.category && state.data.categories.includes("worklog")) {
-      state.category = "worklog";
-    }
+    applyModeState();
 
     const search = byId("search-input");
     if (search) {
@@ -775,7 +848,7 @@ async function main() {
     if (clearBtn) {
       clearBtn.addEventListener("click", () => {
         state.series = null;
-        state.category = state.data.categories.includes("worklog") ? "worklog" : null;
+        state.category = null;
         state.track = null;
         state.tag = null;
         state.q = "";
