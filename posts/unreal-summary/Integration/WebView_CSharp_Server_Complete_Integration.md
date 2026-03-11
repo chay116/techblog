@@ -5,7 +5,7 @@ status: "stable"
 project: "UnrealEngine"
 lang: "ko"
 category: "unreal-summary"
-track: "Networking"
+track: "Integration"
 tags: ["unreal", "Networking", "Integration"]
 ---
 # 웹뷰 + C# 서버 완전 통합 가이드

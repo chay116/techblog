@@ -83,16 +83,16 @@ Recommended writing order for depth:
 - Public Unreal toggle: `UNREAL_PUBLIC_ENABLED` (`true` | `false`)
 
 When `main` is updated, GitHub Actions builds `site/posts.json` from `posts/` and deploys the static page.
-The deploy workflow sets `UNREAL_PUBLIC_ENABLED=false`.
+The deploy workflow sets `UNREAL_PUBLIC_ENABLED=true`.
 
 Local examples:
 
 ```bash
-# Unreal excluded (default)
+# Unreal included (default)
 python scripts/build_site.py
 
-# Unreal included
-UNREAL_PUBLIC_ENABLED=true python scripts/build_site.py
+# Unreal excluded
+UNREAL_PUBLIC_ENABLED=false python scripts/build_site.py
 ```
 
 ## Unreal Summary Maintenance

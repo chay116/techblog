@@ -30,6 +30,8 @@ jobs:
           python-version: "3.11"
 
       - name: Build site data
+        env:
+          UNREAL_PUBLIC_ENABLED: "true"
         run: python scripts/build_site.py
 
       - name: Upload artifact

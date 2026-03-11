@@ -5,7 +5,7 @@ status: "stable"
 project: "UnrealEngine"
 lang: "ko"
 category: "unreal-summary"
-track: "Core"
+track: "MultiThreading"
 tags: ["unreal", "Core", "MultiThreading"]
 engine_version: "Unreal Engine 5.7"
 ---

@@ -59,7 +59,9 @@ function safeBackHref(fromValue) {
   if (raw.startsWith("/")) return "./index.html";
 
   if (raw.startsWith("./")) return raw;
-  if (raw.startsWith("index.html") || raw.startsWith("unreal.html")) return `./${raw}`;
+  if (raw.startsWith("index.html") || raw.startsWith("unreal.html") || raw.startsWith("pathtracing.html")) {
+    return `./${raw}`;
+  }
 
   return "./index.html";
 }
@@ -68,16 +70,24 @@ function deriveNavMode(fromValue) {
   const raw = (fromValue || "").trim();
   if (!raw) return "home";
 
+  let page = "index.html";
   let query = "";
   if (raw.startsWith("?")) {
     query = raw.slice(1);
   } else {
-    const idx = raw.indexOf("?");
-    query = idx >= 0 ? raw.slice(idx + 1) : raw;
+    const normalized = raw.startsWith("./") ? raw.slice(2) : raw;
+    const idx = normalized.indexOf("?");
+    page = idx >= 0 ? normalized.slice(0, idx) : normalized;
+    query = idx >= 0 ? normalized.slice(idx + 1) : "";
   }
 
   try {
     const params = new URLSearchParams(query);
+    if (page === "unreal.html") {
+      return params.get("view") === "pathtracing" ? "pathtracing" : "unreal";
+    }
+    if (page === "pathtracing.html") return "pathtracing";
+
     const tab = params.get("tab");
     if (tab === "home" || tab === "gpu" || tab === "compiler" || tab === "recent") return tab;
 
@@ -568,6 +578,10 @@ async function main() {
     const container = q("markdown");
     if (container) {
       container.innerHTML = marked.parse(body);
+      const firstHeading = container.querySelector("h1");
+      if (firstHeading && meta && meta.title && firstHeading.textContent.trim() !== meta.title.trim()) {
+        firstHeading.textContent = meta.title;
+      }
       await renderPlantUmlBlocks(container);
     }
 

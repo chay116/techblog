@@ -5,7 +5,7 @@ status: "stable"
 project: "UnrealEngine"
 lang: "ko"
 category: "unreal-summary"
-track: "GameFramework"
+track: "Scripting"
 tags: ["unreal", "GameFramework", "Scripting"]
 engine_version: "Unreal Engine 5.7"
 ---

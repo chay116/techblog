@@ -44,7 +44,7 @@ def env_flag(name: str, default: bool) -> bool:
     return default
 
 
-UNREAL_PUBLIC_ENABLED = env_flag("UNREAL_PUBLIC_ENABLED", default=False)
+UNREAL_PUBLIC_ENABLED = env_flag("UNREAL_PUBLIC_ENABLED", default=True)
 
 
 def parse_frontmatter(text: str):
@@ -146,6 +146,23 @@ def infer_series(frontmatter, tags):
     return "other"
 
 
+def normalize_unreal_metadata(path: Path, title: str, tags, summary: str):
+    tags = list(tags or [])
+
+    # Keep RayTracing/PathTracing naming consistent in the public viewer.
+    if path.name == "PathTracing.md":
+        title = "Path Tracing Deep Dive"
+        if "PathTracing" not in tags:
+            tags.append("PathTracing")
+        if not summary or summary.startswith("**Hardware Ray Tracing**"):
+            summary = (
+                "Path tracing in Unreal Engine is best treated as a "
+                "reference-quality renderer for ground-truth lighting and lookdev validation."
+            )
+
+    return title, tags, summary
+
+
 def collect_posts():
     posts = []
     if not POSTS_DIR.exists():
@@ -170,6 +187,8 @@ def collect_posts():
             order = parse_int(frontmatter.get("order"))
             track = frontmatter.get("track", "Meta")
             title = frontmatter.get("title", path.stem)
+            summary = extract_summary(body)
+            title, tags, summary = normalize_unreal_metadata(path, title, tags, summary)
 
             post = {
                 "title": title,
@@ -186,7 +205,7 @@ def collect_posts():
                 "order": order,
                 "tags": tags,
                 "path": rel,
-                "summary": extract_summary(body),
+                "summary": summary,
             }
             posts.append(post)
             continue
