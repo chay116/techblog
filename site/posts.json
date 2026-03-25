@@ -28,6 +28,27 @@
       "summary": "- 핵심 주장: `scalarization`의 본질은 \"값이 wave 안에서 정말 동일한가\"를 찾아서, 그 uniformity를 레지스터, 메모리 경로, 제어 흐름 차원에서 끝까지 활용하는 것이다."
     },
     {
+      "title": "Unreal Summary 개요",
+      "date": "2026-03-26",
+      "status": "stable",
+      "project": "UnrealEngine",
+      "lang": "ko",
+      "category": "unreal-summary",
+      "track": "Meta",
+      "series": "other",
+      "book": "Unreal Summary",
+      "part": "Getting Started",
+      "chapter": "전체 구조와 추천 읽기 순서",
+      "order": 0,
+      "tags": [
+        "unreal",
+        "Meta",
+        "Overview"
+      ],
+      "path": "posts/unreal-summary/Overview.md",
+      "summary": "이 문서는 `posts/unreal-summary/` 아래에 쌓인 Unreal Engine 문서 묶음의 **전체 지도**다."
+    },
+    {
       "title": "Comparison - Vega(GCN) vs RDNA vs NVIDIA: Scalarization, SGPR/VGPR, ALU",
       "date": "2026-03-26",
       "status": "wip",
@@ -5594,7 +5615,7 @@
     }
   },
   "tags": {
-    "unreal": 223,
+    "unreal": 224,
     "Niagara": 42,
     "Core": 30,
     "Rendering": 29,
@@ -5624,6 +5645,7 @@
     "UI": 3,
     "Asset": 2,
     "Build": 2,
+    "Meta": 2,
     "Pipeline": 2,
     "RayTracing": 2,
     "Virtualization": 2,
@@ -5664,8 +5686,8 @@
     "Integration": 1,
     "Material": 1,
     "Materials": 1,
-    "Meta": 1,
     "MultiThreading": 1,
+    "Overview": 1,
     "PathTracing": 1,
     "RealWorld": 1,
     "Scripting": 1,
