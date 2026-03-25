@@ -1,5 +1,5 @@
 ---
-title: "?뚰겕濡쒓렇 #10 - Systolic Array: 湲곗큹遺???ㅻТ 留ㅽ븨源뚯?"
+title: "워크로그 #10 - Systolic Array: 기초부터 실전 매핑까지"
 date: "2026-03-08"
 status: "wip"
 project: "vAI"
@@ -9,54 +9,54 @@ track: "gpu-architecture"
 series: "gpu"
 book: "GPU Series"
 part: "Systolic Array & Tensor Dataflow"
-chapter: "湲곗큹 ?먮━遺???ㅻТ 怨좉툒 理쒖쟻??
+chapter: "기초 원리부터 실전 최적화까지"
 order: "10"
 tags: ["gpu", "systolic-array", "tensor-core", "gemm", "dataflow", "tpu", "compiler"]
 ---
 
 # 1. Executive Summary
 
-- ?듭떖 二쇱옣: `Systolic Array`??"?됰젹怨??섎뱶?⑥뼱"媛 ?꾨땲?? **?곗씠?곕? ?ъ궗?⑺븯湲??꾪빐 怨꾩궛怨??대룞??由щ벉?뷀븳 援ъ“**??
-- ?ㅻТ 愿?? ?깅뒫? MAC 媛쒖닔蹂대떎??`??쇰쭅`, `?곗씠?고뵆濡쒖슦(WS/OS/IS)`, `?⑥묩 踰꾪띁 泥대쪟?쒓컙`?먯꽌 媛덈┛??
-- 而댄뙆?쇰윭 愿?? loop nest瑜???쇰줈 履쇨컻怨? ?대뼡 ?먯꽌瑜?stationary濡??섏? 寃곗젙?섎뒗 寃껋씠 肄붾뱶 ?앹꽦 ?덉쭏???듭떖?대떎.
+- 핵심 주장: `Systolic Array`는 단순한 "행렬곱 하드웨어"가 아니라, **데이터 재사용을 극대화하기 위해 계산과 이동을 리듬감 있게 조직한 구조**다.
+- 실전 관점: 성능은 보통 MAC 개수보다 `타일링`, `데이터플로우 정책(WS/OS/IS)`, `온칩 데이터 상주 시간`에서 결정된다.
+- 컴파일러 관점: 코드 생성 품질은 loop nest를 어떻게 타일링하고 어떤 텐서를 stationary로 둘지에 크게 좌우된다.
 
-# 2. 吏곴?: ??"Systolic"?멸?
+# 2. 직관: 왜 이름이 "Systolic"인가
 
-`Systolic`?대씪???대쫫? ?ъ옣 諛뺣룞(systole)?먯꽌 ?붾떎. ?듭떖 ?대?吏???⑥닚?섎떎.
+`Systolic`이라는 이름은 심장의 수축 운동(systole)에서 왔다. 핵심 이미지는 단순하다.
 
-1. ?곗씠?곌? ?뚮룄泥섎읆 ??移몄뵫 ?대룞?쒕떎.
-2. 媛?PE(Processing Element)???ㅼ뼱??媛믪쑝濡?怨??꾩궛(MAC) ??寃곌낵瑜??놁쑝濡?蹂대궦??
-3. ?숈씪???곗씠?곌? ?щ윭 PE?먯꽌 ?ъ궗?⑸릺硫? DRAM ?뺣났??以꾩씤??
+1. 데이터가 파동처럼 한 사이클에 한 칸씩 이동한다.
+2. 각 PE(Processing Element)는 들어온 값으로 곱셈-누산(MAC)을 수행한다.
+3. 같은 값이 이웃한 PE들에서 반복 사용되면서 DRAM 왕복이 줄어든다.
 
-??援ъ“??紐⑹쟻? 怨꾩궛 洹??먯껜蹂대떎 **?곗씠???대룞 鍮꾩슜 ?덇컧**?대떎.
+즉 이 구조의 목적은 계산 유닛 수를 늘리는 것만이 아니라 **데이터 이동 비용을 낮추는 것**이다.
 
-# 3. 湲곕낯 ?섏떇怨??ㅽ뻾 紐⑤뜽
+# 3. 기본 수식과 실행 모델
 
-?됰젹怨?`C = A x B`?먯꽌,
+행렬곱 `C = A x B`에서:
 
 `C[i, j] = sum_k A[i, k] * B[k, j]`
 
-Systolic Array??蹂댄넻 ?ㅼ쓬 ?앹쑝濡?留ㅽ븨?쒕떎.
+전형적인 systolic 매핑은 다음과 같다.
 
-- `A`?????ㅽ듃由쇱? 媛濡?諛⑺뼢?쇰줈 ?대룞
-- `B`?????ㅽ듃由쇱? ?몃줈 諛⑺뼢?쇰줈 ?대룞
-- 媛?PE??`(i, j)` ?꾩튂??遺遺꾪빀???꾩쟻
+- `A`의 row stream은 가로 방향으로 이동
+- `B`의 column stream은 세로 방향으로 이동
+- 각 PE는 하나의 `(i, j)` 출력 위치에 대한 partial sum을 누적
 
-利? "??踰??ㅼ뼱???곗씠?곌? ?щ윭 踰??곗씠?꾨줉" 怨듦컙?곸쑝濡?諛곗뿴?쒕떎.
+즉 시간축의 재사용을 공간축의 재사용으로 바꾸는 구조라고 보면 된다.
 
-# 4. ?곗씠?고뵆濡쒖슦 ?뺤콉 3醫?(?ㅻТ?먯꽌 媛??以묒슂)
+# 4. 데이터플로우 정책 3종류
 
-| ?뺤콉 | 怨좎젙(Stationary) ???| ?μ젏 | 由ъ뒪??| 二??ъ슜泥?|
+| 정책 | 고정(Stationary) 텐서 | 장점 | 리스크 | 대표 사용처 |
 |---|---|---|---|---|
-| Weight-Stationary (WS) | 媛以묒튂(Weight) | 媛以묒튂 ?ъ궗??洹밸???| ?쒖꽦媛??대룞??利앷? | 異붾줎(inference) |
-| Output-Stationary (OS) | 異쒕젰 遺遺꾪빀(psum) | ?꾩궛媛??ъ벐湲?理쒖냼??| ?낅젰/媛以묒튂 ???룺 ?붽뎄 | ?쇰컲 GEMM |
-| Input-Stationary (IS) | ?낅젰 ?쒖꽦媛?| ?낅젰 ?ъ궗???믪쓬 | 媛以묒튂/psum ?대룞 遺??| ?뱀젙 ?곗궛 ?⑦꽩 |
+| Weight-Stationary (WS) | 가중치(Weight) | 가중치 재사용 극대화 | activation 이동량 증가 | 추론 중심 경로 |
+| Output-Stationary (OS) | 출력 partial sum | psum writeback 최소화 | 입력/가중치 공급 부담 증가 | 일반 GEMM 기본형 |
+| Input-Stationary (IS) | 입력 activation | 입력 재사용 강함 | weight/psum 이동 증가 | 특정 레이어 형태 |
 
-?ㅻТ?먯꽌??紐⑤뜽/諛곗튂/?쒗??湲몄씠???곕씪 理쒖쟻 ?뺤콉???щ씪吏꾨떎.
+전역적으로 항상 최선인 정책은 없다. 워크로드와 하드웨어 제약에 따라 달라진다.
 
-# 5. 洹몃┝怨?GIF濡?蹂대뒗 ?먮쫫
+# 5. 그림과 GIF로 보는 흐름
 
-?꾨옒 GIF/?대?吏??"?뚯씠?꾨씪???⑥씠釉?瑜?鍮좊Ⅴ寃??댄빐?섍린 醫뗫떎.
+아래 자료들은 systolic dataflow를 빠르게 이해하기에 좋다.
 
 ![Matrix multiplication systolic animation](https://upload.wikimedia.org/wikipedia/commons/8/86/Matrix_multiplication_.gif)
 
@@ -64,43 +64,46 @@ Systolic Array??蹂댄넻 ?ㅼ쓬 ?앹쑝濡?留ㅽ븨?쒕떎.
 
 ![Output-stationary systolic example](https://upload.wikimedia.org/wikipedia/commons/e/e8/Output_Stationary_Systolic_Array_Animation_4x4.png)
 
-# 6. deep-math 湲怨??곌껐???듭떖 ?ъ씤??
-李멸퀬 湲: https://deep-math.tistory.com/29
+# 6. deep-math 설명을 실전 용어로 옮기기
 
-?대떦 湲???μ젏? "?됰젹怨깆쓣 ?쒓컙異?怨듦컙異뺤쑝濡?諛???ｌ쑝硫????ъ궗?⑹씠 ?앷린?붽?"瑜?吏곴??곸쑝濡?蹂댁뿬以?ㅻ뒗 ?먯씠??
-??湲??愿?먯쓣 ?ㅻТ ?⑹뼱濡?諛붽씀硫??ㅼ쓬怨?媛숇떎.
+참고 글: https://deep-math.tistory.com/29
 
-1. ?媛곸꽑 ?⑥씠釉뚰봽濡좏듃媛 PE瑜??듦낵?섎ŉ MAC???꾩쟻?쒕떎.
-2. warm-up / steady-state / drain ?④퀎媛 ?덇퀬, 吏㏃? ??쇱뿉?쒕뒗 warm-up ?먰빐媛 而ㅼ쭊??
-3. ?곕씪??????쇱씠 ??긽 ?뺣떟???꾨땲?? on-chip SRAM ?⑸웾怨??④퍡 理쒖쟻?먯쓣 李얠븘???쒕떎.
+이 글의 강점은 행렬곱을 공간축과 시간축으로 펼쳤을 때 왜 재사용이 생기는지 직관적으로 보여준다는 점이다. 이를 실전 용어로 바꾸면 다음과 같다.
 
-# 7. ?깅뒫 紐⑤뜽: ??硫붾え由ш? 癒쇱? ?곗???
-媛꾨떒???ㅻТ ?댁꽍:
+1. 대각선 wavefront가 PE mesh를 통과하면서 MAC 결과를 누적한다.
+2. 실행은 warm-up / steady-state / drain 단계로 나뉜다.
+3. 타일이 짧으면 warm-up 오버헤드가 상대적으로 커진다.
+4. 타일 크기는 온칩 SRAM 용량과 함께 봐야 한다.
 
-- ?곗궛??FLOPs)? `M*N*K`濡?鍮좊Ⅴ寃?利앷??쒕떎.
-- 洹몃윭???섎せ ??쇰쭅?섎㈃ DRAM ?몃옒?쎈룄 嫄곗쓽 媛숈씠 利앷??쒕떎.
-- 寃곌낵?곸쑝濡?MAC ?좊떅? ?怨? 硫붾え由??湲?stall)媛 吏諛고븳??
+# 7. 성능 모델: 왜 메모리가 먼저 병목이 되는가
 
-洹몃옒??Systolic 理쒖쟻?붿쓽 泥?吏덈Ц? "?곗궛湲?紐?媛쒕? ???멸퉴?"媛 ?꾨땲??"??踰?遺덈윭????쇱쓣 紐?踰??ъ궗?⑺븯??"??
+실전 해석은 다음과 같다.
 
-# 8. ?섎뱶?⑥뼱???대뼸寃??섑??섎굹
+- 계산량(FLOPs)은 `M*N*K`로 빠르게 증가한다.
+- 하지만 타일링이 나쁘면 DRAM 트래픽도 거의 같은 비율로 커진다.
+- 그 결과 MAC 유닛은 놀고, 메모리 대기 시간이 지배하게 된다.
 
-- TPU瑜? ???2D array + 紐낆떆???⑥묩 踰꾪띁 愿由?- GPU Tensor Core: warp ?⑥쐞 MMA瑜??듯빐 ?대??곸쑝濡???쇳솕??systolic ?좎궗 ?곗씠??寃쎈줈瑜??ъ슜
-- NPU/Edge Accelerator: WS/OS 蹂?뺤쓣 ?고??꾩뿉???좏깮?섍굅??而댄뙆????꾩뿉 怨좎젙
+그래서 첫 번째 최적화 질문은 "연산 유닛이 몇 개인가"가 아니라, **"한 번 불러온 타일을 몇 번 재사용하는가"** 여야 한다.
 
-利??대쫫? ?щ씪??蹂몄쭏? "MAC 諛곗뿴 + ?곗씠???ъ궗???뺤콉"?대떎.
+# 8. 하드웨어 구현 예시
 
-# 9. 而댄뙆?쇰윭 愿?? loop nest?먯꽌 Systolic?쇰줈
+- TPU 계열 가속기: 큰 2D array와 명시적인 온칩 버퍼 오케스트레이션
+- GPU Tensor Core: warp 단위 MMA를 제공하지만, 내부적으로는 타일 기반의 systolic-like dataflow를 활용
+- NPU / edge accelerator: WS/OS 계열 변형을 컴파일 타임 또는 런타임에 선택
 
-而댄뙆?쇰윭/?ㅼ?以꾨윭??蹂댄넻 ?꾨옒 ?쒖꽌濡?臾몄젣瑜??쇰떎.
+이름은 달라도 본질은 같다. `MAC array + 재사용 중심 데이터플로우`다.
 
-1. `M/N/K`瑜???쇰줈 遺꾪빐
-2. ?대뒓 ?먯꽌瑜?stationary濡??섏? ?좏깮
-3. 硫붾え由?怨꾩링(DRAM -> L2 -> SRAM -> register) ?대룞 ?쒖꽌 寃곗젙
-4. PE/warp ?⑥쐞濡?留ㅽ븨
-5. double buffering?쇰줈 濡쒕뱶/?곗궛 以묒꺽
+# 9. 컴파일러 관점: loop nest에서 systolic 실행으로
 
-?덉떆 ?섏궗肄붾뱶:
+전형적인 컴파일러/스케줄러 흐름은 다음과 같다.
+
+1. `M/N/K`를 타일링한다.
+2. 어떤 텐서를 stationary로 둘지 선택한다.
+3. 계층별 데이터 이동(DRAM -> L2 -> SRAM -> registers)을 스케줄한다.
+4. 타일을 PE/warp 단위에 매핑한다.
+5. double buffering으로 load와 compute를 겹친다.
+
+의사 코드는 다음과 같다.
 
 ```text
 for mo in tile(M):
@@ -113,38 +116,38 @@ for mo in tile(M):
     store(C[mo, no], C_tile)
 ```
 
-?ㅻТ 李⑥씠??`systolic_mma` ?몄텧 ?꾪썑 ?곗씠??諛곗튂(layout)? prefetch ?뺤콉?먯꽌 ?섏삩??
+실전에서는 `systolic_mma` 자체보다도 layout transform과 prefetch 스케줄 품질에서 차이가 크게 난다.
 
-# 10. 怨좉툒 二쇱젣: ?ㅻТ?먯꽌 ?먯＜ 留욌떏?⑤━??臾몄젣
+# 10. 실전에서 자주 맞닥뜨리는 고급 이슈
 
-## 10.1 寃쎄퀎 ???boundary tile)
+## 10.1 Boundary tile
 
-?됰젹 ?ш린媛 ???諛곗닔媛 ?꾨땲硫??⑤뵫/留덉뒪??鍮꾩슜??而ㅼ쭊??
-?묒? 諛곗튂?먯꽌?????ㅻ쾭?ㅻ뱶媛 ?꾩껜 ?깅뒫???ш쾶 源롫뒗??
+차원이 타일 배수가 아니면 padding/masking 오버헤드가 커진다. 특히 작은 배치에서는 이 비용이 전체 성능을 크게 갉아먹는다.
 
-## 10.2 ?꾩궛 ?뺣???
-FP16/BF16 ?낅젰 + FP32 ?꾩궛? ?쇰컲?곸씠?? INT8/FP8?먯꽌??quantization scale 泥섎━ ?꾩튂媛 蹂묐ぉ???????덈떎.
+## 10.2 Accumulation precision
 
-## 10.3 Bank conflict? on-chip ?ㅽ듃?뚰겕
+FP16/BF16 입력 + FP32 누산은 일반적이다. INT8/FP8에서는 scale 처리 위치가 병목이 되기도 한다.
 
-媛숈? ?ъ씠?댁뿉 媛숈? SRAM bank瑜??먮뱶由щ㈃ ?ъ궗???대뱷??利됱떆 ?щ씪吏꾨떎.
-layout transform(?? swizzle)???꾩슂???댁쑀??
+## 10.3 SRAM bank conflict와 온칩 인터커넥트
 
-## 10.4 而댄뙆?쇰윭 ?ㅼ?以??ㅽ뙣
+같은 사이클에 같은 bank를 여러 번 건드리면 재사용 이득이 빠르게 무너진다. 그래서 layout swizzle이 필요한 경우가 많다.
 
-??쇰쭅? 留욌뒗??prefetch? compute媛 寃뱀튂吏 ?딆쑝硫? ?뚯씠?꾨씪??怨듬갚(bubble)??湲몄뼱吏꾨떎.
+## 10.4 Scheduling gap
 
-# 11. ?붾쾭源?泥댄겕由ъ뒪??(?ㅻТ??
+타일링이 맞아도 prefetch와 compute의 overlap이 약하면 pipeline bubble이 길어진다.
 
-1. PE/Tensor utilization?????媛?
-2. DRAM ???룺???대? ?ы솕?멸??
-3. ??쇱씠 SRAM???꾩쟾???곸＜?섎뒗媛?
-4. boundary tile 鍮꾩쑉???믪?媛?
-5. stationary ?뺤콉(WS/OS/IS)??諛붽퓭蹂??ъ?媛 ?덈뒗媛?
-6. double buffering???ㅼ젣濡?overlap??留뚮뱾怨??덈뒗媛?
-7. layout 蹂??鍮꾩슜???대뱷蹂대떎 ?곌??
+# 11. 실전 디버그 체크리스트
 
-# 12. PlantUML: ?곗씠???대룞 媛쒕뀗??
+1. PE/Tensor utilization이 낮은가?
+2. DRAM bandwidth가 이미 포화되었는가?
+3. 타일이 타깃 단계의 SRAM에 완전히 들어가는가?
+4. boundary tile 비율이 높은가?
+5. stationary 정책(WS/OS/IS)을 바꿔볼 필요가 있는가?
+6. double buffering이 실제 overlap을 만들고 있는가?
+7. layout conversion 비용이 이득보다 큰가?
+
+# 12. PlantUML: 데이터플로우 개념도
+
 ```plantuml
 @startuml
 title Systolic Array Dataflow (GEMM)
@@ -162,7 +165,8 @@ ACC --> GM : write C tile
 @enduml
 ```
 
-# 13. PlantUML: 而댄뙆?쇰윭 留ㅽ븨 ?뚯씠?꾨씪??
+# 13. PlantUML: 컴파일러 매핑 파이프라인
+
 ```plantuml
 @startuml
 title Compiler Mapping to Systolic Execution
@@ -183,22 +187,22 @@ CG --> RT
 @enduml
 ```
 
-# 14. ?붿빟 寃곕줎
+# 14. 최종 정리
 
-- Systolic Array瑜??쒕?濡??곕젮硫??섎뱶?⑥뼱 ?댄빐留뚯쑝濡쒕뒗 遺議깊븯怨? **而댄뙆?쇰윭????쇰쭅/?ㅼ?以꾨쭅 寃곗젙**源뚯? ?④퍡 遊먯빞 ?쒕떎.
-- ?깅뒫 蹂묐ぉ? ?遺遺?"?곗궛 遺議?蹂대떎 "?곗씠???대룞/?ъ궗???ㅽ뙣"?먯꽌 諛쒖깮?쒕떎.
-- ?곕씪???ㅻТ?먯꽌???곗씠?고뵆濡쒖슦 ?뺤콉怨?硫붾え由?怨꾩링 紐⑤뜽??癒쇱? ?뺤젙???? 洹??ㅼ쓬??而ㅻ꼸 誘몄꽭 理쒖쟻?붾줈 ?ㅼ뼱媛??寃껋씠 ?덉쟾?섎떎.
+- Systolic 실행을 제대로 활용하려면 하드웨어 이해만으로는 부족하고, **컴파일러의 타일링/스케줄링 결정**까지 함께 봐야 한다.
+- 대부분의 병목은 연산 유닛 부족보다 데이터 이동과 재사용 실패에서 나온다.
+- 실전 워크플로는 "데이터플로우 정책과 메모리 모델을 먼저 정하고, 그 다음 커널 레벨 미세 최적화로 내려가는 방식"이 가장 안정적이다.
 
-# 15. 李멸퀬 ?먮즺
+# 15. 참고 자료
 
-- deep-math ?뺣━ 湲: https://deep-math.tistory.com/29
+- deep-math 정리 글: https://deep-math.tistory.com/29
 - Why Systolic Architectures? (H. T. Kung, 1982): https://www.eecs.harvard.edu/~htk/publication/1982-kung-why-systolic-architecture.pdf
-- Systolic Arrays for VLSI (Kung & Leiserson/Lohman 怨꾩뿴 怨좎쟾 ?먮즺): https://www.eecs.harvard.edu/~htk/publication/1980-sigmod-kung-lehman.pdf
+- Systolic Arrays for VLSI (classic reference lineage): https://www.eecs.harvard.edu/~htk/publication/1980-sigmod-kung-lehman.pdf
 - In-Datacenter Performance Analysis of a TPU (ISCA 2017): https://arxiv.org/abs/1704.04760
 - Google Cloud TPU architecture: https://docs.cloud.google.com/tpu/docs/system-architecture-tpu-vm
 
-# 16. ?ㅼ쓬 湲 ?덇퀬
+# 16. 다음 글 계획
 
-1. ?ㅼ젣 GEMM 而ㅻ꼸 ?섎굹瑜??≪븘??WS/OS瑜?諛붽엥???뚯쓽 硫뷀듃由?蹂?붾? 鍮꾧탳
-2. ????ш린 ?먮룞 ?먯깋(auto-tuning) 湲곗???媛꾨떒??鍮꾩슜 紐⑤뜽濡??뺣━
-3. Compiler ?쒕━利덉? ?곌껐?? IR ?덈꺼 loop transform??tensor codegen??誘몄튂???곹뼢源뚯? ?뺤옣
+1. 실제 GEMM 커널 하나를 잡고 WS vs OS를 바꿔가며 메트릭을 비교한다.
+2. 타일 크기 auto-tuning용 간단한 cost model을 정리한다.
+3. Compiler Series의 loop transform 이야기를 tensor codegen 관점과 연결한다.

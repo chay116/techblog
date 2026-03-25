@@ -55,6 +55,31 @@
       "summary": "- Core claim: the essence of `scalarization` is to identify what is truly wave-invariant, then exploit that uniformity all the way through register allocation, memory path selection, and control-flow structure."
     },
     {
+      "title": "워크로그 #10 - Systolic Array: 기초부터 실전 매핑까지",
+      "date": "2026-03-08",
+      "status": "wip",
+      "project": "vAI",
+      "lang": "ko",
+      "category": "worklog",
+      "track": "gpu-architecture",
+      "series": "gpu",
+      "book": "GPU Series",
+      "part": "Systolic Array & Tensor Dataflow",
+      "chapter": "기초 원리부터 실전 최적화까지",
+      "order": 10,
+      "tags": [
+        "gpu",
+        "systolic-array",
+        "tensor-core",
+        "gemm",
+        "dataflow",
+        "tpu",
+        "compiler"
+      ],
+      "path": "posts/worklog/2026-03-08-worklog-10-systolic-array-fundamentals/ko.md",
+      "summary": "- 핵심 주장: `Systolic Array`는 단순한 \"행렬곱 하드웨어\"가 아니라, **데이터 재사용을 극대화하기 위해 계산과 이동을 리듬감 있게 조직한 구조**다."
+    },
+    {
       "title": "Worklog #10 - Systolic Array: From Fundamentals to Production Mapping",
       "date": "2026-03-08",
       "status": "wip",
@@ -78,31 +103,6 @@
       ],
       "path": "posts/worklog/2026-03-08-worklog-10-systolic-array-fundamentals/en.md",
       "summary": "- Core claim: a `Systolic Array` is not just \"matrix-multiply hardware\"; it is a **data-reuse architecture** that rhythmically schedules movement and compute."
-    },
-    {
-      "title": "?뚰겕濡쒓렇 #10 - Systolic Array: 湲곗큹遺???ㅻТ 留ㅽ븨源뚯?",
-      "date": "2026-03-08",
-      "status": "wip",
-      "project": "vAI",
-      "lang": "ko",
-      "category": "worklog",
-      "track": "gpu-architecture",
-      "series": "gpu",
-      "book": "GPU Series",
-      "part": "Systolic Array & Tensor Dataflow",
-      "chapter": "\"湲곗큹 ?먮━遺???ㅻТ 怨좉툒 理쒖쟻??",
-      "order": 10,
-      "tags": [
-        "gpu",
-        "systolic-array",
-        "tensor-core",
-        "gemm",
-        "dataflow",
-        "tpu",
-        "compiler"
-      ],
-      "path": "posts/worklog/2026-03-08-worklog-10-systolic-array-fundamentals/ko.md",
-      "summary": "- ?듭떖 二쇱옣: `Systolic Array`??\"?됰젹怨??섎뱶?⑥뼱\"媛 ?꾨땲?? **?곗씠?곕? ?ъ궗?⑺븯湲??꾪빐 怨꾩궛怨??대룞??由щ벉?뷀븳 援ъ“**??"
     },
     {
       "title": "워크로그 #09 - GPU SM 구조와 워프 스케줄링 실전 정리",
@@ -5424,7 +5424,7 @@
           "index": 2,
           "total": 11,
           "path": "posts/worklog/2026-03-08-worklog-10-systolic-array-fundamentals/ko.md",
-          "title": "?뚰겕濡쒓렇 #10 - Systolic Array: 湲곗큹遺???ㅻТ 留ㅽ븨源뚯?",
+          "title": "워크로그 #10 - Systolic Array: 기초부터 실전 매핑까지",
           "date": "2026-03-08",
           "lang": "ko",
           "category": "worklog",
@@ -5432,7 +5432,7 @@
           "status": "wip",
           "book": "GPU Series",
           "part": "Systolic Array & Tensor Dataflow",
-          "chapter": "\"湲곗큹 ?먮━遺???ㅻТ 怨좉툒 理쒖쟻??",
+          "chapter": "기초 원리부터 실전 최적화까지",
           "order": 10,
           "prev_path": "posts/worklog/2026-03-03-worklog-09-gpu-sm-architecture-and-warp-scheduling/ko.md",
           "next_path": "posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/ko.md"
