@@ -4,6 +4,7 @@
 
 | Topic | Status | Link | Code Section | References Section |
 |---|---|---|---|---|
+| Vega(GCN) vs RDNA vs NVIDIA Scalarization | wip | `posts/comparison/gpu-architecture/2026-03-26-comparison-vega-gcn-rdna-vs-nvidia-scalarization/` | yes | yes |
 |  |  |  |  |  |
 
 ## API and Language

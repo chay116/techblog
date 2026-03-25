@@ -6,6 +6,7 @@ This page is the single entry point for finding posts by category, track, and ta
 
 | Date | Title | Category | Track | Status | Directory |
 |---|---|---|---|---|---|
+| 2026-03-26 | Comparison - Vega(GCN) vs RDNA vs NVIDIA Scalarization | comparison | gpu-architecture | wip | `posts/comparison/gpu-architecture/2026-03-26-comparison-vega-gcn-rdna-vs-nvidia-scalarization/` |
 | 2026-02-14 | Worklog #01 - CUDA vs Vulkan Initialization on NVIDIA | worklog | api-language | wip | `posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/` |
 | 2026-02-15 | Worklog #02 - Vulkan Barrier Audit for Compute | worklog | api-language | wip | `posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit/` |
 | 2026-02-16 | Comparison - CUDA vs Vulkan Initialization | comparison | api-language | wip | `posts/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init/` |
@@ -31,6 +32,7 @@ This page is the single entry point for finding posts by category, track, and ta
 ### Comparison
 
 - `posts/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init/`
+- `posts/comparison/gpu-architecture/2026-03-26-comparison-vega-gcn-rdna-vs-nvidia-scalarization/`
 - `posts/comparison/gpu-architecture/2026-02-17-comparison-nvidia-ampere-vs-ada-template/`
 
 ## Find by Track
@@ -48,15 +50,22 @@ This page is the single entry point for finding posts by category, track, and ta
 
 ### gpu-architecture
 
+- `posts/comparison/gpu-architecture/2026-03-26-comparison-vega-gcn-rdna-vs-nvidia-scalarization/`
 - `posts/comparison/gpu-architecture/2026-02-17-comparison-nvidia-ampere-vs-ada-template/`
 
 ## Find by Tag
 
 - `cuda`: 7 posts
 - `vulkan`: 8 posts
-- `nvidia`: 8 posts
+- `nvidia`: 9 posts
+- `amd`: 1 post
+- `gcn`: 1 post
+- `rdna`: 1 post
+- `scalarization`: 1 post
+- `sgpr`: 1 post
+- `vgpr`: 1 post
 - `sass`: 5 posts
-- `gpu-architecture`: 1 post
+- `gpu-architecture`: 2 posts
 - `barrier`: 1 post
 - `initialization`: 2 posts
 - `toolchain`: 1 post

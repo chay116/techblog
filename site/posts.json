@@ -1,6 +1,60 @@
 {
   "posts": [
     {
+      "title": "비교 - Vega(GCN) vs RDNA vs NVIDIA: Scalarization, SGPR/VGPR, ALU",
+      "date": "2026-03-26",
+      "status": "wip",
+      "project": "vAI",
+      "lang": "ko",
+      "category": "comparison",
+      "track": "gpu-architecture",
+      "series": "gpu",
+      "book": "GPU Series",
+      "part": "Scalarization & Uniform Execution",
+      "chapter": "Vega(GCN), RDNA, NVIDIA 비교",
+      "order": null,
+      "tags": [
+        "gpu",
+        "amd",
+        "nvidia",
+        "gcn",
+        "rdna",
+        "scalarization",
+        "sgpr",
+        "vgpr",
+        "shader"
+      ],
+      "path": "posts/comparison/gpu-architecture/2026-03-26-comparison-vega-gcn-rdna-vs-nvidia-scalarization/ko.md",
+      "summary": "- 핵심 주장: `scalarization`의 본질은 \"값이 wave 안에서 정말 동일한가\"를 찾아서, 그 uniformity를 레지스터, 메모리 경로, 제어 흐름 차원에서 끝까지 활용하는 것이다."
+    },
+    {
+      "title": "Comparison - Vega(GCN) vs RDNA vs NVIDIA: Scalarization, SGPR/VGPR, ALU",
+      "date": "2026-03-26",
+      "status": "wip",
+      "project": "vAI",
+      "lang": "en",
+      "category": "comparison",
+      "track": "gpu-architecture",
+      "series": "gpu",
+      "book": "GPU Series",
+      "part": "Scalarization & Uniform Execution",
+      "chapter": "Comparing Vega(GCN), RDNA, and NVIDIA",
+      "order": null,
+      "tags": [
+        "gpu",
+        "amd",
+        "nvidia",
+        "gcn",
+        "rdna",
+        "scalarization",
+        "sgpr",
+        "vgpr",
+        "shader"
+      ],
+      "path": "posts/comparison/gpu-architecture/2026-03-26-comparison-vega-gcn-rdna-vs-nvidia-scalarization/en.md",
+      "summary": "- Core claim: the essence of `scalarization` is to identify what is truly wave-invariant, then exploit that uniformity all the way through register allocation, memory path selection, and control-flow structure."
+    },
+    {
       "title": "Worklog #10 - Systolic Array: From Fundamentals to Production Mapping",
       "date": "2026-03-08",
       "status": "wip",
@@ -5145,7 +5199,7 @@
       "en": [
         {
           "index": 1,
-          "total": 11,
+          "total": 12,
           "path": "posts/worklog/2026-03-03-worklog-09-gpu-sm-architecture-and-warp-scheduling/en.md",
           "title": "Worklog #09 - Practical Model of GPU SM and Warp Scheduling",
           "date": "2026-03-03",
@@ -5162,7 +5216,7 @@
         },
         {
           "index": 2,
-          "total": 11,
+          "total": 12,
           "path": "posts/worklog/2026-03-08-worklog-10-systolic-array-fundamentals/en.md",
           "title": "Worklog #10 - Systolic Array: From Fundamentals to Production Mapping",
           "date": "2026-03-08",
@@ -5179,7 +5233,7 @@
         },
         {
           "index": 3,
-          "total": 11,
+          "total": 12,
           "path": "posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/en.md",
           "title": "Worklog #01 - CUDA vs Vulkan Initialization on NVIDIA",
           "date": "2026-02-14",
@@ -5196,7 +5250,7 @@
         },
         {
           "index": 4,
-          "total": 11,
+          "total": 12,
           "path": "posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit/en.md",
           "title": "Worklog #02 - Vulkan Barrier Audit for Compute",
           "date": "2026-02-15",
@@ -5213,7 +5267,7 @@
         },
         {
           "index": 5,
-          "total": 11,
+          "total": 12,
           "path": "posts/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init/en.md",
           "title": "Comparison - CUDA vs Vulkan Initialization",
           "date": "2026-02-16",
@@ -5230,7 +5284,7 @@
         },
         {
           "index": 6,
-          "total": 11,
+          "total": 12,
           "path": "posts/comparison/gpu-architecture/2026-02-17-comparison-nvidia-ampere-vs-ada-template/en.md",
           "title": "Comparison - NVIDIA Ampere vs Ada (Template)",
           "date": "2026-02-17",
@@ -5247,7 +5301,7 @@
         },
         {
           "index": 7,
-          "total": 11,
+          "total": 12,
           "path": "posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/en.md",
           "title": "Worklog #03 - CUDA vs Vulkan: Compilation Toolchain Anatomy",
           "date": "2026-02-18",
@@ -5264,7 +5318,7 @@
         },
         {
           "index": 8,
-          "total": 11,
+          "total": 12,
           "path": "posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/en.md",
           "title": "Worklog #04 - Hello SASS: Vector Add",
           "date": "2026-02-19",
@@ -5281,7 +5335,7 @@
         },
         {
           "index": 9,
-          "total": 11,
+          "total": 12,
           "path": "posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/en.md",
           "title": "Worklog #05 - Memory Coalescing at SASS Level",
           "date": "2026-02-20",
@@ -5298,7 +5352,7 @@
         },
         {
           "index": 10,
-          "total": 11,
+          "total": 12,
           "path": "posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/en.md",
           "title": "Worklog #06 - Bindless, BDA, Raw Pointers",
           "date": "2026-02-21",
@@ -5315,7 +5369,7 @@
         },
         {
           "index": 11,
-          "total": 11,
+          "total": 12,
           "path": "posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/en.md",
           "title": "Worklog #07 - JIT Cache vs Pipeline Cache",
           "date": "2026-02-22",
@@ -5328,13 +5382,30 @@
           "chapter": "Worklog #07 - JIT Cache vs Pipeline Cache",
           "order": null,
           "prev_path": "posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/en.md",
+          "next_path": "posts/comparison/gpu-architecture/2026-03-26-comparison-vega-gcn-rdna-vs-nvidia-scalarization/en.md"
+        },
+        {
+          "index": 12,
+          "total": 12,
+          "path": "posts/comparison/gpu-architecture/2026-03-26-comparison-vega-gcn-rdna-vs-nvidia-scalarization/en.md",
+          "title": "Comparison - Vega(GCN) vs RDNA vs NVIDIA: Scalarization, SGPR/VGPR, ALU",
+          "date": "2026-03-26",
+          "lang": "en",
+          "category": "comparison",
+          "track": "gpu-architecture",
+          "status": "wip",
+          "book": "GPU Series",
+          "part": "Scalarization & Uniform Execution",
+          "chapter": "Comparing Vega(GCN), RDNA, and NVIDIA",
+          "order": null,
+          "prev_path": "posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/en.md",
           "next_path": null
         }
       ],
       "ko": [
         {
           "index": 1,
-          "total": 10,
+          "total": 11,
           "path": "posts/worklog/2026-03-03-worklog-09-gpu-sm-architecture-and-warp-scheduling/ko.md",
           "title": "워크로그 #09 - GPU SM 구조와 워프 스케줄링 실전 정리",
           "date": "2026-03-03",
@@ -5351,7 +5422,7 @@
         },
         {
           "index": 2,
-          "total": 10,
+          "total": 11,
           "path": "posts/worklog/2026-03-08-worklog-10-systolic-array-fundamentals/ko.md",
           "title": "?뚰겕濡쒓렇 #10 - Systolic Array: 湲곗큹遺???ㅻТ 留ㅽ븨源뚯?",
           "date": "2026-03-08",
@@ -5368,7 +5439,7 @@
         },
         {
           "index": 3,
-          "total": 10,
+          "total": 11,
           "path": "posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/ko.md",
           "title": "워크로그 #01 - NVIDIA에서 CUDA vs Vulkan 초기화",
           "date": "2026-02-14",
@@ -5385,7 +5456,7 @@
         },
         {
           "index": 4,
-          "total": 10,
+          "total": 11,
           "path": "posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit/ko.md",
           "title": "워크로그 #02 - Vulkan Compute 배리어 점검",
           "date": "2026-02-15",
@@ -5402,7 +5473,7 @@
         },
         {
           "index": 5,
-          "total": 10,
+          "total": 11,
           "path": "posts/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init/ko.md",
           "title": "비교 - CUDA vs Vulkan 초기화",
           "date": "2026-02-16",
@@ -5419,7 +5490,7 @@
         },
         {
           "index": 6,
-          "total": 10,
+          "total": 11,
           "path": "posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/ko.md",
           "title": "워크로그 #03 - CUDA vs Vulkan: 컴파일 툴체인 해부",
           "date": "2026-02-18",
@@ -5436,7 +5507,7 @@
         },
         {
           "index": 7,
-          "total": 10,
+          "total": 11,
           "path": "posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/ko.md",
           "title": "워크로그 #04 - Hello SASS: 벡터 덧셈",
           "date": "2026-02-19",
@@ -5453,7 +5524,7 @@
         },
         {
           "index": 8,
-          "total": 10,
+          "total": 11,
           "path": "posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/ko.md",
           "title": "워크로그 #05 - SASS 레벨에서 본 메모리 코얼레싱",
           "date": "2026-02-20",
@@ -5470,7 +5541,7 @@
         },
         {
           "index": 9,
-          "total": 10,
+          "total": 11,
           "path": "posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/ko.md",
           "title": "워크로그 #06 - 바인드리스, BDA, 원시 포인터",
           "date": "2026-02-21",
@@ -5487,7 +5558,7 @@
         },
         {
           "index": 10,
-          "total": 10,
+          "total": 11,
           "path": "posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/ko.md",
           "title": "워크로그 #07 - JIT 캐시 vs 파이프라인 캐시",
           "date": "2026-02-22",
@@ -5500,6 +5571,23 @@
           "chapter": "워크로그 #07 - JIT 캐시 vs 파이프라인 캐시",
           "order": null,
           "prev_path": "posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/ko.md",
+          "next_path": "posts/comparison/gpu-architecture/2026-03-26-comparison-vega-gcn-rdna-vs-nvidia-scalarization/ko.md"
+        },
+        {
+          "index": 11,
+          "total": 11,
+          "path": "posts/comparison/gpu-architecture/2026-03-26-comparison-vega-gcn-rdna-vs-nvidia-scalarization/ko.md",
+          "title": "비교 - Vega(GCN) vs RDNA vs NVIDIA: Scalarization, SGPR/VGPR, ALU",
+          "date": "2026-03-26",
+          "lang": "ko",
+          "category": "comparison",
+          "track": "gpu-architecture",
+          "status": "wip",
+          "book": "GPU Series",
+          "part": "Scalarization & Uniform Execution",
+          "chapter": "Vega(GCN), RDNA, NVIDIA 비교",
+          "order": null,
+          "prev_path": "posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/ko.md",
           "next_path": null
         }
       ]
@@ -5511,8 +5599,8 @@
     "Core": 30,
     "Rendering": 29,
     "Physics": 26,
+    "nvidia": 19,
     "Animation": 17,
-    "nvidia": 17,
     "vulkan": 16,
     "Nanite": 15,
     "GameFramework": 14,
@@ -5523,6 +5611,7 @@
     "sass": 10,
     "Shader": 9,
     "AI": 8,
+    "gpu": 6,
     "AnimGraph": 5,
     "Gameplay": 5,
     "Networking": 5,
@@ -5531,7 +5620,6 @@
     "RenderGraph": 4,
     "World": 4,
     "compiler": 4,
-    "gpu": 4,
     "Movement": 3,
     "UI": 3,
     "Asset": 2,
@@ -5539,11 +5627,13 @@
     "Pipeline": 2,
     "RayTracing": 2,
     "Virtualization": 2,
+    "amd": 2,
     "barrier": 2,
     "bda": 2,
     "bindless": 2,
     "compute": 2,
     "dataflow": 2,
+    "gcn": 2,
     "gemm": 2,
     "initialization": 2,
     "ir": 2,
@@ -5554,7 +5644,11 @@
     "occupancy": 2,
     "optimization": 2,
     "pipeline-cache": 2,
+    "rdna": 2,
+    "scalarization": 2,
     "scheduler": 2,
+    "sgpr": 2,
+    "shader": 2,
     "sm": 2,
     "ssa": 2,
     "systolic-array": 2,
@@ -5562,6 +5656,7 @@
     "toolchain": 2,
     "tpu": 2,
     "vector-add": 2,
+    "vgpr": 2,
     "warp": 2,
     "초기화": 2,
     "Audio": 1,
