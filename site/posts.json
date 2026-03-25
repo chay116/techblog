@@ -222,7 +222,7 @@
         "pipeline-cache"
       ],
       "path": "posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/ko.md",
-      "summary": "- ?? ??: 지난 네 글에서 CUDA와 Vulkan이 NVIDIA GPU에서 거의 동일한 SASS를 생성한다는 것을 확인했다. 산술, 메모리 접근, 코얼레싱 동작 — 모두 동일. BDA를 사용하면 바인딩 모델까지 수렴한다."
+      "summary": "- 핵심 주장: 지난 네 글에서 CUDA와 Vulkan이 NVIDIA GPU에서 거의 동일한 SASS를 생성한다는 것을 확인했다. 산술, 메모리 접근, 코얼레싱 동작 - 모두 동일. BDA를 사용하면 바인딩 모델까지 수렴한다."
     },
     {
       "title": "Worklog #07 - JIT Cache vs Pipeline Cache",
@@ -270,7 +270,7 @@
         "bindless"
       ],
       "path": "posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/ko.md",
-      "summary": "- ?? ??: [워크로그 #04](/posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/)에서 CUDA와 Vulkan 사이의 유일한 구조적 SASS 차이를 확인했다: 디스크립터 간접 참조. CUDA는 상수 뱅크를 통해 버퍼 주소를 직접 전달한다. Vulkan은 글로벌 메모리의 디스크립터 테이블에서 가져오면서 추가 `LDG` 명령어가 발생한다."
+      "summary": "- 핵심 주장: [워크로그 #04](/posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/)에서 CUDA와 Vulkan 사이의 유일한 구조적 SASS 차이를 확인했다: 디스크립터 간접 참조. CUDA는 상수 뱅크를 통해 버퍼 주소를 직접 전달한다. Vulkan은 글로벌 메모리의 디스크립터 테이블에서 가져오면서 추가 `LDG` 명령어가 발생한다."
     },
     {
       "title": "Worklog #06 - Bindless, BDA, Raw Pointers",
@@ -317,7 +317,7 @@
         "memory-coalescing"
       ],
       "path": "posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/ko.md",
-      "summary": "- ?? ??: 이전 두 글에서 CUDA와 Vulkan이 단순 커널에서 거의 동일한 SASS를 생성하며, 유일한 차이가 디스크립터 바인딩 오버헤드라는 것을 확인했다. 벡터 덧셈 커널에서는 순수 대역폭 바운드여서 그것이 문제가 되지 않았다."
+      "summary": "- 핵심 주장: 이전 두 글에서 CUDA와 Vulkan이 단순 커널에서 거의 동일한 SASS를 생성하며, 유일한 차이가 디스크립터 바인딩 오버헤드라는 것을 확인했다. 벡터 덧셈 커널에서는 순수 대역폭 바운드여서 그것이 문제가 되지 않았다."
     },
     {
       "title": "Worklog #05 - Memory Coalescing at SASS Level",
@@ -363,7 +363,7 @@
         "vector-add"
       ],
       "path": "posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/ko.md",
-      "summary": "- ?? ??: [워크로그 #03](/posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/)에서 CUDA와 Vulkan이 동일한 NVIDIA 백엔드 컴파일러로 합류한다는 것을 확인했다. 빈 커널은 동일한 SASS를 생성한다. 그러면 실제로 *무언가를 하는* 커널은 어떨까?"
+      "summary": "- 핵심 주장: [워크로그 #03](/posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/)에서 CUDA와 Vulkan이 동일한 NVIDIA 백엔드 컴파일러로 합류한다는 것을 확인했다. 빈 커널은 동일한 SASS를 생성한다. 그러면 실제로 *무언가를 하는* 커널은 어떨까?"
     },
     {
       "title": "World (월드 관리)",
@@ -510,7 +510,7 @@
         "toolchain"
       ],
       "path": "posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/ko.md",
-      "summary": "- ?? ??: CUDA든 Vulkan이든, 디스패치하는 모든 컴퓨트 워크로드는 결국 동일한 NVIDIA SASS 명령어로 같은 실리콘 위에서 실행된다. GPU는 어떤 API가 작업을 제출했는지 모른다. 그러나 소스 코드에서 SASS까지의 여정은 두 에코시스템 사이에서 근본적으로 다르며, 그 여정을 이해하는 것이 두 API가 동일한 하드웨어를 대상으로 함에도 왜 그토록 다르게 느껴지는지를 이해하는 열쇠다."
+      "summary": "- 핵심 주장: CUDA든 Vulkan이든, 디스패치하는 모든 컴퓨트 워크로드는 결국 동일한 NVIDIA SASS 명령어로 같은 실리콘 위에서 실행된다. GPU는 어떤 API가 작업을 제출했는지 모른다. 그러나 소스 코드에서 SASS까지의 여정은 두 에코시스템 사이에서 근본적으로 다르며, 그 여정을 이해하는 것이 두 API가 동일한 하드웨어를 대상으로 함에도 왜 그토록 다르게 느껴지는지를 이해하는 열쇠다."
     },
     {
       "title": "메모리 관리 (Memory Management)",
@@ -1531,7 +1531,7 @@
         "nvidia"
       ],
       "path": "posts/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init/ko.md",
-      "summary": "- ?? ??: NVIDIA GPU 기준으로 초기화 복잡도와 첫 실행 특성을 비교한다."
+      "summary": "- 핵심 주장: NVIDIA GPU 기준으로 초기화 복잡도와 첫 실행 특성을 비교한다."
     },
     {
       "title": "Comparison - CUDA vs Vulkan Initialization",
@@ -1575,7 +1575,7 @@
         "compute"
       ],
       "path": "posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit/ko.md",
-      "summary": "- ?? ??: 현재 Vulkan compute 경로에서 배리어 범위가 과도할 가능성이 있다."
+      "summary": "- 핵심 주장: 현재 Vulkan compute 경로에서 배리어 범위가 과도할 가능성이 있다."
     },
     {
       "title": "Worklog #02 - Vulkan Barrier Audit for Compute",
@@ -1619,7 +1619,7 @@
         "초기화"
       ],
       "path": "posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/ko.md",
-      "summary": "- ?? ??: vAI의 CUDA/Vulkan 백엔드에서 첫 실행 지연과 초기화 비용을 분리해서 확인한다."
+      "summary": "- 핵심 주장: vAI의 CUDA/Vulkan 백엔드에서 첫 실행 지연과 초기화 비용을 분리해서 확인한다."
     },
     {
       "title": "Worklog #01 - CUDA vs Vulkan Initialization on NVIDIA",
