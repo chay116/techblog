@@ -105,11 +105,6 @@ python scripts/audit_unreal_summary.py
 
 This validates frontmatter consistency (`track/category`) and checks internal markdown links against the current viewer resolution rules.
 
-Useful companion docs:
-
-- Public overview: `posts/unreal-summary/Overview.md`
-- Internal index: `docs/unreal-summary-index.md`
-
 ## Diagram Blocks (PlantUML)
 
 `site/post.js` supports PlantUML fenced code blocks:

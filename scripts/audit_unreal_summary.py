@@ -79,8 +79,10 @@ def main() -> int:
 
     files = sorted(UNREAL_ROOT.rglob("*.md"))
     if not files:
-        print("No unreal-summary markdown files found.")
-        return 1
+        print("unreal_files\t0")
+        print("metadata_issues\t0")
+        print("link_issues\t0")
+        return 0
 
     alias_map = load_alias_map()
     all_rel = [p.relative_to(ROOT).as_posix() for p in files]
