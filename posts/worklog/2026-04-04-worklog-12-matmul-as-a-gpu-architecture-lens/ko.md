@@ -40,6 +40,18 @@ tags: ["gpu", "matmul", "gemm", "tensor-core", "tiling", "register-pressure", "n
 
 그래서 Aleksa Gordić의 글은 단순한 GEMM 글이 아니라, 현대 GPU 커널 사고방식에 대한 글로 읽는 게 맞다.
 
+이 흐름이 좋은 이유는 최적화 단계가 바뀔 때마다 질문 자체가 달라지기 때문이다. 처음에는 연산이 맞는지만 보면 되지만, 곧 그 질문은 가장 덜 흥미로운 문제가 된다. 실제로 중요한 건 데이터가 어디에 머무는지, 얼마나 오래 붙잡아 둘 수 있는지, 그리고 다시 먼 계층으로 내려가기 전에 몇 번이나 재사용할 수 있는지다.
+
+```mermaid
+flowchart LR
+    A["Naive matmul\none output at a time"] --> B["Block tiling\nown a C tile per block"]
+    B --> C["Shared-memory staging\nreuse A/B tiles"]
+    C --> D["Register fragments\nkeep accumulators close"]
+    D --> E["Tensor-core pipeline\noverlap movement and compute"]
+```
+
+matmul이 좋은 교재인 이유도 여기 있다. 최적화 경로가 서로 unrelated한 트릭 모음이 아니라, 데이터플로를 점점 더 명시적으로 설계해 가는 과정으로 이어지기 때문이다.
+
 # 3. 왜 naive matmul은 나쁜 GPU 커널인가
 
 교과서식 matmul loop는 단순하다.
@@ -140,6 +152,8 @@ for each C_tile owned by a block:
 
 이 지점이 진짜 전환점이다. 커널은 더 이상 많은 scalar dot product의 모음처럼 동작하지 않고, staged on-chip dataflow program처럼 동작하기 시작한다.
 
+이 관점 전환은 글의 가독성에도 직접 도움이 된다. scalar output 단위로 생각하면 설명이 잘게 찢어지는데, tile 단위로 생각하면 하드웨어가 실제로 일하는 단위와 설명 단위가 맞아 떨어진다. block은 tile을 맡고, warp는 subtile을 맡고, thread는 fragment를 맡고, 메모리 계층은 그 ownership을 먹여 살리는 구조로 읽히기 시작한다.
+
 # 5. Shared Memory가 Turning Point인 이유
 
 optimized matmul이 진짜 GPU 커널이 되는 순간은 shared memory가 들어올 때다.
@@ -215,6 +229,20 @@ Tensor Core kernel을 볼 때는 다음을 먼저 묻는 편이 좋다.
 3. accumulator fragment는 얼마나 오래 살아 있는가?
 4. 그 live state가 register에 주는 비용은 어느 정도인가?
 5. asynchronous movement가 latency를 정말 숨기고 있는가, 아니면 복잡성만 늘렸는가?
+
+```mermaid
+flowchart LR
+    GMEM["Global memory"] --> TMA["TMA / load path"]
+    TMA --> SMEM["Shared memory tile"]
+    SMEM --> MMA["Tensor core MMA or WGMMA"]
+    MMA --> ACC["Register accumulators"]
+    ACC --> STORE["Store results"]
+
+    P["Producer warp-group"] -. stages .-> SMEM
+    C["Consumer warp-group"] -. consumes .-> MMA
+```
+
+여기서 도식이 특히 도움이 되는 이유는, 이 커널이 본질적으로 공간적인 구조를 갖고 있기 때문이다. 글만으로도 순서는 설명할 수 있지만, 그림으로 보면 데이터가 저장 계층 사이를 이동하는 흐름과 실행 단위의 ownership이 함께 바뀌는 모습을 한 번에 잡아낼 수 있다.
 
 # 8. 왜 Aleksa Gordić의 글이 좋은가
 

@@ -40,6 +40,18 @@ To build a high-performance matmul kernel, we must simultaneously answer:
 
 That is why a matmul article like Aleksa Gordic's is so valuable. It is not just about GEMM. It is about modern GPU kernel thinking.
 
+The useful thing about this progression is that each optimization step changes the shape of the question. At first we ask whether the arithmetic is correct. Very quickly, that becomes the least interesting part. The real questions shift toward where data lives, how long it stays there, and how many times we can reuse it before we pay another expensive trip down the hierarchy.
+
+```mermaid
+flowchart LR
+    A["Naive matmul\none output at a time"] --> B["Block tiling\nown a C tile per block"]
+    B --> C["Shared-memory staging\nreuse A/B tiles"]
+    C --> D["Register fragments\nkeep accumulators close"]
+    D --> E["Tensor-core pipeline\noverlap movement and compute"]
+```
+
+This is the main reason matmul is such a good teaching kernel. The optimization path is not a bag of unrelated tricks. It is a sequence of increasingly explicit decisions about dataflow.
+
 # 3. Why Naive Matmul Is a Bad GPU Kernel
 
 The textbook matmul loop is easy to understand:
@@ -140,6 +152,8 @@ for each C_tile owned by a block:
 
 This is the real turning point. The kernel stops behaving like many scalar dot products and starts behaving like a staged on-chip dataflow program.
 
+That change in mental model matters for readability too. Once you start thinking in tiles instead of scalar outputs, the kernel becomes easier to explain at the same level the hardware is built for. Blocks own tiles, warps own subtiles, threads own fragments, and the memory system exists to keep that ownership fed.
+
 # 5. Shared Memory Is the Turning Point
 
 The optimized matmul kernel becomes a real GPU kernel only when shared memory enters the story.
@@ -215,6 +229,20 @@ When looking at a Tensor Core kernel, ask:
 3. how long do accumulator fragments stay live?
 4. what is the cost of that live state in registers?
 5. is asynchronous movement actually hiding latency, or just increasing complexity?
+
+```mermaid
+flowchart LR
+    GMEM["Global memory"] --> TMA["TMA / load path"]
+    TMA --> SMEM["Shared memory tile"]
+    SMEM --> MMA["Tensor core MMA or WGMMA"]
+    MMA --> ACC["Register accumulators"]
+    ACC --> STORE["Store results"]
+
+    P["Producer warp-group"] -. stages .-> SMEM
+    C["Consumer warp-group"] -. consumes .-> MMA
+```
+
+The reason diagrams help here is that the kernel is fundamentally spatial. A prose-only description can explain the sequence, but a visual makes it easier to see that data is moving between storage layers while ownership is also moving between execution layers.
 
 # 8. Why Aleksa Gordić's Article Matters
 

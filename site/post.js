@@ -89,10 +89,10 @@ function deriveNavMode(fromValue) {
     if (page === "pathtracing.html") return "pathtracing";
 
     const tab = params.get("tab");
-    if (tab === "home" || tab === "gpu" || tab === "compiler" || tab === "recent") return tab;
+    if (tab === "home" || tab === "gpu" || tab === "gpu-lab" || tab === "compiler" || tab === "recent") return tab;
 
     const series = params.get("series");
-    if (series === "gpu" || series === "compiler") return series;
+    if (series === "gpu" || series === "gpu-lab" || series === "compiler") return series;
     if (params.has("category") || params.has("track") || params.has("tag") || params.has("q")) return "recent";
   } catch (_) {
     // ignore malformed query strings
@@ -147,8 +147,15 @@ function chapterSortKey(post) {
 
 function categoryLabel(value) {
   if (value === "gpu-series") return "GPU Series";
-  if (value === "worklog") return "Worklog";
+  if (value === "worklog") return "Notes";
   if (value === "comparison") return "Comparison";
+  return value;
+}
+
+function trackLabel(value) {
+  if (value === "gpu-architecture") return "GPU Architecture";
+  if (value === "api-language") return "GPU Driver/API";
+  if (value === "runtime-framework") return "GPU Runtime/Framework";
   return value;
 }
 
@@ -205,7 +212,7 @@ function postHref(path, fromValue) {
 
 function readerTocLink(series) {
   if (!series) return "./index.html";
-  if (series === "gpu" || series === "compiler") {
+  if (series === "gpu" || series === "gpu-lab" || series === "compiler") {
     return `./index.html?tab=${encodeURIComponent(series)}`;
   }
   return `./index.html?tab=recent&series=${encodeURIComponent(series)}&category=all`;
@@ -243,7 +250,7 @@ function renderChapterNav(siteData, meta, currentPath, fromValue) {
   }
 
   const fallbackFrom =
-    series === "gpu" || series === "compiler"
+    series === "gpu" || series === "gpu-lab" || series === "compiler"
       ? `?tab=${encodeURIComponent(series)}`
       : `?tab=recent&series=${encodeURIComponent(series)}&category=all`;
   const fromForLinks = fromValue || fallbackFrom;
@@ -337,6 +344,63 @@ async function renderPlantUmlBlocks(container) {
       }
     })
   );
+}
+
+function isMermaidClassName(className) {
+  const classes = String(className || "")
+    .split(/\s+/)
+    .map((x) => x.trim().toLowerCase())
+    .filter(Boolean);
+  return classes.some((name) => ["language-mermaid", "lang-mermaid"].includes(name));
+}
+
+let mermaidInitialized = false;
+
+async function renderMermaidBlocks(container) {
+  if (!container || typeof mermaid === "undefined") return;
+
+  const codeNodes = Array.from(container.querySelectorAll("pre code"));
+  const mermaidNodes = codeNodes.filter((code) => isMermaidClassName(code.className));
+  if (mermaidNodes.length === 0) return;
+
+  if (!mermaidInitialized) {
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "loose",
+      theme: document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "default",
+    });
+    mermaidInitialized = true;
+  }
+
+  let seq = 0;
+  for (const code of mermaidNodes) {
+    const source = (code.textContent || "").trim();
+    const pre = code.closest("pre");
+    if (!source || !pre) continue;
+
+    try {
+      const frame = document.createElement("figure");
+      frame.className = "diagram-frame";
+
+      const surface = document.createElement("div");
+      surface.className = "diagram-surface";
+
+      const graph = document.createElement("div");
+      const id = `mermaid-diagram-${Date.now()}-${seq++}`;
+      const rendered = await mermaid.render(id, source);
+      graph.innerHTML = rendered.svg;
+
+      surface.appendChild(graph);
+      frame.appendChild(surface);
+      pre.replaceWith(frame);
+    } catch (err) {
+      const fallback = document.createElement("figure");
+      fallback.className = "diagram-frame";
+      fallback.innerHTML = `<pre><code>${escapeAttr(source)}</code></pre>`;
+      pre.replaceWith(fallback);
+      console.error(err);
+    }
+  }
 }
 
 async function loadSiteData() {
@@ -506,7 +570,7 @@ async function main() {
 
     document.title = meta.title;
     q("title").textContent = meta.title;
-    q("meta").textContent = `${meta.date} · ${categoryLabel(meta.category)} · ${meta.track} · ${meta.status}`;
+    q("meta").textContent = `${meta.date} · ${categoryLabel(meta.category)} · ${trackLabel(meta.track)} · ${meta.status}`;
 
     const githubUrl = `https://github.com/chay116/techblog/blob/main/${path}`;
     q("github-link").href = githubUrl;
@@ -589,6 +653,7 @@ async function main() {
       if (firstHeading && meta && meta.title && firstHeading.textContent.trim() !== meta.title.trim()) {
         firstHeading.textContent = meta.title;
       }
+      await renderMermaidBlocks(container);
       await renderPlantUmlBlocks(container);
     }
 
