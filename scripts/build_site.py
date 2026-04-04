@@ -2,6 +2,7 @@
 import json
 import os
 import shutil
+import subprocess
 from datetime import datetime
 from pathlib import Path
 
@@ -131,6 +132,22 @@ def parse_int(value):
 
 
 def file_updated_at(path: Path) -> str:
+    try:
+        proc = subprocess.run(
+            ["git", "log", "-1", "--format=%cI", "--", str(path.relative_to(ROOT))],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
+        if proc.returncode == 0:
+            value = (proc.stdout or "").strip()
+            if value:
+                return value
+    except (OSError, ValueError):
+        pass
+
     try:
         return datetime.fromtimestamp(path.stat().st_mtime).astimezone().isoformat(timespec="seconds")
     except OSError:

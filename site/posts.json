@@ -3,7 +3,7 @@
     {
       "title": "GPU 시리즈 04 - Matmul로 보는 GPU 아키텍처",
       "date": "2026-04-04",
-      "updated_at": "2026-04-04T23:56:11+09:00",
+      "updated_at": "2026-04-04T23:57:06+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -29,7 +29,7 @@
     {
       "title": "GPU Series 04 - Matmul as a GPU Architecture Lens",
       "date": "2026-04-04",
-      "updated_at": "2026-04-04T23:54:59+09:00",
+      "updated_at": "2026-04-04T23:57:06+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -55,7 +55,7 @@
     {
       "title": "GPU 시리즈 05 - Hopper Matmul: TMA, Warp Specialization, Persistent Kernels",
       "date": "2026-04-04",
-      "updated_at": "2026-04-04T20:24:17+09:00",
+      "updated_at": "2026-04-04T20:24:54+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -82,7 +82,7 @@
     {
       "title": "GPU 시리즈 03 - GPU 메모리 계층과 데이터 이동",
       "date": "2026-04-04",
-      "updated_at": "2026-04-04T20:24:17+09:00",
+      "updated_at": "2026-04-04T20:24:54+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -108,7 +108,7 @@
     {
       "title": "GPU Series 05 - Hopper Matmul: TMA, Warp Specialization, Persistent Kernels",
       "date": "2026-04-04",
-      "updated_at": "2026-04-04T20:24:17+09:00",
+      "updated_at": "2026-04-04T20:24:54+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -135,7 +135,7 @@
     {
       "title": "GPU Series 03 - GPU Memory Hierarchy and Data Movement",
       "date": "2026-04-04",
-      "updated_at": "2026-04-04T20:24:17+09:00",
+      "updated_at": "2026-04-04T20:24:54+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -161,7 +161,7 @@
     {
       "title": "컴파일러 IR에서 SSA 기초",
       "date": "2026-03-01",
-      "updated_at": "2026-04-04T18:35:39+09:00",
+      "updated_at": "2026-04-04T18:37:58+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -185,7 +185,7 @@
     {
       "title": "SSA Basics in Compiler IR",
       "date": "2026-03-01",
-      "updated_at": "2026-04-04T18:35:20+09:00",
+      "updated_at": "2026-04-04T18:37:58+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -209,7 +209,7 @@
     {
       "title": "JIT Cache vs Pipeline Cache in CUDA and Vulkan",
       "date": "2026-02-22",
-      "updated_at": "2026-04-04T18:35:20+09:00",
+      "updated_at": "2026-04-04T18:37:58+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -234,7 +234,7 @@
     {
       "title": "CUDA와 Vulkan의 JIT 캐시 vs 파이프라인 캐시",
       "date": "2026-02-22",
-      "updated_at": "2026-04-04T18:35:20+09:00",
+      "updated_at": "2026-04-04T18:37:58+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -259,7 +259,7 @@
     {
       "title": "바인드리스, 버퍼 디바이스 주소, 원시 포인터",
       "date": "2026-02-21",
-      "updated_at": "2026-04-04T18:35:20+09:00",
+      "updated_at": "2026-04-04T18:37:58+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -284,7 +284,7 @@
     {
       "title": "Bindless, Buffer Device Address, and Raw Pointers",
       "date": "2026-02-21",
-      "updated_at": "2026-04-04T18:35:20+09:00",
+      "updated_at": "2026-04-04T18:37:58+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -309,7 +309,7 @@
     {
       "title": "SASS 레벨 메모리 코얼레싱",
       "date": "2026-02-20",
-      "updated_at": "2026-04-04T18:35:20+09:00",
+      "updated_at": "2026-04-04T18:37:58+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -333,7 +333,7 @@
     {
       "title": "Memory Coalescing at the SASS Level",
       "date": "2026-02-20",
-      "updated_at": "2026-04-04T18:35:20+09:00",
+      "updated_at": "2026-04-04T18:37:58+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -357,7 +357,7 @@
     {
       "title": "SASS 따라가기: 벡터 덧셈",
       "date": "2026-02-19",
-      "updated_at": "2026-04-04T18:35:20+09:00",
+      "updated_at": "2026-04-04T18:37:58+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -381,7 +381,7 @@
     {
       "title": "SASS Walkthrough: Vector Add",
       "date": "2026-02-19",
-      "updated_at": "2026-04-04T18:35:20+09:00",
+      "updated_at": "2026-04-04T18:37:58+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -405,7 +405,7 @@
     {
       "title": "CUDA vs Vulkan 컴파일 툴체인 해부",
       "date": "2026-02-18",
-      "updated_at": "2026-04-04T18:35:20+09:00",
+      "updated_at": "2026-04-04T18:37:58+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -429,7 +429,7 @@
     {
       "title": "CUDA vs Vulkan Compilation Toolchain Anatomy",
       "date": "2026-02-18",
-      "updated_at": "2026-04-04T18:35:20+09:00",
+      "updated_at": "2026-04-04T18:37:58+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -453,7 +453,7 @@
     {
       "title": "Vulkan Compute 배리어 점검",
       "date": "2026-02-15",
-      "updated_at": "2026-04-04T18:35:20+09:00",
+      "updated_at": "2026-04-04T18:37:58+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -476,7 +476,7 @@
     {
       "title": "Vulkan Barrier Audit for Compute",
       "date": "2026-02-15",
-      "updated_at": "2026-04-04T18:35:20+09:00",
+      "updated_at": "2026-04-04T18:37:58+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -499,7 +499,7 @@
     {
       "title": "NVIDIA에서 CUDA vs Vulkan 초기화",
       "date": "2026-02-14",
-      "updated_at": "2026-04-04T18:35:20+09:00",
+      "updated_at": "2026-04-04T18:37:58+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -522,7 +522,7 @@
     {
       "title": "CUDA vs Vulkan Initialization on NVIDIA",
       "date": "2026-02-14",
-      "updated_at": "2026-04-04T18:35:20+09:00",
+      "updated_at": "2026-04-04T18:37:58+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -545,7 +545,7 @@
     {
       "title": "비교 - GPU 아키텍처 읽기 지도: SM, 메모리, Matmul, 동기화",
       "date": "2026-04-04",
-      "updated_at": "2026-04-04T17:43:21+09:00",
+      "updated_at": "2026-04-04T17:44:38+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -573,7 +573,7 @@
     {
       "title": "비교 - CUDA 동기화 프리미티브: Scope, Fence, atomic_ref",
       "date": "2026-04-04",
-      "updated_at": "2026-04-04T17:43:21+09:00",
+      "updated_at": "2026-04-04T17:44:38+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -601,7 +601,7 @@
     {
       "title": "Comparison - GPU Architecture Reading Map: SM, Memory, Matmul, Synchronization",
       "date": "2026-04-04",
-      "updated_at": "2026-04-04T17:43:21+09:00",
+      "updated_at": "2026-04-04T17:44:38+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -629,7 +629,7 @@
     {
       "title": "Comparison - CUDA Synchronization Primitives: Scope, Fence, atomic_ref",
       "date": "2026-04-04",
-      "updated_at": "2026-04-04T17:43:21+09:00",
+      "updated_at": "2026-04-04T17:44:38+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -657,7 +657,7 @@
     {
       "title": "비교 - Vega(GCN) vs RDNA vs NVIDIA: Scalarization, SGPR/VGPR, ALU",
       "date": "2026-03-26",
-      "updated_at": "2026-04-04T17:43:21+09:00",
+      "updated_at": "2026-04-04T17:44:38+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -685,7 +685,7 @@
     {
       "title": "Comparison - Vega(GCN) vs RDNA vs NVIDIA: Scalarization, SGPR/VGPR, ALU",
       "date": "2026-03-26",
-      "updated_at": "2026-04-04T17:43:21+09:00",
+      "updated_at": "2026-04-04T17:44:38+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -713,7 +713,7 @@
     {
       "title": "Comparison - NVIDIA Ampere vs Ada (Template)",
       "date": "2026-02-17",
-      "updated_at": "2026-04-04T17:43:21+09:00",
+      "updated_at": "2026-04-04T17:44:38+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -736,7 +736,7 @@
     {
       "title": "비교 - CUDA vs Vulkan 초기화",
       "date": "2026-02-16",
-      "updated_at": "2026-04-04T17:43:21+09:00",
+      "updated_at": "2026-04-04T17:44:38+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -759,7 +759,7 @@
     {
       "title": "Comparison - CUDA vs Vulkan Initialization",
       "date": "2026-02-16",
-      "updated_at": "2026-04-04T17:43:21+09:00",
+      "updated_at": "2026-04-04T17:44:38+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -782,7 +782,7 @@
     {
       "title": "GPU 시리즈 06 - GPU 성능 디버깅 체크리스트",
       "date": "2026-04-04",
-      "updated_at": "2026-04-04T14:52:03+09:00",
+      "updated_at": "2026-04-04T15:13:38+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -808,7 +808,7 @@
     {
       "title": "GPU Series 06 - GPU Performance Debugging Checklist",
       "date": "2026-04-04",
-      "updated_at": "2026-04-04T14:52:03+09:00",
+      "updated_at": "2026-04-04T15:13:38+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -834,7 +834,7 @@
     {
       "title": "GPU 시리즈 02 - Systolic Array: 기초부터 실전 매핑까지",
       "date": "2026-03-08",
-      "updated_at": "2026-04-04T14:47:56+09:00",
+      "updated_at": "2026-04-04T15:13:38+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -860,7 +860,7 @@
     {
       "title": "GPU Series 02 - Systolic Array: From Fundamentals to Production Mapping",
       "date": "2026-03-08",
-      "updated_at": "2026-04-04T14:47:56+09:00",
+      "updated_at": "2026-04-04T15:13:38+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
@@ -886,7 +886,7 @@
     {
       "title": "GPU 시리즈 01 - GPU SM 구조와 워프 스케줄링 실전 정리",
       "date": "2026-03-03",
-      "updated_at": "2026-04-04T14:47:56+09:00",
+      "updated_at": "2026-04-04T15:13:38+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "ko",
@@ -912,7 +912,7 @@
     {
       "title": "GPU Series 01 - Practical Model of GPU SM and Warp Scheduling",
       "date": "2026-03-03",
-      "updated_at": "2026-04-04T14:47:56+09:00",
+      "updated_at": "2026-04-04T15:13:38+09:00",
       "status": "wip",
       "project": "vAI",
       "lang": "en",
