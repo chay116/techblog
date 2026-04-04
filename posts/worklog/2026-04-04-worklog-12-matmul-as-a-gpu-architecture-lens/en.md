@@ -42,42 +42,9 @@ That is why a matmul article like Aleksa Gordic's is so valuable. It is not just
 
 The useful thing about this progression is that each optimization step changes the shape of the question. At first we ask whether the arithmetic is correct. Very quickly, that becomes the least interesting part. The real questions shift toward where data lives, how long it stays there, and how many times we can reuse it before we pay another expensive trip down the hierarchy.
 
-<figure class="diagram-frame">
-  <div class="diagram-surface">
-    <svg viewBox="0 0 980 220" role="img" aria-label="Matmul optimization ladder" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <marker id="arrow-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#164ea6"/>
-        </marker>
-      </defs>
-      <rect x="20" y="56" width="160" height="92" rx="18" fill="#f5f7fb" stroke="#164ea6" stroke-width="2"/>
-      <rect x="210" y="56" width="160" height="92" rx="18" fill="#eef6ff" stroke="#164ea6" stroke-width="2"/>
-      <rect x="400" y="56" width="160" height="92" rx="18" fill="#eefaf5" stroke="#2b7a4b" stroke-width="2"/>
-      <rect x="590" y="56" width="160" height="92" rx="18" fill="#fff7ea" stroke="#b7791f" stroke-width="2"/>
-      <rect x="780" y="56" width="180" height="92" rx="18" fill="#fff0f0" stroke="#b94141" stroke-width="2"/>
-      <path d="M 180 102 L 210 102" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-a)"/>
-      <path d="M 370 102 L 400 102" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-a)"/>
-      <path d="M 560 102 L 590 102" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-a)"/>
-      <path d="M 750 102 L 780 102" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-a)"/>
-      <text x="100" y="86" text-anchor="middle" font-size="20" font-weight="700" fill="#1f1f1f">Naive</text>
-      <text x="100" y="112" text-anchor="middle" font-size="15" fill="#444">one output</text>
-      <text x="100" y="132" text-anchor="middle" font-size="15" fill="#444">at a time</text>
-      <text x="290" y="86" text-anchor="middle" font-size="20" font-weight="700" fill="#1f1f1f">Block Tiling</text>
-      <text x="290" y="112" text-anchor="middle" font-size="15" fill="#444">own a C tile</text>
-      <text x="290" y="132" text-anchor="middle" font-size="15" fill="#444">per block</text>
-      <text x="480" y="84" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Shared Memory</text>
-      <text x="480" y="108" text-anchor="middle" font-size="15" fill="#444">stage A/B tiles</text>
-      <text x="480" y="128" text-anchor="middle" font-size="15" fill="#444">reuse before reload</text>
-      <text x="670" y="86" text-anchor="middle" font-size="20" font-weight="700" fill="#1f1f1f">Registers</text>
-      <text x="670" y="112" text-anchor="middle" font-size="15" fill="#444">keep fragments</text>
-      <text x="670" y="132" text-anchor="middle" font-size="15" fill="#444">and accumulators close</text>
-      <text x="870" y="84" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Tensor-Core</text>
-      <text x="870" y="108" text-anchor="middle" font-size="15" fill="#444">pipeline movement</text>
-      <text x="870" y="128" text-anchor="middle" font-size="15" fill="#444">and compute together</text>
-    </svg>
-  </div>
-  <figcaption>The optimization path is a dataflow ladder: each step keeps data closer and reuses it more aggressively.</figcaption>
-</figure>
+![Matmul optimization ladder](diagram-matmul-ladder.svg)
+
+*The optimization path is a dataflow ladder: each step keeps data closer and reuses it more aggressively.*
 
 This is the main reason matmul is such a good teaching kernel. The optimization path is not a bag of unrelated tricks. It is a sequence of increasingly explicit decisions about dataflow.
 
@@ -259,49 +226,9 @@ When looking at a Tensor Core kernel, ask:
 4. what is the cost of that live state in registers?
 5. is asynchronous movement actually hiding latency, or just increasing complexity?
 
-<figure class="diagram-frame">
-  <div class="diagram-surface">
-    <svg viewBox="0 0 980 300" role="img" aria-label="Hopper-style matmul pipeline" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <marker id="arrow-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#164ea6"/>
-        </marker>
-        <marker id="arrow-c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#7a5a00"/>
-        </marker>
-      </defs>
-      <rect x="30" y="118" width="150" height="74" rx="18" fill="#f5f7fb" stroke="#164ea6" stroke-width="2"/>
-      <rect x="220" y="118" width="150" height="74" rx="18" fill="#eef6ff" stroke="#164ea6" stroke-width="2"/>
-      <rect x="410" y="118" width="170" height="74" rx="18" fill="#eefaf5" stroke="#2b7a4b" stroke-width="2"/>
-      <rect x="620" y="118" width="150" height="74" rx="18" fill="#fff7ea" stroke="#b7791f" stroke-width="2"/>
-      <rect x="810" y="118" width="140" height="74" rx="18" fill="#fff0f0" stroke="#b94141" stroke-width="2"/>
-      <path d="M 180 155 L 220 155" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-b)"/>
-      <path d="M 370 155 L 410 155" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-b)"/>
-      <path d="M 580 155 L 620 155" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-b)"/>
-      <path d="M 770 155 L 810 155" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-b)"/>
-      <rect x="250" y="30" width="150" height="50" rx="14" fill="#fffdf2" stroke="#7a5a00" stroke-width="2"/>
-      <rect x="590" y="30" width="170" height="50" rx="14" fill="#fffdf2" stroke="#7a5a00" stroke-width="2"/>
-      <path d="M 325 80 L 470 118" stroke="#7a5a00" stroke-width="2.5" stroke-dasharray="6 6" marker-end="url(#arrow-c)"/>
-      <path d="M 675 80 L 675 118" stroke="#7a5a00" stroke-width="2.5" stroke-dasharray="6 6" marker-end="url(#arrow-c)"/>
-      <text x="105" y="147" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Global Memory</text>
-      <text x="105" y="169" text-anchor="middle" font-size="15" fill="#444">far, large, expensive</text>
-      <text x="295" y="147" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Load / TMA</text>
-      <text x="295" y="169" text-anchor="middle" font-size="15" fill="#444">move tiles on chip</text>
-      <text x="495" y="147" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Shared Memory</text>
-      <text x="495" y="169" text-anchor="middle" font-size="15" fill="#444">stage and reuse tiles</text>
-      <text x="695" y="147" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">MMA / WGMMA</text>
-      <text x="695" y="169" text-anchor="middle" font-size="15" fill="#444">consume fragments</text>
-      <text x="880" y="147" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Registers</text>
-      <text x="880" y="169" text-anchor="middle" font-size="15" fill="#444">hold accumulators</text>
-      <text x="325" y="52" text-anchor="middle" font-size="17" font-weight="700" fill="#4d3a00">Producer WG</text>
-      <text x="325" y="70" text-anchor="middle" font-size="14" fill="#5d4a10">stages data</text>
-      <text x="675" y="52" text-anchor="middle" font-size="17" font-weight="700" fill="#4d3a00">Consumer WG</text>
-      <text x="675" y="70" text-anchor="middle" font-size="14" fill="#5d4a10">feeds compute</text>
-      <text x="490" y="255" text-anchor="middle" font-size="15" fill="#555">The kernel gets faster only when movement, staging, and compute are shaped as one pipeline.</text>
-    </svg>
-  </div>
-  <figcaption>A modern matmul kernel is a pipeline diagram before it is a code listing.</figcaption>
-</figure>
+![Hopper-style matmul pipeline](diagram-hopper-pipeline.svg)
+
+*A modern matmul kernel is a pipeline diagram before it is a code listing.*
 
 The reason diagrams help here is that the kernel is fundamentally spatial. A prose-only description can explain the sequence, but a visual makes it easier to see that data is moving between storage layers while ownership is also moving between execution layers.
 

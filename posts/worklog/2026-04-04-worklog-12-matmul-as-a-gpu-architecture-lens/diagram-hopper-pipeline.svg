@@ -1,0 +1,38 @@
+<svg viewBox="0 0 980 300" role="img" aria-label="Hopper-style matmul pipeline" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#164ea6"/>
+    </marker>
+    <marker id="arrow-c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7a5a00"/>
+    </marker>
+  </defs>
+  <rect x="30" y="118" width="150" height="74" rx="18" fill="#f5f7fb" stroke="#164ea6" stroke-width="2"/>
+  <rect x="220" y="118" width="150" height="74" rx="18" fill="#eef6ff" stroke="#164ea6" stroke-width="2"/>
+  <rect x="410" y="118" width="170" height="74" rx="18" fill="#eefaf5" stroke="#2b7a4b" stroke-width="2"/>
+  <rect x="620" y="118" width="150" height="74" rx="18" fill="#fff7ea" stroke="#b7791f" stroke-width="2"/>
+  <rect x="810" y="118" width="140" height="74" rx="18" fill="#fff0f0" stroke="#b94141" stroke-width="2"/>
+  <path d="M 180 155 L 220 155" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-b)"/>
+  <path d="M 370 155 L 410 155" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-b)"/>
+  <path d="M 580 155 L 620 155" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-b)"/>
+  <path d="M 770 155 L 810 155" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-b)"/>
+  <rect x="250" y="30" width="150" height="50" rx="14" fill="#fffdf2" stroke="#7a5a00" stroke-width="2"/>
+  <rect x="590" y="30" width="170" height="50" rx="14" fill="#fffdf2" stroke="#7a5a00" stroke-width="2"/>
+  <path d="M 325 80 L 470 118" stroke="#7a5a00" stroke-width="2.5" stroke-dasharray="6 6" marker-end="url(#arrow-c)"/>
+  <path d="M 675 80 L 675 118" stroke="#7a5a00" stroke-width="2.5" stroke-dasharray="6 6" marker-end="url(#arrow-c)"/>
+  <text x="105" y="147" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Global Memory</text>
+  <text x="105" y="169" text-anchor="middle" font-size="15" fill="#444">far, large, expensive</text>
+  <text x="295" y="147" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Load / TMA</text>
+  <text x="295" y="169" text-anchor="middle" font-size="15" fill="#444">move tiles on chip</text>
+  <text x="495" y="147" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Shared Memory</text>
+  <text x="495" y="169" text-anchor="middle" font-size="15" fill="#444">stage and reuse tiles</text>
+  <text x="695" y="147" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">MMA / WGMMA</text>
+  <text x="695" y="169" text-anchor="middle" font-size="15" fill="#444">consume fragments</text>
+  <text x="880" y="147" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Registers</text>
+  <text x="880" y="169" text-anchor="middle" font-size="15" fill="#444">hold accumulators</text>
+  <text x="325" y="52" text-anchor="middle" font-size="17" font-weight="700" fill="#4d3a00">Producer WG</text>
+  <text x="325" y="70" text-anchor="middle" font-size="14" fill="#5d4a10">stages data</text>
+  <text x="675" y="52" text-anchor="middle" font-size="17" font-weight="700" fill="#4d3a00">Consumer WG</text>
+  <text x="675" y="70" text-anchor="middle" font-size="14" fill="#5d4a10">feeds compute</text>
+  <text x="490" y="255" text-anchor="middle" font-size="15" fill="#555">The kernel gets faster only when movement, staging, and compute are shaped as one pipeline.</text>
+</svg>

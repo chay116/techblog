@@ -332,6 +332,7 @@ def materialize_content(posts):
 
     copied = 0
     missing = 0
+    copied_assets = set()
     for p in posts:
         rel = Path(p["path"])
         src = ROOT / rel
@@ -343,10 +344,23 @@ def materialize_content(posts):
         shutil.copy2(src, dst)
         copied += 1
 
+        for sibling in src.parent.iterdir():
+            if not sibling.is_file():
+                continue
+            if sibling.suffix.lower() == ".md":
+                continue
+            rel_asset = sibling.relative_to(ROOT)
+            if rel_asset in copied_assets:
+                continue
+            dst_asset = CONTENT_DIR / rel_asset
+            dst_asset.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(sibling, dst_asset)
+            copied_assets.add(rel_asset)
+
     if missing:
-        print(f"Materialized content: {copied} copied, {missing} missing")
+        print(f"Materialized content: {copied} markdown + {len(copied_assets)} assets copied, {missing} missing")
     else:
-        print(f"Materialized content: {copied} copied")
+        print(f"Materialized content: {copied} markdown + {len(copied_assets)} assets copied")
 
 
 def main():

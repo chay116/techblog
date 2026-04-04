@@ -135,6 +135,14 @@ function isExternalHref(href) {
   return s.startsWith("http://") || s.startsWith("https://") || s.startsWith("mailto:") || s.startsWith("tel:");
 }
 
+function contentAssetHref(currentPath, href) {
+  const raw = String(href || "").trim();
+  if (!raw) return "";
+  if (raw.startsWith("/")) return raw;
+  const resolved = resolveHref(currentPath, raw);
+  return `./content/${resolved}`;
+}
+
 function chapterSortKey(post) {
   const parsedOrder = Number(post.order);
   const order = Number.isFinite(parsedOrder) ? parsedOrder : null;
@@ -642,6 +650,16 @@ async function main() {
           return `<a href="${safeHref}" target="_blank" rel="noreferrer"${safeTitle}>${safeText}</a>`;
         }
         return `<a href="${safeHref}"${safeTitle}>${safeText}</a>`;
+      },
+      image(href, title, text2) {
+        const alt = escapeAttr(text2 || "");
+        const titleAttr = title ? ` title="${escapeAttr(title)}"` : "";
+        if (!href) return `<img alt="${alt}"${titleAttr} />`;
+
+        const lower = String(href).toLowerCase().trim();
+        const ext = lower.startsWith("http://") || lower.startsWith("https://") || lower.startsWith("data:");
+        const src = ext ? escapeAttr(href) : escapeAttr(contentAssetHref(path, href));
+        return `<img src="${src}" alt="${alt}" loading="lazy"${titleAttr} />`;
       },
     };
 
