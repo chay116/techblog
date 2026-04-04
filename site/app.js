@@ -741,11 +741,28 @@ function renderPosts() {
     posts = posts
       .slice()
       .sort(
-        (a, b) =>
-          (b.updated_at || "").localeCompare(a.updated_at || "") ||
-          (b.date || "").localeCompare(a.date || "") ||
-          (a.title || "").localeCompare(b.title || "") ||
-          (a.path || "").localeCompare(b.path || "")
+        (a, b) => {
+          const updatedCmp = (b.updated_at || "").localeCompare(a.updated_at || "");
+          if (updatedCmp) return updatedCmp;
+
+          const dateCmp = (b.date || "").localeCompare(a.date || "");
+          if (dateCmp) return dateCmp;
+
+          const ao = Number.isFinite(Number(a.order)) ? Number(a.order) : Number.NEGATIVE_INFINITY;
+          const bo = Number.isFinite(Number(b.order)) ? Number(b.order) : Number.NEGATIVE_INFINITY;
+          if (ao !== bo) return bo - ao;
+
+          const categoryRank = (value) => {
+            if (value === "gpu-series") return 0;
+            if (value === "comparison") return 1;
+            if (value === "worklog") return 2;
+            return 3;
+          };
+          const categoryCmp = categoryRank(a.category) - categoryRank(b.category);
+          if (categoryCmp) return categoryCmp;
+
+          return (a.title || "").localeCompare(b.title || "") || (a.path || "").localeCompare(b.path || "");
+        }
       );
   } else if (state.series) {
     const entries = seriesEntries(state.series, state.lang);
