@@ -774,7 +774,7 @@ async function main() {
       container.classList.toggle("gpu-article", meta.category === "gpu-series");
       container.innerHTML = marked.parse(body);
       const firstHeading = container.querySelector("h1");
-      if (firstHeading && meta && meta.title && firstHeading.textContent.trim() !== meta.title.trim()) {
+      if (firstHeading && meta && meta.title && meta.category !== "gpu-series" && firstHeading.textContent.trim() !== meta.title.trim()) {
         firstHeading.textContent = meta.title;
       }
       await renderMermaidBlocks(container);

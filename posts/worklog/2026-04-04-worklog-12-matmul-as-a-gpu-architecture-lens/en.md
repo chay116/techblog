@@ -14,43 +14,63 @@ order: "4"
 tags: ["gpu", "matmul", "gemm", "tensor-core", "tiling", "register-pressure", "nvidia"]
 ---
 
-# 1. Executive Summary
+<div class="gpu-kicker">GPU Series 04 · Architecture Lens</div>
+
+<div class="gpu-intro-grid">
+  <p class="gpu-intro-copy">
+    Matmul is where GPU architecture stops feeling like a list of components and starts behaving like a pipeline. Tiling, shared memory, registers, Tensor Cores, and scheduling overlap all become visible in one kernel family.
+  </p>
+  <div class="gpu-note-card">
+    <p class="gpu-note-eyebrow">What To Watch</p>
+    <ul>
+      <li>Which storage layer owns the current tile</li>
+      <li>How many times each loaded byte is reused</li>
+      <li>How much register state the accumulator shape creates</li>
+      <li>Whether compute and movement actually overlap</li>
+    </ul>
+  </div>
+</div>
+
+## Why This Kernel Matters
 
 - Matmul is not important only because many workloads reduce to GEMM. It is important because it exposes almost every major GPU performance idea in one place.
 - A good matmul kernel forces us to reason about tiling, reuse, shared memory, register pressure, occupancy, Tensor Cores, asynchronous movement, and scheduling overlap together.
-- That is why matmul is the best practical architecture lens after learning the execution model and memory hierarchy.
+- That is why matmul is one of the best architecture lenses after learning the execution model and memory hierarchy.
 
-# 2. Why Matmul Is a Better Teacher Than Most Kernels
+Some kernels teach one lesson cleanly. Vector add teaches coalescing. Reductions teach tree structure and synchronization. Elementwise kernels teach launch geometry.
 
-Some kernels expose one issue clearly:
+Matmul is different. It forces almost every major architectural tension into one place. To make a kernel fast, we have to answer several questions at the same time:
 
-- vector add exposes coalescing
-- reductions expose synchronization and tree structure
-- elementwise kernels expose launch geometry
+1. How much data can stay on chip?
+2. How many times can we reuse a loaded tile?
+3. How much register state can we afford?
+4. How should work be divided across block, warp, and thread ownership?
+5. How much of data movement can be overlapped with compute?
 
-Matmul is different. It exposes almost all of the main architectural tensions at once.
+That is why Aleksa Gordić's matmul article is so useful. It is not only a GEMM article. It is a guided tour through modern GPU kernel design.
 
-To build a high-performance matmul kernel, we must simultaneously answer:
+<div class="gpu-compare-grid">
+  <div class="gpu-compare-card">
+    <p class="gpu-compare-label">Simple Kernels</p>
+    <p>They usually expose one bottleneck clearly. That makes them good teaching tools, but they do not force us to reason about the whole machine.</p>
+  </div>
+  <div class="gpu-compare-card">
+    <p class="gpu-compare-label">Matmul</p>
+    <p>It exposes ownership, reuse, hierarchy, pipeline depth, and register cost at the same time, which is why it maps so well onto GPU architecture.</p>
+  </div>
+</div>
 
-1. how much data can stay on chip?
-2. how many times can we reuse a loaded tile?
-3. how much register state can we afford?
-4. how much work belongs to each block, warp, and thread?
-5. how do we overlap data movement with compute?
-
-That is why a matmul article like Aleksa Gordic's is so valuable. It is not just about GEMM. It is about modern GPU kernel thinking.
-
-The useful thing about this progression is that each optimization step changes the shape of the question. At first we ask whether the arithmetic is correct. Very quickly, that becomes the least interesting part. The real questions shift toward where data lives, how long it stays there, and how many times we can reuse it before we pay another expensive trip down the hierarchy.
+The useful thing about this progression is that the question changes as the kernel improves. At first we worry about arithmetic correctness. Very quickly that becomes the least interesting part. The real question becomes: where does data live, how long does it stay there, and how much work do we extract before paying another expensive trip down the hierarchy?
 
 ![Matmul optimization ladder](diagram-matmul-ladder.svg)
 
-*The optimization path is a dataflow ladder: each step keeps data closer and reuses it more aggressively.*
+*The optimization path is a dataflow ladder: every rung keeps data closer and reuses it more aggressively.*
 
-This is the main reason matmul is such a good teaching kernel. The optimization path is not a bag of unrelated tricks. It is a sequence of increasingly explicit decisions about dataflow.
+This is why matmul is such a strong teaching kernel. The optimization path is not a bag of unrelated tricks. It is a sequence of increasingly explicit decisions about dataflow.
 
-# 3. Why Naive Matmul Is a Bad GPU Kernel
+## Why Naive Matmul Leaves the GPU Underfed
 
-The textbook matmul loop is easy to understand:
+The textbook loop is straightforward:
 
 ```text
 for m:
@@ -60,20 +80,18 @@ for m:
       acc += A[m, k] * B[k, n]
 ```
 
-But this direct structure is poor for GPUs because it fails the memory hierarchy test.
+It is easy to understand, but it fails the memory hierarchy test.
 
-The main problems:
+- There are too many expensive global loads.
+- There is too little reuse before data is discarded.
+- The on-chip working set is barely controlled.
+- Arithmetic intensity stays far below what the hardware could sustain.
 
-- too many expensive global loads
-- too little reuse before data is discarded
-- weak control of on-chip working set
-- low practical arithmetic intensity relative to what the hardware could sustain
+So naive matmul is useful mostly because it makes the optimization target obvious:
 
-So naive matmul is useful as a starting point only because it makes the optimization target obvious:
+> Move less data from far memory, and reuse it more before letting it go.
 
-> move less data from far memory, and reuse it more before letting it go.
-
-## 3.1 A Minimal Naive CUDA Shape
+### A Minimal Naive CUDA Shape
 
 ```cpp
 __global__ void naive_gemm(const float* A, const float* B, float* C, int M, int N, int K) {
@@ -89,50 +107,42 @@ __global__ void naive_gemm(const float* A, const float* B, float* C, int M, int 
 }
 ```
 
-This is a great teaching kernel because it is easy to read. It is a weak performance kernel because each output element keeps reaching far into memory with too little coordination or reuse.
+This is a great teaching kernel because it is readable. It is a weak performance kernel because every output element keeps reaching deep into memory with too little coordination or reuse.
 
-# 4. Tiling Is the First Real Optimization
+## Tiling Is the First Real Architectural Move
 
-Once we move beyond the naive kernel, the first major idea is `tiling`.
+Once we move beyond the naive kernel, the first major shift is tiling.
 
-Instead of computing one scalar output in isolation, we compute a tile of outputs while reusing tiles of inputs.
+Instead of computing one scalar output in isolation, we compute a tile of outputs while reusing tiles of inputs. That changes the shape of the problem immediately.
 
-This immediately changes the shape of the problem.
-
-## 4.1 Block Tiling
+### Block Tiling
 
 A thread block owns a tile of `C`.
 
-That means:
+- The block repeatedly loads tiles of `A`.
+- The block repeatedly loads tiles of `B`.
+- The block accumulates into a block-sized output tile.
 
-- a block repeatedly loads tiles of `A`
-- repeatedly loads tiles of `B`
-- accumulates into a block-sized output tile
+This is the first point where shared memory becomes central, because the loaded tiles must be reused across many threads.
 
-This is the first place where shared memory becomes central, because the loaded tiles need to be reused across many threads.
-
-## 4.2 Warp Tiling
+### Warp Tiling
 
 Inside the block, each warp owns a smaller tile of the output.
 
-This matters because:
+- Warp ownership defines how work is partitioned.
+- It shapes shared-memory access patterns.
+- It determines how much accumulator state each warp must hold.
 
-- warp-level ownership defines how work is partitioned
-- it shapes shared memory access patterns
-- it determines how much accumulator state each warp must hold
-
-## 4.3 Register Tiling
+### Register Tiling
 
 At the innermost level, each thread holds a small fragment of the output tile in registers.
 
-This is where the architecture becomes very visible:
+- More registers can increase local reuse.
+- Too many registers reduce occupancy.
 
-- more registers can mean more local reuse
-- but too many registers reduce occupancy
+So tiling is never only geometry. It is geometry plus resource pressure.
 
-So tiling is never only about geometry. It is always geometry plus resource pressure.
-
-## 4.4 The Tiled Mental Model
+### The Tiled Mental Model
 
 ```text
 for each C_tile owned by a block:
@@ -148,55 +158,56 @@ for each C_tile owned by a block:
 
 This is the real turning point. The kernel stops behaving like many scalar dot products and starts behaving like a staged on-chip dataflow program.
 
-That change in mental model matters for readability too. Once you start thinking in tiles instead of scalar outputs, the kernel becomes easier to explain at the same level the hardware is built for. Blocks own tiles, warps own subtiles, threads own fragments, and the memory system exists to keep that ownership fed.
+<div class="gpu-callout">
+  <p>
+    This is also the moment where the code starts to read more like the hardware. Blocks own tiles, warps own subtiles, threads own fragments, and the memory hierarchy exists to keep that ownership fed.
+  </p>
+</div>
 
-# 5. Shared Memory Is the Turning Point
+## Shared Memory Is the First Big Inflection Point
 
-The optimized matmul kernel becomes a real GPU kernel only when shared memory enters the story.
+An optimized matmul kernel starts to look like a real GPU kernel the moment shared memory enters the story.
 
-The basic pattern is:
+The basic pattern is stable:
 
-1. load a tile of `A` and `B` from global memory
-2. place them in shared memory
-3. have many threads or warps reuse them
-4. perform many multiply-accumulate steps
-5. repeat with the next tile
+1. Load a tile of `A` and `B` from global memory.
+2. Place them in shared memory.
+3. Reuse them across many threads or warps.
+4. Perform many multiply-accumulate steps.
+5. Repeat with the next tile.
 
-The point is not just that shared memory is faster. The point is:
+The point is not only that shared memory is faster. The deeper point is that one expensive fetch can feed many arithmetic operations, and the kernel can shape reuse explicitly instead of hoping the cache hierarchy will do everything for it.
 
-- one expensive fetch can feed many arithmetic operations
-- the kernel can shape reuse explicitly
+This is where the memory hierarchy stops being background knowledge and becomes an executable strategy.
 
-This is the first place where the memory hierarchy stops being background knowledge and becomes executable strategy.
+## Register Footprint Is the Hidden Price of Better Kernels
 
-# 6. Register Footprint: The Hidden Price of Better Kernels
+As the kernel improves, another constraint takes over:
 
-As the kernel improves, another constraint starts to dominate:
-
-- accumulator tiles get larger
-- fragments of `A` and `B` stay live longer
-- temporary state grows
+- Accumulator tiles get larger.
+- `A` and `B` fragments stay live longer.
+- Temporary state grows.
 
 That means more registers per thread.
 
-This is one of the reasons modern optimized kernels feel counterintuitive. A better kernel often:
+A better kernel often:
 
 - uses more shared memory
 - uses many more registers
 - lowers occupancy somewhat
-- but still runs much faster
+- still runs much faster
 
-Why? Because the extra on-chip reuse more than compensates for the lower warp residency.
+That sounds counterintuitive until we remember what improved: the extra on-chip reuse more than compensates for the lower warp residency.
 
-So one of the most important tuning questions becomes:
+The tuning question becomes:
 
-> did the larger tile improve reuse enough to justify the larger register footprint?
+> Did the larger tile improve reuse enough to justify the larger register footprint?
 
-# 7. Tensor Cores Do Not Remove the Memory Problem
+## Tensor Cores Do Not Eliminate the Memory Problem
 
-Tensor Cores are sometimes presented as if they solve matmul by themselves. They do not.
+Tensor Cores are sometimes described as if they solve matmul by themselves. They do not.
 
-What Tensor Cores solve:
+What they do solve:
 
 - very high throughput for matrix-multiply fragments
 
@@ -205,41 +216,39 @@ What they do not solve automatically:
 - feeding those fragments efficiently
 - staging data correctly
 - keeping the pipeline full
-- choosing tile shapes that match register and shared-memory constraints
+- choosing tile shapes that fit register and shared-memory constraints
 
-This is why high-performance Tensor Core kernels are still mostly about memory discipline:
+This is why high-performance Tensor Core kernels are still mostly about memory discipline.
 
-- how tiles are loaded
-- how fragments are distributed
-- how pipelines are overlapped
-- how register pressure is contained
+- How are tiles loaded?
+- How are fragments distributed?
+- How are pipeline stages overlapped?
+- How is register pressure contained?
 
-Tensor Core throughput is the reward, not the whole design.
+Tensor Core throughput is the reward, not the full design.
 
-## 7.1 A Stable Question Set for Tensor Kernels
+### A Stable Question Set for Tensor Kernels
 
 When looking at a Tensor Core kernel, ask:
 
-1. how are `A` and `B` fragments loaded?
-2. where are they staged?
-3. how long do accumulator fragments stay live?
-4. what is the cost of that live state in registers?
-5. is asynchronous movement actually hiding latency, or just increasing complexity?
+1. How are `A` and `B` fragments loaded?
+2. Where are they staged?
+3. How long do accumulator fragments stay live?
+4. What is the cost of that live state in registers?
+5. Is asynchronous movement actually hiding latency, or only increasing complexity?
 
 ![Hopper-style matmul pipeline](diagram-hopper-pipeline.svg)
 
 *A modern matmul kernel is a pipeline diagram before it is a code listing.*
 
-The reason diagrams help here is that the kernel is fundamentally spatial. A prose-only description can explain the sequence, but a visual makes it easier to see that data is moving between storage layers while ownership is also moving between execution layers.
+The diagram matters because the kernel is fundamentally spatial. A prose-only description can explain the sequence, but a visual makes it much easier to see that data is moving between storage layers while ownership is also moving between execution layers.
 
-# 8. Why Aleksa Gordić's Article Matters
+## Why Aleksa Gordić's Article Is a Strong Reference
 
-The value of the article is that it does not stop at "use Tensor Cores."
-
-It moves through the actual ladder:
+The article does not stop at “use Tensor Cores.” It climbs the actual ladder:
 
 - architecture basics
-- PTX/SASS awareness
+- PTX and SASS awareness
 - synchronous tiling
 - Tensor Core kernels
 - deep asynchronous pipelines
@@ -247,77 +256,56 @@ It moves through the actual ladder:
 - persistent kernels
 - clusters
 
-That is the right progression. It mirrors how a kernel becomes more hardware-aware step by step.
+That progression is the right one. It mirrors how a kernel becomes more hardware-aware step by step.
 
-The strongest practical lesson is this:
+The strongest practical lesson is simple:
 
-> modern GPU performance is less about finding a single magic instruction and more about building a coherent pipeline of data movement and compute.
+> Modern GPU performance is less about one magic instruction and more about building a coherent pipeline of data movement and compute.
 
-# 9. What Matmul Teaches About the GPU in General
+## What Matmul Teaches About the GPU More Broadly
 
-Even if your real workload is not GEMM, matmul teaches several reusable truths.
+Even when the workload is not GEMM, matmul teaches reusable truths.
 
-## 9.1 Reuse Wins
+### Reuse Wins
 
-The fastest kernels are usually not the ones that merely do more arithmetic. They are the ones that get more arithmetic out of each loaded byte.
+The fastest kernels are not merely the ones doing more arithmetic. They are the ones getting more arithmetic out of each loaded byte.
 
-## 9.2 Hierarchy Matters More Than Flat Bandwidth Numbers
+### Hierarchy Matters More Than Flat Bandwidth Numbers
 
 It is not enough to know that the GPU has high DRAM bandwidth. What matters is:
 
 - how often the kernel escapes to DRAM
-- whether shared memory and registers are actually used as intended
+- whether shared memory and registers are used as intended
 
-## 9.3 Scheduling and Memory Cannot Be Separated
+### Scheduling and Memory Cannot Be Separated
 
 Good matmul kernels work because:
 
 - data arrives in time
-- warps are given work in the right granularity
+- warps are given work at the right granularity
 - compute and memory stages overlap cleanly
 
-That is architecture, not just library engineering.
+That is architecture, not only library engineering.
 
-# 10. Practical Checklist
+## Practical Checklist
 
 When looking at a matmul-like kernel, ask:
 
-1. what is the output tile owned by a block?
-2. what is the sub-tile owned by a warp?
-3. what stays in shared memory?
-4. what stays in registers?
-5. how many reuse opportunities exist per loaded tile?
-6. how much register pressure does the current accumulator shape create?
-7. is the kernel limited by math throughput or by feeding the math?
+1. What output tile is owned by a block?
+2. What subtile is owned by a warp?
+3. What stays in shared memory?
+4. What stays in registers?
+5. How many reuse opportunities exist per loaded tile?
+6. How much register pressure does the accumulator shape create?
+7. Is the kernel limited by math throughput or by feeding the math?
 
-# 11. Diagram
+## Final Takeaway
 
-```plantuml
-@startuml
-title Matmul as an Architecture Lens
-
-rectangle "Tiling" as A
-rectangle "Reuse" as B
-rectangle "Shared Memory Staging" as C
-rectangle "Register Accumulators" as D
-rectangle "Tensor/MMA Compute" as E
-rectangle "Throughput Outcome" as F
-
-A --> B
-B --> C
-C --> D
-D --> E
-E --> F
-@enduml
-```
-
-# 12. Final Takeaway
-
-- Matmul is the best practical lens for studying GPU architecture because it forces execution, memory, and resource tradeoffs into one kernel family.
-- The core optimization is not "use Tensor Cores." The core optimization is "shape data movement so the compute pipeline can stay busy."
+- Matmul is one of the best practical lenses for studying GPU architecture because it forces execution, memory, and resource tradeoffs into one kernel family.
+- The core optimization is not “use Tensor Cores.” The core optimization is “shape data movement so the compute pipeline stays busy.”
 - That is why the next step after this post is Hopper-specific matmul design, where the same ideas become even more explicit.
 
-# 13. References
+## References
 
 - [Inside NVIDIA GPUs: Anatomy of high performance matmul kernels](https://www.aleksagordic.com/blog/matmul)
 - `General-Purpose Graphics Processor Architecture`

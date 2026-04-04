@@ -600,6 +600,102 @@ body.gpu-series-page .markdown .gpu-summary-list {
   background: linear-gradient(180deg, var(--surface-soft), var(--surface));
 }
 
+body.gpu-series-page .markdown .gpu-kicker {
+  display: inline-block;
+  margin: 0.2rem 0 1rem;
+  padding: 0.28rem 0.72rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--line));
+  border-radius: 999px;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--surface-soft) 88%, transparent);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body.gpu-series-page .markdown .gpu-intro-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.95fr);
+  gap: 1.2rem;
+  align-items: start;
+  margin: 0.45rem 0 1.7rem;
+}
+
+body.gpu-series-page .markdown .gpu-intro-copy {
+  margin: 0;
+  font-size: 1.3rem;
+  line-height: 1.62;
+  letter-spacing: -0.015em;
+  max-width: 28ch;
+}
+
+body.gpu-series-page .markdown .gpu-note-card {
+  margin: 0;
+  padding: 1rem 1.05rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--surface), var(--surface-soft));
+}
+
+body.gpu-series-page .markdown .gpu-note-eyebrow {
+  margin: 0 0 0.55rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body.gpu-series-page .markdown .gpu-note-card ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+body.gpu-series-page .markdown .gpu-note-card li + li {
+  margin-top: 0.45rem;
+}
+
+body.gpu-series-page .markdown .gpu-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin: 1.1rem 0 2rem;
+}
+
+body.gpu-series-page .markdown .gpu-compare-card {
+  padding: 0.95rem 1rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+body.gpu-series-page .markdown .gpu-compare-label {
+  margin: 0 0 0.45rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+body.gpu-series-page .markdown .gpu-compare-card p:last-child {
+  margin-bottom: 0;
+}
+
+body.gpu-series-page .markdown .gpu-callout {
+  max-width: 760px;
+  margin: 1.4rem 0 1.5rem;
+  padding: 1rem 1.05rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--surface-soft), var(--surface));
+}
+
+body.gpu-series-page .markdown .gpu-callout p {
+  margin: 0;
+}
+
 body.gpu-series-page .markdown .gpu-summary-list li + li {
   margin-top: 0.55rem;
 }
@@ -858,6 +954,16 @@ body.gpu-series-page .markdown .gpu-caption {
 
   body.gpu-series-page .content {
     max-width: none;
+  }
+
+  body.gpu-series-page .markdown .gpu-intro-grid,
+  body.gpu-series-page .markdown .gpu-compare-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.gpu-series-page .markdown .gpu-intro-copy {
+    max-width: none;
+    font-size: 1.14rem;
   }
 
   body.gpu-series-page .markdown .gpu-figure.gpu-figure-wide {
