@@ -143,6 +143,38 @@ function contentAssetHref(currentPath, href) {
   return `./content/${resolved}`;
 }
 
+function normalizeMarkedLinkArgs(href, title, text2) {
+  if (href && typeof href === "object") {
+    const token = href;
+    return {
+      href: token.href || "",
+      title: token.title || "",
+      text: token.text || token.raw || "",
+    };
+  }
+  return {
+    href: href || "",
+    title: title || "",
+    text: text2 || "",
+  };
+}
+
+function normalizeMarkedImageArgs(href, title, text2) {
+  if (href && typeof href === "object") {
+    const token = href;
+    return {
+      href: token.href || "",
+      title: token.title || "",
+      text: token.text || token.raw || "",
+    };
+  }
+  return {
+    href: href || "",
+    title: title || "",
+    text: text2 || "",
+  };
+}
+
 function chapterSortKey(post) {
   const parsedOrder = Number(post.order);
   const order = Number.isFinite(parsedOrder) ? parsedOrder : null;
@@ -591,6 +623,11 @@ async function main() {
 
     const renderer = {
       link(href, title, text2) {
+        const normalized = normalizeMarkedLinkArgs(href, title, text2);
+        href = normalized.href;
+        title = normalized.title;
+        text2 = normalized.text;
+
         const safeText = text2 || "";
         const safeTitle = title ? ` title="${escapeAttr(title)}"` : "";
 
@@ -652,6 +689,11 @@ async function main() {
         return `<a href="${safeHref}"${safeTitle}>${safeText}</a>`;
       },
       image(href, title, text2) {
+        const normalized = normalizeMarkedImageArgs(href, title, text2);
+        href = normalized.href;
+        title = normalized.title;
+        text2 = normalized.text;
+
         const alt = escapeAttr(text2 || "");
         const titleAttr = title ? ` title="${escapeAttr(title)}"` : "";
         if (!href) return `<img alt="${alt}"${titleAttr} />`;
