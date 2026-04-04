@@ -128,7 +128,7 @@
         "nvidia"
       ],
       "path": "posts/worklog/2026-04-04-worklog-12-matmul-as-a-gpu-architecture-lens/ko.md",
-      "summary": "- matmul이 중요한 이유는 많은 워크로드가 GEMM으로 환원되기 때문만이 아니다. matmul은 거의 모든 핵심 GPU 성능 개념을 한 번에 드러내기 때문이다."
+      "summary": "- matmul이 중요한 이유는 많은 워크로드가 GEMM으로 환원되기 때문만이 아니다. matmul은 GPU 성능을 결정하는 거의 모든 큰 개념을 한 번에 드러낸다."
     },
     {
       "title": "GPU 시리즈 03 - GPU 메모리 계층과 데이터 이동",
