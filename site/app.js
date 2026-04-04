@@ -25,6 +25,7 @@ const I18N = {
     series: "Series",
     tabHome: "Home",
     tabGpu: "GPU",
+    tabGpuLab: "GPU Lab",
     tabCompiler: "Compiler",
     tabRecent: "Recent",
     siteSubtitle: "Worklog and research notes on GPU optimization, graphics APIs, and systems engineering.",
@@ -46,6 +47,7 @@ const I18N = {
     langKo: "Korean",
     seriesCompiler: "Compiler",
     seriesGpu: "GPU",
+    seriesGpuLab: "GPU Lab",
     seriesOther: "Other",
     bookshelf: "Bookshelf",
     startReading: "Start reading",
@@ -61,6 +63,7 @@ const I18N = {
     series: "시리즈",
     tabHome: "홈",
     tabGpu: "GPU",
+    tabGpuLab: "GPU Lab",
     tabCompiler: "컴파일러",
     tabRecent: "최신",
     siteSubtitle: "GPU 최적화, 그래픽스 API, 시스템 엔지니어링 관련 작업 기록과 연구 노트입니다.",
@@ -82,6 +85,7 @@ const I18N = {
     langKo: "한국어",
     seriesCompiler: "컴파일러",
     seriesGpu: "GPU",
+    seriesGpuLab: "GPU Lab",
     seriesOther: "기타",
     bookshelf: "시리즈",
     startReading: "읽기 시작",
@@ -134,7 +138,7 @@ function t(key) {
 function seriesLabel(value) {
   if (value === "compiler") return t("seriesCompiler");
   if (value === "gpu") return t("seriesGpu");
-  if (value === "gpu-lab") return "GPU Lab";
+  if (value === "gpu-lab") return t("seriesGpuLab");
   return t("seriesOther");
 }
 
@@ -147,6 +151,13 @@ function categoryLabel(value) {
   if (value === "gpu-series") return "GPU Series";
   if (value === "worklog") return state.lang === "ko" ? "워크로그" : "Worklog";
   if (value === "comparison") return state.lang === "ko" ? "비교" : "Comparison";
+  return value;
+}
+
+function trackLabel(value) {
+  if (value === "gpu-architecture") return "GPU Architecture";
+  if (value === "api-language") return state.lang === "ko" ? "GPU Driver/API" : "GPU Driver/API";
+  if (value === "runtime-framework") return state.lang === "ko" ? "GPU Runtime/Framework" : "GPU Runtime/Framework";
   return value;
 }
 
@@ -168,8 +179,8 @@ function parseQuery() {
 
 function inferNavMode(params, series) {
   const tab = params.get("tab");
-  if (tab === "home" || tab === "gpu" || tab === "compiler" || tab === "recent") return tab;
-  if (series === "gpu" || series === "compiler") return series;
+  if (tab === "home" || tab === "gpu" || tab === "gpu-lab" || tab === "compiler" || tab === "recent") return tab;
+  if (series === "gpu" || series === "gpu-lab" || series === "compiler") return series;
   if (params.has("category") || params.has("track") || params.has("tag") || params.has("q")) return "recent";
   return "home";
 }
@@ -355,14 +366,14 @@ function renderStaticText() {
 }
 
 function currentNavMode() {
-  if (state.nav === "recent" || state.nav === "gpu" || state.nav === "compiler") return state.nav;
+  if (state.nav === "recent" || state.nav === "gpu" || state.nav === "gpu-lab" || state.nav === "compiler") return state.nav;
   return "home";
 }
 
 function applyModeState() {
   const mode = currentNavMode();
 
-  if (mode === "gpu" || mode === "compiler") {
+  if (mode === "gpu" || mode === "gpu-lab" || mode === "compiler") {
     state.series = mode;
     state.category = mode === "gpu" ? "gpu-series" : "all";
     return;
@@ -381,7 +392,7 @@ function applyModeState() {
 
 function renderLayoutMode() {
   const mode = currentNavMode();
-  const showFilter = mode === "recent" || mode === "gpu" || mode === "compiler";
+  const showFilter = mode === "recent" || mode === "gpu" || mode === "gpu-lab" || mode === "compiler";
   const showSeriesFilter = mode === "recent";
   const showPostFeed = mode !== "home";
 
@@ -516,7 +527,7 @@ function renderSeriesReader() {
   if (!root) return;
 
   const mode = currentNavMode();
-  const show = mode === "gpu" || mode === "compiler";
+  const show = mode === "gpu" || mode === "gpu-lab" || mode === "compiler";
   root.hidden = !show;
   if (!show || !state.data) {
     root.innerHTML = "";
@@ -597,7 +608,7 @@ function renderFilters() {
 
   const mode = currentNavMode();
   const showCategory = mode === "recent";
-  const isFilterMode = mode === "recent" || mode === "gpu" || mode === "compiler";
+  const isFilterMode = mode === "recent" || mode === "gpu" || mode === "gpu-lab" || mode === "compiler";
 
   const categoryLabel = byId("filter-category-label");
   if (categoryLabel) categoryLabel.hidden = !showCategory;
@@ -628,7 +639,7 @@ function renderFilters() {
 
   state.data.tracks.forEach((track) => {
     trackRoot.appendChild(
-      createChip(track, state.track === track, () => {
+      createChip(trackLabel(track), state.track === track, () => {
         state.track = state.track === track ? null : track;
         renderAll();
       })
@@ -717,7 +728,7 @@ function renderPosts() {
     item.className = "post";
     const postUrl = buildPostUrl(post.path);
 
-    const metaBits = [post.date, post.series, categoryLabel(post.category), post.track, post.status].filter(Boolean);
+    const metaBits = [post.date, seriesLabel(post.series), categoryLabel(post.category), trackLabel(post.track), post.status].filter(Boolean);
     const h3 = document.createElement("h3");
     const link = document.createElement("a");
     link.href = postUrl;
