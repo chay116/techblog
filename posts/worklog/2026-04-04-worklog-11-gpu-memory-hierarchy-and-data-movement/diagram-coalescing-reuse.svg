@@ -1,0 +1,37 @@
+<svg viewBox="0 0 980 320" role="img" aria-label="Coalescing and reuse illustration" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow-coal-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#164ea6"/>
+    </marker>
+    <marker id="arrow-coal-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2b7a4b"/>
+    </marker>
+  </defs>
+  <rect x="40" y="30" width="400" height="250" rx="20" fill="#f9fbff" stroke="#164ea6" stroke-width="2"/>
+  <rect x="540" y="30" width="400" height="250" rx="20" fill="#f5fbf7" stroke="#2b7a4b" stroke-width="2"/>
+  <text x="240" y="62" text-anchor="middle" font-size="21" font-weight="700" fill="#1f1f1f">Scattered Access</text>
+  <text x="740" y="62" text-anchor="middle" font-size="21" font-weight="700" fill="#1f1f1f">Coalesced + Reused</text>
+  <rect x="95" y="96" width="290" height="28" rx="8" fill="#eef6ff" stroke="#164ea6"/>
+  <rect x="595" y="96" width="290" height="28" rx="8" fill="#eefaf5" stroke="#2b7a4b"/>
+  <text x="240" y="115" text-anchor="middle" font-size="14" fill="#334">global memory line</text>
+  <text x="740" y="115" text-anchor="middle" font-size="14" fill="#334">global memory line</text>
+  <g fill="#fff" stroke="#164ea6">
+    <rect x="110" y="160" width="52" height="34" rx="8"/>
+    <rect x="176" y="205" width="52" height="34" rx="8"/>
+    <rect x="250" y="146" width="52" height="34" rx="8"/>
+    <rect x="324" y="198" width="52" height="34" rx="8"/>
+  </g>
+  <g fill="#fff" stroke="#2b7a4b">
+    <rect x="610" y="178" width="60" height="36" rx="8"/>
+    <rect x="680" y="178" width="60" height="36" rx="8"/>
+    <rect x="750" y="178" width="60" height="36" rx="8"/>
+    <rect x="820" y="178" width="60" height="36" rx="8"/>
+  </g>
+  <path d="M 135 124 L 136 160" stroke="#164ea6" stroke-width="2.5" marker-end="url(#arrow-coal-a)"/>
+  <path d="M 208 124 L 202 205" stroke="#164ea6" stroke-width="2.5" marker-end="url(#arrow-coal-a)"/>
+  <path d="M 282 124 L 276 146" stroke="#164ea6" stroke-width="2.5" marker-end="url(#arrow-coal-a)"/>
+  <path d="M 356 124 L 350 198" stroke="#164ea6" stroke-width="2.5" marker-end="url(#arrow-coal-a)"/>
+  <path d="M 740 124 L 740 178" stroke="#2b7a4b" stroke-width="3" marker-end="url(#arrow-coal-b)"/>
+  <text x="240" y="255" text-anchor="middle" font-size="15" fill="#555">same logical work, more fragmented transactions</text>
+  <text x="740" y="255" text-anchor="middle" font-size="15" fill="#555">fewer cleaner fetches, then stage once and reuse</text>
+</svg>

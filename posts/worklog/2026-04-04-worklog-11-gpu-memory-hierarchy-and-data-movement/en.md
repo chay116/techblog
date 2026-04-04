@@ -47,6 +47,10 @@ At a useful working level, the hierarchy is:
 
 The exact hardware details vary by generation, but this ordering is enough for most performance reasoning.
 
+![GPU memory hierarchy stack](diagram-memory-hierarchy-stack.svg)
+
+*A practical memory reading starts by asking how often a byte escapes the hotter layer above it.*
+
 ## 3.1 Registers
 
 Registers are the closest storage to execution. They are fast, private to the executing thread context, and central to high-throughput kernels.
@@ -123,6 +127,10 @@ This is also why simple kernels like vector add still matter pedagogically. They
 - scattered access
 
 and how those patterns show up in throughput.
+
+![Coalescing and reuse illustration](diagram-coalescing-reuse.svg)
+
+*The same logical work can stress the memory system very differently depending on whether nearby threads move together or scatter apart.*
 
 ## 4.1 Minimal Access Pattern Example
 
@@ -290,20 +298,9 @@ When a kernel looks slower than expected, use this order:
 
 # 10. Diagram
 
-```plantuml
-@startuml
-title GPU Memory Hierarchy (Practical View)
+![GPU memory hierarchy stack](diagram-memory-hierarchy-stack.svg)
 
-rectangle "Registers" as R
-rectangle "Shared / L1" as S
-rectangle "L2 Cache" as L2
-rectangle "DRAM" as D
-
-R --> S
-S --> L2
-L2 --> D
-@enduml
-```
+*The hierarchy becomes useful only when we connect it to reuse: keep data at the hottest level that still makes the kernel practical.*
 
 # 11. Final Takeaway
 

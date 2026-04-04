@@ -80,7 +80,7 @@
       "summary": "- 이 글의 목적은 앞선 아키텍처 글들을 하나의 안정적인 디버깅 루프로 바꾸는 것이다."
     },
     {
-      "title": "GPU 시리즈 05 - Hopper Matmul: TMA, Warp Specialization, Persistent Kernel",
+      "title": "GPU 시리즈 05 - Hopper Matmul: TMA, Warp Specialization, Persistent Kernels",
       "date": "2026-04-04",
       "status": "wip",
       "project": "vAI",
@@ -90,7 +90,7 @@
       "series": "gpu",
       "book": "GPU Series",
       "part": "Modern NVIDIA Matmul Kernels",
-      "chapter": "TMA, Persistent Kernel, Cluster 관점",
+      "chapter": "TMA, Persistent Kernels, 그리고 Cluster 관점",
       "order": 5,
       "tags": [
         "gpu",
@@ -103,7 +103,7 @@
         "nvidia"
       ],
       "path": "posts/worklog/2026-04-04-worklog-13-hopper-matmul-tma-persistent-kernels/ko.md",
-      "summary": "- Hopper 세대 matmul 커널이 흥미로운 이유는, 단순한 tiling을 넘어서 **이동 파이프라인과 역할 분화된 실행**을 더 노골적으로 보여주기 때문이다."
+      "summary": "- Hopper 시대의 matmul 커널이 중요한 이유는 단순한 tiling을 넘어, **명시적인 이동 파이프라인**과 **역할 분화된 실행 구조**를 전면에 드러내기 때문이다."
     },
     {
       "title": "GPU 시리즈 04 - Matmul로 보는 GPU 아키텍처",
@@ -141,7 +141,7 @@
       "series": "gpu",
       "book": "GPU Series",
       "part": "Memory Hierarchy & Data Movement",
-      "chapter": "왜 GPU 성능은 데이터 이동이 먼저 결정하는가",
+      "chapter": "왜 GPU 성능은 데이터 이동에서 먼저 갈리는가",
       "order": 3,
       "tags": [
         "gpu",
@@ -153,7 +153,7 @@
         "nvidia"
       ],
       "path": "posts/worklog/2026-04-04-worklog-11-gpu-memory-hierarchy-and-data-movement/ko.md",
-      "summary": "- `GPU 시리즈 01`이 **누가 실행될 수 있는가**에 대한 글이었다면, 이 글은 **누가 제때 데이터를 받는가**에 대한 글이다."
+      "summary": "- `GPU 시리즈 01`이 **누가 실행될 수 있는가**에 대한 글이었다면, 이 글은 **누가 제때 데이터를 받을 수 있는가**에 대한 글이다."
     },
     {
       "title": "GPU Series 06 - GPU Performance Debugging Checklist",
@@ -1111,7 +1111,7 @@
           "status": "wip",
           "book": "GPU Series",
           "part": "Memory Hierarchy & Data Movement",
-          "chapter": "왜 GPU 성능은 데이터 이동이 먼저 결정하는가",
+          "chapter": "왜 GPU 성능은 데이터 이동에서 먼저 갈리는가",
           "order": 3,
           "prev_path": "posts/worklog/2026-03-08-worklog-10-systolic-array-fundamentals/ko.md",
           "next_path": "posts/worklog/2026-04-04-worklog-12-matmul-as-a-gpu-architecture-lens/ko.md"
@@ -1137,7 +1137,7 @@
           "index": 5,
           "total": 6,
           "path": "posts/worklog/2026-04-04-worklog-13-hopper-matmul-tma-persistent-kernels/ko.md",
-          "title": "GPU 시리즈 05 - Hopper Matmul: TMA, Warp Specialization, Persistent Kernel",
+          "title": "GPU 시리즈 05 - Hopper Matmul: TMA, Warp Specialization, Persistent Kernels",
           "date": "2026-04-04",
           "lang": "ko",
           "category": "gpu-series",
@@ -1145,7 +1145,7 @@
           "status": "wip",
           "book": "GPU Series",
           "part": "Modern NVIDIA Matmul Kernels",
-          "chapter": "TMA, Persistent Kernel, Cluster 관점",
+          "chapter": "TMA, Persistent Kernels, 그리고 Cluster 관점",
           "order": 5,
           "prev_path": "posts/worklog/2026-04-04-worklog-12-matmul-as-a-gpu-architecture-lens/ko.md",
           "next_path": "posts/worklog/2026-04-04-worklog-14-gpu-performance-debugging-checklist/ko.md"

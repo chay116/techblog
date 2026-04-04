@@ -57,6 +57,10 @@ Why that matters:
 
 This is a major shift in style. The kernel starts to look less like many threads independently fetching fragments, and more like a coordinated movement-and-consumption pipeline.
 
+![Hopper producer consumer specialization](diagram-hopper-specialization.svg)
+
+*Hopper-style kernels become easier to read once movement roles and compute roles are drawn separately instead of collapsed into one thread-centric story.*
+
 # 4. Producer / Consumer Warp Specialization
 
 Once movement becomes more structured, specialization becomes natural.
@@ -155,21 +159,9 @@ That is the real lesson.
 
 # 10. Diagram
 
-```plantuml
-@startuml
-title Hopper Matmul Kernel Skeleton
+![Cluster and persistence view](diagram-cluster-persistence.svg)
 
-rectangle "Producer Warp Group\n(TMA loads)" as P
-rectangle "Consumer Warp Group A\n(MMA compute)" as C1
-rectangle "Consumer Warp Group B\n(MMA compute)" as C2
-rectangle "Output / Store Path" as O
-
-P --> C1
-P --> C2
-C1 --> O
-C2 --> O
-@enduml
-```
+*Once coordination scope expands, the kernel stops looking like one isolated block and starts looking like a larger steady-state worker neighborhood.*
 
 # 11. Final Takeaway
 
