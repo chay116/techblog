@@ -6,7 +6,7 @@ project: "vAI"
 lang: "ko"
 category: "worklog"
 track: "api-language"
-series: "gpu"
+series: "gpu-lab"
 tags: ["cuda", "vulkan", "nvidia", "초기화"]
 ---
 # 1. Executive Summary

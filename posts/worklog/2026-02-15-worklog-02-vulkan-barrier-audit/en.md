@@ -6,7 +6,7 @@ project: "vAI"
 lang: "en"
 category: "worklog"
 track: "api-language"
-series: "gpu"
+series: "gpu-lab"
 tags: ["vulkan", "barrier", "synchronization", "compute"]
 ---
 # 1. Executive Summary

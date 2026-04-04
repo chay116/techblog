@@ -9,11 +9,14 @@ POSTS_DIR = ROOT / "posts"
 SITE_DIR = ROOT / "site"
 UNREAL_SUMMARY_DIR = POSTS_DIR / "unreal-summary"
 CONTENT_DIR = SITE_DIR / "content"
-SERIES_ORDER = ["compiler", "gpu", "other"]
+SERIES_ORDER = ["compiler", "gpu", "gpu-lab", "other"]
 SERIES_ALIASES = {
     "compiler-series": "compiler",
     "compilers": "compiler",
     "gpu-series": "gpu",
+    "gpu-lab-series": "gpu-lab",
+    "gpu-notes": "gpu-lab",
+    "gpu-archive": "gpu-lab",
     "graphics": "gpu",
     "general": "other",
     "misc": "other",
@@ -28,6 +31,7 @@ GPU_TAG_HINTS = {"gpu", "cuda", "vulkan", "glsl", "sass", "shader", "nvidia", "a
 SERIES_BOOK_TITLES = {
     "compiler": "Compiler Series",
     "gpu": "GPU Series",
+    "gpu-lab": "GPU Lab",
     "other": "General Series",
 }
 

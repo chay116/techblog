@@ -6,7 +6,7 @@ project: "vAI"
 lang: "en"
 category: "worklog"
 track: "api-language"
-series: "gpu"
+series: "gpu-lab"
 tags: ["cuda", "vulkan", "nvidia", "initialization"]
 ---
 # 1. Executive Summary

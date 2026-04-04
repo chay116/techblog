@@ -6,7 +6,7 @@ project: "vAI"
 lang: "ko"
 category: "comparison"
 track: "gpu-architecture"
-series: "gpu"
+series: "gpu-lab"
 part: "Synchronization & Memory Ordering"
 chapter: "CUDA 동기화 구현의 비용과 해석"
 tags: ["gpu", "cuda", "nvidia", "synchronization", "memory-model", "atomic", "ptx", "sass", "barrier"]

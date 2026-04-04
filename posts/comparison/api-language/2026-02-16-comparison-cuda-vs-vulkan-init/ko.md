@@ -6,7 +6,7 @@ project: "vAI"
 lang: "ko"
 category: "comparison"
 track: "api-language"
-series: "gpu"
+series: "gpu-lab"
 tags: ["cuda", "vulkan", "초기화", "nvidia"]
 ---
 # 1. Executive Summary

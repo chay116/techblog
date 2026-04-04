@@ -1,16 +1,18 @@
 const LANG_MODE_KEY = "blog_lang_mode";
 const FILTER_OPEN_KEY = "blog_filter_open";
 const READER_PROGRESS_KEY = "blog_reader_progress";
-const SERIES_ORDER = ["compiler", "gpu", "other"];
-const SERIES_CARD_ORDER = ["gpu", "compiler"];
+const SERIES_ORDER = ["compiler", "gpu", "gpu-lab", "other"];
+const SERIES_CARD_ORDER = ["gpu", "gpu-lab", "compiler"];
 const SERIES_DESCRIPTIONS = {
   en: {
     gpu: "Practical notes on GPU architecture, CUDA/Vulkan, and SASS-level analysis.",
+    "gpu-lab": "Earlier experiments, comparisons, and lower-level CUDA/Vulkan notes kept outside the main GPU curriculum.",
     compiler: "Compiler fundamentals and optimization notes, from SSA to pass reasoning.",
     other: "General systems notes.",
   },
   ko: {
     gpu: "GPU 구조, CUDA/Vulkan, SASS 레벨 분석을 정리한 실전 노트입니다.",
+    "gpu-lab": "메인 GPU 시리즈와 분리한 실험, 비교, CUDA/Vulkan 저수준 노트입니다.",
     compiler: "SSA부터 최적화 패스 사고 방식까지 다루는 컴파일러 학습 노트입니다.",
     other: "시스템 일반 주제 노트입니다.",
   },
@@ -132,6 +134,7 @@ function t(key) {
 function seriesLabel(value) {
   if (value === "compiler") return t("seriesCompiler");
   if (value === "gpu") return t("seriesGpu");
+  if (value === "gpu-lab") return "GPU Lab";
   return t("seriesOther");
 }
 
@@ -361,7 +364,7 @@ function applyModeState() {
 
   if (mode === "gpu" || mode === "compiler") {
     state.series = mode;
-    state.category = "all";
+    state.category = mode === "gpu" ? "gpu-series" : "all";
     return;
   }
 

@@ -6,7 +6,7 @@ project: "vAI"
 lang: "ko"
 category: "worklog"
 track: "api-language"
-series: "gpu"
+series: "gpu-lab"
 tags: ["cuda", "vulkan", "nvidia", "sass", "bda", "bindless"]
 ---
 # 1. Executive Summary

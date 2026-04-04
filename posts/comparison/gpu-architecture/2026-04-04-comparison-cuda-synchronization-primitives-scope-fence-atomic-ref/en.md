@@ -6,7 +6,7 @@ project: "vAI"
 lang: "en"
 category: "comparison"
 track: "gpu-architecture"
-series: "gpu"
+series: "gpu-lab"
 part: "Synchronization & Memory Ordering"
 chapter: "Interpreting CUDA Synchronization Costs"
 tags: ["gpu", "cuda", "nvidia", "synchronization", "memory-model", "atomic", "ptx", "sass", "barrier"]

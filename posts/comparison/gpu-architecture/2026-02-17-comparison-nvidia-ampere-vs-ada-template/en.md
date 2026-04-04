@@ -6,7 +6,7 @@ project: "vAI"
 lang: "en"
 category: "comparison"
 track: "gpu-architecture"
-series: "gpu"
+series: "gpu-lab"
 tags: ["nvidia", "gpu-architecture", "ampere", "ada"]
 ---
 # 1. Executive Summary

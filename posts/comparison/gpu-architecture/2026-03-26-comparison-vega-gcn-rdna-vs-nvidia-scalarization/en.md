@@ -6,7 +6,7 @@ project: "vAI"
 lang: "en"
 category: "comparison"
 track: "gpu-architecture"
-series: "gpu"
+series: "gpu-lab"
 part: "Scalarization & Uniform Execution"
 chapter: "Comparing Vega(GCN), RDNA, and NVIDIA"
 tags: ["gpu", "amd", "nvidia", "gcn", "rdna", "scalarization", "sgpr", "vgpr", "shader"]
