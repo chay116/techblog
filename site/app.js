@@ -742,6 +742,7 @@ function renderPosts() {
       .slice()
       .sort(
         (a, b) =>
+          (b.updated_at || "").localeCompare(a.updated_at || "") ||
           (b.date || "").localeCompare(a.date || "") ||
           (a.title || "").localeCompare(b.title || "") ||
           (a.path || "").localeCompare(b.path || "")

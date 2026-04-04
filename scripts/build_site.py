@@ -2,6 +2,7 @@
 import json
 import os
 import shutil
+from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -100,6 +101,8 @@ def extract_summary(body: str):
             continue
         if ln.startswith(">"):
             continue
+        if ln.startswith("<"):
+            continue
         if ln in ("---", "***", "___"):
             continue
 
@@ -125,6 +128,13 @@ def parse_int(value):
         return int(str(value).strip())
     except (TypeError, ValueError):
         return None
+
+
+def file_updated_at(path: Path) -> str:
+    try:
+        return datetime.fromtimestamp(path.stat().st_mtime).astimezone().isoformat(timespec="seconds")
+    except OSError:
+        return ""
 
 
 def normalize_book(value, series):
@@ -225,9 +235,11 @@ def collect_posts():
         order = parse_int(frontmatter.get("order"))
         track = frontmatter.get("track", "other")
         title = frontmatter.get("title", path.parent.name)
+        updated_at = file_updated_at(path)
         post = {
             "title": title,
             "date": frontmatter.get("date", ""),
+            "updated_at": updated_at,
             "status": frontmatter.get("status", "wip"),
             "project": frontmatter.get("project", ""),
             "lang": frontmatter.get("lang", "en"),
@@ -244,7 +256,7 @@ def collect_posts():
         }
         posts.append(post)
 
-    posts.sort(key=lambda x: (x["date"], x["title"]), reverse=True)
+    posts.sort(key=lambda x: (x.get("updated_at", ""), x["date"], x["title"]), reverse=True)
     return posts
 
 
