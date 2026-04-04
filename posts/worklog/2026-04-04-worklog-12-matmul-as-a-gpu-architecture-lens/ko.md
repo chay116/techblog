@@ -42,13 +42,42 @@ tags: ["gpu", "matmul", "gemm", "tensor-core", "tiling", "register-pressure", "n
 
 이 흐름이 좋은 이유는 최적화 단계가 바뀔 때마다 질문 자체가 달라지기 때문이다. 처음에는 연산이 맞는지만 보면 되지만, 곧 그 질문은 가장 덜 흥미로운 문제가 된다. 실제로 중요한 건 데이터가 어디에 머무는지, 얼마나 오래 붙잡아 둘 수 있는지, 그리고 다시 먼 계층으로 내려가기 전에 몇 번이나 재사용할 수 있는지다.
 
-```mermaid
-flowchart LR
-    A["Naive matmul\none output at a time"] --> B["Block tiling\nown a C tile per block"]
-    B --> C["Shared-memory staging\nreuse A/B tiles"]
-    C --> D["Register fragments\nkeep accumulators close"]
-    D --> E["Tensor-core pipeline\noverlap movement and compute"]
-```
+<figure class="diagram-frame">
+  <div class="diagram-surface">
+    <svg viewBox="0 0 980 220" role="img" aria-label="Matmul optimization ladder" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow-a-ko" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#164ea6"/>
+        </marker>
+      </defs>
+      <rect x="20" y="56" width="160" height="92" rx="18" fill="#f5f7fb" stroke="#164ea6" stroke-width="2"/>
+      <rect x="210" y="56" width="160" height="92" rx="18" fill="#eef6ff" stroke="#164ea6" stroke-width="2"/>
+      <rect x="400" y="56" width="160" height="92" rx="18" fill="#eefaf5" stroke="#2b7a4b" stroke-width="2"/>
+      <rect x="590" y="56" width="160" height="92" rx="18" fill="#fff7ea" stroke="#b7791f" stroke-width="2"/>
+      <rect x="780" y="56" width="180" height="92" rx="18" fill="#fff0f0" stroke="#b94141" stroke-width="2"/>
+      <path d="M 180 102 L 210 102" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-a-ko)"/>
+      <path d="M 370 102 L 400 102" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-a-ko)"/>
+      <path d="M 560 102 L 590 102" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-a-ko)"/>
+      <path d="M 750 102 L 780 102" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-a-ko)"/>
+      <text x="100" y="86" text-anchor="middle" font-size="20" font-weight="700" fill="#1f1f1f">Naive</text>
+      <text x="100" y="112" text-anchor="middle" font-size="15" fill="#444">one output</text>
+      <text x="100" y="132" text-anchor="middle" font-size="15" fill="#444">at a time</text>
+      <text x="290" y="86" text-anchor="middle" font-size="20" font-weight="700" fill="#1f1f1f">Block Tiling</text>
+      <text x="290" y="112" text-anchor="middle" font-size="15" fill="#444">own a C tile</text>
+      <text x="290" y="132" text-anchor="middle" font-size="15" fill="#444">per block</text>
+      <text x="480" y="84" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Shared Memory</text>
+      <text x="480" y="108" text-anchor="middle" font-size="15" fill="#444">stage A/B tiles</text>
+      <text x="480" y="128" text-anchor="middle" font-size="15" fill="#444">reuse before reload</text>
+      <text x="670" y="86" text-anchor="middle" font-size="20" font-weight="700" fill="#1f1f1f">Registers</text>
+      <text x="670" y="112" text-anchor="middle" font-size="15" fill="#444">keep fragments</text>
+      <text x="670" y="132" text-anchor="middle" font-size="15" fill="#444">and accumulators close</text>
+      <text x="870" y="84" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Tensor-Core</text>
+      <text x="870" y="108" text-anchor="middle" font-size="15" fill="#444">pipeline movement</text>
+      <text x="870" y="128" text-anchor="middle" font-size="15" fill="#444">and compute together</text>
+    </svg>
+  </div>
+  <figcaption>최적화 경로는 데이터플로 사다리처럼 읽는 편이 좋다. 각 단계는 데이터를 더 가까운 계층에 오래 붙잡고 재사용한다.</figcaption>
+</figure>
 
 matmul이 좋은 교재인 이유도 여기 있다. 최적화 경로가 서로 unrelated한 트릭 모음이 아니라, 데이터플로를 점점 더 명시적으로 설계해 가는 과정으로 이어지기 때문이다.
 
@@ -230,17 +259,49 @@ Tensor Core kernel을 볼 때는 다음을 먼저 묻는 편이 좋다.
 4. 그 live state가 register에 주는 비용은 어느 정도인가?
 5. asynchronous movement가 latency를 정말 숨기고 있는가, 아니면 복잡성만 늘렸는가?
 
-```mermaid
-flowchart LR
-    GMEM["Global memory"] --> TMA["TMA / load path"]
-    TMA --> SMEM["Shared memory tile"]
-    SMEM --> MMA["Tensor core MMA or WGMMA"]
-    MMA --> ACC["Register accumulators"]
-    ACC --> STORE["Store results"]
-
-    P["Producer warp-group"] -. stages .-> SMEM
-    C["Consumer warp-group"] -. consumes .-> MMA
-```
+<figure class="diagram-frame">
+  <div class="diagram-surface">
+    <svg viewBox="0 0 980 300" role="img" aria-label="Hopper-style matmul pipeline" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow-b-ko" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#164ea6"/>
+        </marker>
+        <marker id="arrow-c-ko" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#7a5a00"/>
+        </marker>
+      </defs>
+      <rect x="30" y="118" width="150" height="74" rx="18" fill="#f5f7fb" stroke="#164ea6" stroke-width="2"/>
+      <rect x="220" y="118" width="150" height="74" rx="18" fill="#eef6ff" stroke="#164ea6" stroke-width="2"/>
+      <rect x="410" y="118" width="170" height="74" rx="18" fill="#eefaf5" stroke="#2b7a4b" stroke-width="2"/>
+      <rect x="620" y="118" width="150" height="74" rx="18" fill="#fff7ea" stroke="#b7791f" stroke-width="2"/>
+      <rect x="810" y="118" width="140" height="74" rx="18" fill="#fff0f0" stroke="#b94141" stroke-width="2"/>
+      <path d="M 180 155 L 220 155" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-b-ko)"/>
+      <path d="M 370 155 L 410 155" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-b-ko)"/>
+      <path d="M 580 155 L 620 155" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-b-ko)"/>
+      <path d="M 770 155 L 810 155" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-b-ko)"/>
+      <rect x="250" y="30" width="150" height="50" rx="14" fill="#fffdf2" stroke="#7a5a00" stroke-width="2"/>
+      <rect x="590" y="30" width="170" height="50" rx="14" fill="#fffdf2" stroke="#7a5a00" stroke-width="2"/>
+      <path d="M 325 80 L 470 118" stroke="#7a5a00" stroke-width="2.5" stroke-dasharray="6 6" marker-end="url(#arrow-c-ko)"/>
+      <path d="M 675 80 L 675 118" stroke="#7a5a00" stroke-width="2.5" stroke-dasharray="6 6" marker-end="url(#arrow-c-ko)"/>
+      <text x="105" y="147" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Global Memory</text>
+      <text x="105" y="169" text-anchor="middle" font-size="15" fill="#444">far, large, expensive</text>
+      <text x="295" y="147" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Load / TMA</text>
+      <text x="295" y="169" text-anchor="middle" font-size="15" fill="#444">move tiles on chip</text>
+      <text x="495" y="147" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Shared Memory</text>
+      <text x="495" y="169" text-anchor="middle" font-size="15" fill="#444">stage and reuse tiles</text>
+      <text x="695" y="147" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">MMA / WGMMA</text>
+      <text x="695" y="169" text-anchor="middle" font-size="15" fill="#444">consume fragments</text>
+      <text x="880" y="147" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Registers</text>
+      <text x="880" y="169" text-anchor="middle" font-size="15" fill="#444">hold accumulators</text>
+      <text x="325" y="52" text-anchor="middle" font-size="17" font-weight="700" fill="#4d3a00">Producer WG</text>
+      <text x="325" y="70" text-anchor="middle" font-size="14" fill="#5d4a10">stages data</text>
+      <text x="675" y="52" text-anchor="middle" font-size="17" font-weight="700" fill="#4d3a00">Consumer WG</text>
+      <text x="675" y="70" text-anchor="middle" font-size="14" fill="#5d4a10">feeds compute</text>
+      <text x="490" y="255" text-anchor="middle" font-size="15" fill="#555">The kernel gets faster only when movement, staging, and compute are shaped as one pipeline.</text>
+    </svg>
+  </div>
+  <figcaption>현대 matmul 커널은 코드 목록이기 전에 파이프라인 그림으로 먼저 이해하는 편이 좋다.</figcaption>
+</figure>
 
 여기서 도식이 특히 도움이 되는 이유는, 이 커널이 본질적으로 공간적인 구조를 갖고 있기 때문이다. 글만으로도 순서는 설명할 수 있지만, 그림으로 보면 데이터가 저장 계층 사이를 이동하는 흐름과 실행 단위의 ownership이 함께 바뀌는 모습을 한 번에 잡아낼 수 있다.
 
