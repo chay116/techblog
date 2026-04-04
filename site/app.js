@@ -656,8 +656,8 @@ function renderFilters() {
   const showCategory = mode === "recent";
   const isFilterMode = mode === "recent" || mode === "gpu" || mode === "gpu-lab" || mode === "compiler";
 
-  const categoryLabel = byId("filter-category-label");
-  if (categoryLabel) categoryLabel.hidden = !showCategory;
+  const categoryLabelNode = byId("filter-category-label");
+  if (categoryLabelNode) categoryLabelNode.hidden = !showCategory;
   catRoot.hidden = !showCategory;
 
   catRoot.innerHTML = "";
