@@ -96,6 +96,11 @@ body {
   display: none !important;
 }
 
+.mode-body {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+}
+
 .series-cards {
   display: grid;
   gap: 0.8rem;

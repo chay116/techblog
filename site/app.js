@@ -56,6 +56,14 @@ const I18N = {
     chapter: "Chapter",
     tocTitle: "Table of Contents",
     chapterUnit: "chapters",
+    modeRecentTitle: "Recent Posts",
+    modeRecentBody: "Latest posts across every section of the blog.",
+    modeGpuTitle: "GPU Series",
+    modeGpuBody: "The main learning path for GPU architecture, ordered as a compact curriculum from execution model to performance debugging.",
+    modeGpuLabTitle: "GPU Lab",
+    modeGpuLabBody: "Earlier experiments, comparisons, and lower-level CUDA/Vulkan notes. Use track filters to split architecture topics from driver/API work.",
+    modeCompilerTitle: "Compiler Series",
+    modeCompilerBody: "Compiler fundamentals and optimization notes organized as a study path.",
   },
   ko: {
     all: "전체",
@@ -94,6 +102,14 @@ const I18N = {
     chapter: "챕터",
     tocTitle: "목차",
     chapterUnit: "개 챕터",
+    modeRecentTitle: "최신 글",
+    modeRecentBody: "블로그 전체 섹션에서 가장 최근에 올라온 글들입니다.",
+    modeGpuTitle: "GPU Series",
+    modeGpuBody: "실행 모델부터 성능 디버깅까지 이어지는 메인 GPU 학습 흐름입니다.",
+    modeGpuLabTitle: "GPU Lab",
+    modeGpuLabBody: "이전 실험, 비교 글, 저수준 CUDA/Vulkan 노트를 모아둔 구역입니다. 트랙 필터로 아키텍처와 Driver/API를 나눠 볼 수 있습니다.",
+    modeCompilerTitle: "Compiler Series",
+    modeCompilerBody: "컴파일러 기초와 최적화 노트를 학습 흐름에 맞춰 정리한 시리즈입니다.",
   },
 };
 
@@ -167,6 +183,23 @@ function formatPostCount(n) {
 
 function formatChapterCount(n) {
   return state.lang === "ko" ? `${n}${t("chapterUnit")}` : `${n} ${t("chapterUnit")}`;
+}
+
+function currentModeInfo() {
+  const mode = currentNavMode();
+  if (mode === "gpu") {
+    return { title: t("modeGpuTitle"), body: t("modeGpuBody") };
+  }
+  if (mode === "gpu-lab") {
+    return { title: t("modeGpuLabTitle"), body: t("modeGpuLabBody") };
+  }
+  if (mode === "compiler") {
+    return { title: t("modeCompilerTitle"), body: t("modeCompilerBody") };
+  }
+  if (mode === "recent") {
+    return { title: t("modeRecentTitle"), body: t("modeRecentBody") };
+  }
+  return { title: state.lang === "ko" ? t("langKo") : t("langEn"), body: "" };
 }
 
 function parseQuery() {
@@ -688,7 +721,8 @@ function renderPosts() {
   const list = byId("post-list");
   const meta = byId("meta");
   const modeTitle = byId("mode-title");
-  if (!list || !meta || !modeTitle) return;
+  const modeBody = byId("mode-body");
+  if (!list || !meta || !modeTitle || !modeBody) return;
 
   if (currentNavMode() === "recent") {
     posts = posts
@@ -711,7 +745,10 @@ function renderPosts() {
     });
   }
 
-  modeTitle.textContent = state.lang === "ko" ? t("langKo") : t("langEn");
+  const info = currentModeInfo();
+  modeTitle.textContent = info.title;
+  modeBody.textContent = info.body;
+  modeBody.hidden = !info.body;
   meta.textContent = formatPostCount(posts.length);
   list.innerHTML = "";
 
@@ -762,7 +799,12 @@ function renderLoadError() {
   const list = byId("post-list");
   const meta = byId("meta");
   const modeTitle = byId("mode-title");
+  const modeBody = byId("mode-body");
   if (modeTitle) modeTitle.textContent = t("loadErrorTitle");
+  if (modeBody) {
+    modeBody.textContent = "";
+    modeBody.hidden = true;
+  }
   if (meta) meta.textContent = "";
 
   if (list) {
