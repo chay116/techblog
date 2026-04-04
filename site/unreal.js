@@ -80,10 +80,14 @@ function buildTree(posts) {
 }
 
 function renderNavTabs() {
+  const mode = currentNavMode();
+  if (typeof renderSharedNav === "function") {
+    renderSharedNav(mode);
+    return;
+  }
+
   const nav = byId("nav-tabs");
   if (!nav) return;
-
-  const mode = currentNavMode();
   nav.querySelectorAll(".nav-tab[data-nav]").forEach((tab) => {
     tab.classList.toggle("active", tab.dataset.nav === mode);
   });

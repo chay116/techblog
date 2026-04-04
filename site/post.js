@@ -644,12 +644,16 @@ async function main() {
 
     // Sync nav-tabs active state based on incoming filter context.
     const navMode = deriveNavMode(fromDecoded);
-    const navTabs = q("nav-tabs");
-    if (navTabs) {
-      const tabs = navTabs.querySelectorAll(".nav-tab[data-nav]");
-      tabs.forEach((tab) => {
-        tab.classList.toggle("active", tab.dataset.nav === navMode);
-      });
+    if (typeof renderSharedNav === "function") {
+      renderSharedNav(navMode);
+    } else {
+      const navTabs = q("nav-tabs");
+      if (navTabs) {
+        const tabs = navTabs.querySelectorAll(".nav-tab[data-nav]");
+        tabs.forEach((tab) => {
+          tab.classList.toggle("active", tab.dataset.nav === navMode);
+        });
+      }
     }
 
     const siteData = await loadSiteData();
