@@ -1,16 +1,16 @@
 ---
-title: "Worklog #09 - Practical Model of GPU SM and Warp Scheduling"
+title: "GPU Series 01 - Practical Model of GPU SM and Warp Scheduling"
 date: "2026-03-03"
 status: "wip"
 project: "vAI"
 lang: "en"
-category: "worklog"
+category: "gpu-series"
 track: "gpu-architecture"
 series: "gpu"
 book: "GPU Series"
 part: "SM & Warp Scheduling"
 chapter: "Inside SM and Warp Scheduling"
-order: "9"
+order: "1"
 tags: ["gpu", "sm", "warp", "scheduler", "occupancy", "latency-hiding", "nvidia"]
 ---
 
@@ -161,9 +161,27 @@ RF --> WS : readiness feedback
 @enduml
 ```
 
-# 11. References
+# 11. Series Context
+
+This post now serves as the first execution-model entry in the broader GPU architecture reading map.
+
+Suggested reading order around this post:
+
+1. `Comparison - GPU Architecture Reading Map: SM, Memory, Matmul, Synchronization`
+2. this post
+3. `Worklog #11 - GPU Memory Hierarchy and Data Movement`
+4. `Worklog #12 - Matmul as a GPU Architecture Lens`
+
+Role of this post:
+
+- explain how SM should be modeled for performance debugging
+- connect warp scheduling to real profiling signals
+- prepare the transition to memory hierarchy and kernel design
+
+# 12. References
 
 - Reference summary post: https://gkseofla7.tistory.com/4
+- General-Purpose Graphics Processor Architecture (book baseline)
 - CUDA C++ Programming Guide:  
   https://docs.nvidia.com/cuda/cuda-c-programming-guide/
 - NVIDIA Volta Tuning Guide:  
@@ -173,7 +191,7 @@ RF --> WS : readiness feedback
 - NVIDIA Ada Tuning Guide:  
   https://docs.nvidia.com/cuda/ada-tuning-guide/
 
-# 12. Next Actions
+# 13. Next Actions
 
 1. pick one vAI kernel and collect warp stall breakdown in Nsight Compute,
 2. compare `Eligible Warps per Scheduler` and `Long Scoreboard` before/after changes,

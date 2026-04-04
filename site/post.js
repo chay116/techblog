@@ -145,6 +145,13 @@ function chapterSortKey(post) {
   return [1, date, title, path];
 }
 
+function categoryLabel(value) {
+  if (value === "gpu-series") return "GPU Series";
+  if (value === "worklog") return "Worklog";
+  if (value === "comparison") return "Comparison";
+  return value;
+}
+
 function compareSortKey(a, b) {
   const n = Math.max(a.length, b.length);
   for (let i = 0; i < n; i += 1) {
@@ -499,7 +506,7 @@ async function main() {
 
     document.title = meta.title;
     q("title").textContent = meta.title;
-    q("meta").textContent = `${meta.date} · ${meta.category} · ${meta.track} · ${meta.status}`;
+    q("meta").textContent = `${meta.date} · ${categoryLabel(meta.category)} · ${meta.track} · ${meta.status}`;
 
     const githubUrl = `https://github.com/chay116/techblog/blob/main/${path}`;
     q("github-link").href = githubUrl;

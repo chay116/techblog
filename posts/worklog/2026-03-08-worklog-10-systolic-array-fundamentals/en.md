@@ -1,16 +1,16 @@
 ---
-title: "Worklog #10 - Systolic Array: From Fundamentals to Production Mapping"
+title: "GPU Series 02 - Systolic Array: From Fundamentals to Production Mapping"
 date: "2026-03-08"
 status: "wip"
 project: "vAI"
 lang: "en"
-category: "worklog"
+category: "gpu-series"
 track: "gpu-architecture"
 series: "gpu"
 book: "GPU Series"
 part: "Systolic Array & Tensor Dataflow"
 chapter: "From Core Principles to Advanced Practice"
-order: "10"
+order: "2"
 tags: ["gpu", "systolic-array", "tensor-core", "gemm", "dataflow", "tpu", "compiler"]
 ---
 
@@ -194,15 +194,34 @@ CG --> RT
 - Most bottlenecks come from data movement and failed reuse, not lack of arithmetic units.
 - A robust workflow is: choose dataflow policy and memory model first, then do kernel-level micro-optimization.
 
-# 15. References
+# 15. Series Context
+
+This post now sits in the middle of the GPU architecture series as the bridge from architecture concepts to matmul-oriented kernel design.
+
+Suggested reading order around this post:
+
+1. `Worklog #09 - Practical Model of GPU SM and Warp Scheduling`
+2. `Worklog #11 - GPU Memory Hierarchy and Data Movement`
+3. this post
+4. `Worklog #12 - Matmul as a GPU Architecture Lens`
+5. `Worklog #13 - Hopper Matmul: TMA, Warp Specialization, Persistent Kernels`
+
+Role of this post:
+
+- introduce systolic thinking and dataflow policy
+- explain why reuse dominates throughput
+- prepare the jump from array-level intuition to modern GPU matmul kernels
+
+# 16. References
 
 - deep-math summary post: https://deep-math.tistory.com/29
+- General-Purpose Graphics Processor Architecture (book baseline)
 - Why Systolic Architectures? (H. T. Kung, 1982): https://www.eecs.harvard.edu/~htk/publication/1982-kung-why-systolic-architecture.pdf
 - Systolic Arrays for VLSI (classic reference lineage): https://www.eecs.harvard.edu/~htk/publication/1980-sigmod-kung-lehman.pdf
 - In-Datacenter Performance Analysis of a TPU (ISCA 2017): https://arxiv.org/abs/1704.04760
 - Google Cloud TPU architecture: https://docs.cloud.google.com/tpu/docs/system-architecture-tpu-vm
 
-# 16. Next Post Plan
+# 17. Next Post Plan
 
 1. Profile one GEMM kernel while switching WS vs OS and compare metrics.
 2. Add a simple cost model for tile-size auto-tuning.

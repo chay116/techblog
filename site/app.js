@@ -140,6 +140,13 @@ function seriesDescription(value) {
   return table[value] || table.other || SERIES_DESCRIPTIONS.en.other;
 }
 
+function categoryLabel(value) {
+  if (value === "gpu-series") return "GPU Series";
+  if (value === "worklog") return state.lang === "ko" ? "워크로그" : "Worklog";
+  if (value === "comparison") return state.lang === "ko" ? "비교" : "Comparison";
+  return value;
+}
+
 function formatPostCount(n) {
   return state.lang === "ko" ? `${n}개 글` : `${n} posts`;
 }
@@ -608,7 +615,7 @@ function renderFilters() {
 
     state.data.categories.forEach((category) => {
       catRoot.appendChild(
-        createChip(category, state.category === category, () => {
+        createChip(categoryLabel(category), state.category === category, () => {
           state.category = state.category === category ? null : category;
           renderAll();
         })
@@ -707,7 +714,7 @@ function renderPosts() {
     item.className = "post";
     const postUrl = buildPostUrl(post.path);
 
-    const metaBits = [post.date, post.series, post.category, post.track, post.status].filter(Boolean);
+    const metaBits = [post.date, post.series, categoryLabel(post.category), post.track, post.status].filter(Boolean);
     const h3 = document.createElement("h3");
     const link = document.createElement("a");
     link.href = postUrl;

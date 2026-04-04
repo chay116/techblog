@@ -4,6 +4,8 @@
 
 | Topic | Status | Link | Code Section | References Section |
 |---|---|---|---|---|
+| GPU Architecture Reading Map: SM, Memory, Matmul, Synchronization | wip | `posts/comparison/gpu-architecture/2026-04-04-comparison-gpu-architecture-reading-map/` | yes | yes |
+| CUDA Synchronization Primitives: Scope, Fence, atomic_ref | wip | `posts/comparison/gpu-architecture/2026-04-04-comparison-cuda-synchronization-primitives-scope-fence-atomic-ref/` | yes | yes |
 | Vega(GCN) vs RDNA vs NVIDIA Scalarization | wip | `posts/comparison/gpu-architecture/2026-03-26-comparison-vega-gcn-rdna-vs-nvidia-scalarization/` | yes | yes |
 |  |  |  |  |  |
 
