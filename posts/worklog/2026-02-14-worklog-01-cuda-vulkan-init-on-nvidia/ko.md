@@ -1,5 +1,5 @@
 ---
-title: "워크로그 #01 - NVIDIA에서 CUDA vs Vulkan 초기화"
+title: "NVIDIA에서 CUDA vs Vulkan 초기화"
 date: "2026-02-14"
 status: "wip"
 project: "vAI"

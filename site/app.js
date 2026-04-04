@@ -165,7 +165,7 @@ function seriesDescription(value) {
 
 function categoryLabel(value) {
   if (value === "gpu-series") return "GPU Series";
-  if (value === "worklog") return state.lang === "ko" ? "워크로그" : "Worklog";
+  if (value === "worklog") return state.lang === "ko" ? "노트" : "Notes";
   if (value === "comparison") return state.lang === "ko" ? "비교" : "Comparison";
   return value;
 }
@@ -175,6 +175,19 @@ function trackLabel(value) {
   if (value === "api-language") return state.lang === "ko" ? "GPU Driver/API" : "GPU Driver/API";
   if (value === "runtime-framework") return state.lang === "ko" ? "GPU Runtime/Framework" : "GPU Runtime/Framework";
   return value;
+}
+
+function orderedTracks(tracks) {
+  const preferred = currentNavMode() === "gpu-lab"
+    ? ["gpu-architecture", "api-language", "runtime-framework", "tooling"]
+    : ["gpu-architecture", "tooling", "api-language", "runtime-framework"];
+  const rank = new Map(preferred.map((value, idx) => [value, idx]));
+  return tracks.slice().sort((a, b) => {
+    const ra = rank.has(a) ? rank.get(a) : Number.MAX_SAFE_INTEGER;
+    const rb = rank.has(b) ? rank.get(b) : Number.MAX_SAFE_INTEGER;
+    if (ra !== rb) return ra - rb;
+    return trackLabel(a).localeCompare(trackLabel(b));
+  });
 }
 
 function formatPostCount(n) {
@@ -598,7 +611,7 @@ function renderSeriesReader() {
 
     const meta = document.createElement("span");
     meta.className = "sub";
-    const bits = [entry.date, entry.track].filter(Boolean);
+    const bits = [entry.date, trackLabel(entry.track)].filter(Boolean);
     meta.textContent = bits.length > 0 ? `(${bits.join(" · ")})` : "";
 
     li.appendChild(link);
@@ -670,7 +683,7 @@ function renderFilters() {
     });
   }
 
-  state.data.tracks.forEach((track) => {
+  orderedTracks(state.data.tracks).forEach((track) => {
     trackRoot.appendChild(
       createChip(trackLabel(track), state.track === track, () => {
         state.track = state.track === track ? null : track;

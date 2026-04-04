@@ -1,5 +1,5 @@
 ---
-title: "Worklog #07 - JIT Cache vs Pipeline Cache"
+title: "JIT Cache vs Pipeline Cache in CUDA and Vulkan"
 date: "2026-02-22"
 status: "wip"
 project: "vAI"

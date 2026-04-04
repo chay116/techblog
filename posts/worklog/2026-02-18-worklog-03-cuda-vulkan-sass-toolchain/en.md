@@ -1,5 +1,5 @@
 ---
-title: "Worklog #03 - CUDA vs Vulkan: Compilation Toolchain Anatomy"
+title: "CUDA vs Vulkan Compilation Toolchain Anatomy"
 date: "2026-02-18"
 status: "wip"
 project: "vAI"

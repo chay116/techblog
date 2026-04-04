@@ -1,5 +1,5 @@
 ---
-title: "워크로그 #07 - JIT 캐시 vs 파이프라인 캐시"
+title: "CUDA와 Vulkan의 JIT 캐시 vs 파이프라인 캐시"
 date: "2026-02-22"
 status: "wip"
 project: "vAI"

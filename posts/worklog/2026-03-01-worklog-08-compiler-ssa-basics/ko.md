@@ -1,5 +1,5 @@
 ---
-title: "워크로그 #08 - 컴파일러 IR에서 SSA 기초"
+title: "컴파일러 IR에서 SSA 기초"
 date: "2026-03-01"
 status: "wip"
 project: "vAI"

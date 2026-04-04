@@ -1,5 +1,5 @@
 ---
-title: "워크로그 #06 - 바인드리스, BDA, 원시 포인터"
+title: "바인드리스, 버퍼 디바이스 주소, 원시 포인터"
 date: "2026-02-21"
 status: "wip"
 project: "vAI"

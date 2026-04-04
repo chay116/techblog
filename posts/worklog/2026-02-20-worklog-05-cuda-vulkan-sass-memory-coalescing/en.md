@@ -1,5 +1,5 @@
 ---
-title: "Worklog #05 - Memory Coalescing at SASS Level"
+title: "Memory Coalescing at the SASS Level"
 date: "2026-02-20"
 status: "wip"
 project: "vAI"

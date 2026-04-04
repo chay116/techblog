@@ -1,5 +1,5 @@
 ---
-title: "워크로그 #03 - CUDA vs Vulkan: 컴파일 툴체인 해부"
+title: "CUDA vs Vulkan 컴파일 툴체인 해부"
 date: "2026-02-18"
 status: "wip"
 project: "vAI"

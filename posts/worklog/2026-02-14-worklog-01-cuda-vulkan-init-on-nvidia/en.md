@@ -1,5 +1,5 @@
 ---
-title: "Worklog #01 - CUDA vs Vulkan Initialization on NVIDIA"
+title: "CUDA vs Vulkan Initialization on NVIDIA"
 date: "2026-02-14"
 status: "wip"
 project: "vAI"

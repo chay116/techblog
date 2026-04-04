@@ -1,5 +1,5 @@
 ---
-title: "워크로그 #02 - Vulkan Compute 배리어 점검"
+title: "Vulkan Compute 배리어 점검"
 date: "2026-02-15"
 status: "wip"
 project: "vAI"

@@ -13,19 +13,19 @@ This page is the single entry point for finding posts by category, track, and ta
 | 2026-04-04 | GPU Series 05 - Hopper Matmul: TMA, Warp Specialization, Persistent Kernels | gpu-series | gpu-architecture | wip | `posts/worklog/2026-04-04-worklog-13-hopper-matmul-tma-persistent-kernels/` |
 | 2026-04-04 | GPU Series 06 - GPU Performance Debugging Checklist | gpu-series | gpu-architecture | wip | `posts/worklog/2026-04-04-worklog-14-gpu-performance-debugging-checklist/` |
 | 2026-03-26 | Comparison - Vega(GCN) vs RDNA vs NVIDIA Scalarization | comparison | gpu-architecture | wip | `posts/comparison/gpu-architecture/2026-03-26-comparison-vega-gcn-rdna-vs-nvidia-scalarization/` |
-| 2026-02-14 | Worklog #01 - CUDA vs Vulkan Initialization on NVIDIA | worklog | api-language | wip | `posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/` |
-| 2026-02-15 | Worklog #02 - Vulkan Barrier Audit for Compute | worklog | api-language | wip | `posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit/` |
+| 2026-02-14 | CUDA vs Vulkan Initialization on NVIDIA | notes | api-language | wip | `posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/` |
+| 2026-02-15 | Vulkan Barrier Audit for Compute | notes | api-language | wip | `posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit/` |
 | 2026-02-16 | Comparison - CUDA vs Vulkan Initialization | comparison | api-language | wip | `posts/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init/` |
 | 2026-02-17 | Comparison - NVIDIA Ampere vs Ada (Template) | comparison | gpu-architecture | wip | `posts/comparison/gpu-architecture/2026-02-17-comparison-nvidia-ampere-vs-ada-template/` |
-| 2026-02-18 | Worklog #03 - CUDA vs Vulkan: Compilation Toolchain Anatomy | worklog | api-language | wip | `posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/` |
-| 2026-02-19 | Worklog #04 - Hello SASS: Vector Add | worklog | api-language | wip | `posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/` |
-| 2026-02-20 | Worklog #05 - Memory Coalescing at SASS Level | worklog | api-language | wip | `posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/` |
-| 2026-02-21 | Worklog #06 - Bindless, BDA, Raw Pointers | worklog | api-language | wip | `posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/` |
-| 2026-02-22 | Worklog #07 - JIT Cache vs Pipeline Cache | worklog | api-language | wip | `posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/` |
+| 2026-02-18 | CUDA vs Vulkan Compilation Toolchain Anatomy | notes | api-language | wip | `posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/` |
+| 2026-02-19 | SASS Walkthrough: Vector Add | notes | api-language | wip | `posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/` |
+| 2026-02-20 | Memory Coalescing at the SASS Level | notes | api-language | wip | `posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/` |
+| 2026-02-21 | Bindless, Buffer Device Address, and Raw Pointers | notes | api-language | wip | `posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/` |
+| 2026-02-22 | JIT Cache vs Pipeline Cache in CUDA and Vulkan | notes | api-language | wip | `posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/` |
 
 ## Find by Category
 
-### Worklog
+### Notes
 
 - `posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/`
 - `posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit/`

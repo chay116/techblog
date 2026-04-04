@@ -1,5 +1,5 @@
 ---
-title: "Worklog #08 - SSA Basics in Compiler IR"
+title: "SSA Basics in Compiler IR"
 date: "2026-03-01"
 status: "wip"
 project: "vAI"

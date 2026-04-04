@@ -1,5 +1,5 @@
 ---
-title: "Worklog #06 - Bindless, BDA, Raw Pointers"
+title: "Bindless, Buffer Device Address, and Raw Pointers"
 date: "2026-02-21"
 status: "wip"
 project: "vAI"

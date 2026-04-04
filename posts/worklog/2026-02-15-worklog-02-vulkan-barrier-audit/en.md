@@ -1,5 +1,5 @@
 ---
-title: "Worklog #02 - Vulkan Barrier Audit for Compute"
+title: "Vulkan Barrier Audit for Compute"
 date: "2026-02-15"
 status: "wip"
 project: "vAI"

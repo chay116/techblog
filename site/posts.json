@@ -465,7 +465,7 @@
       "summary": "- Core claim: for performance debugging, SM should be modeled as a **warp scheduling + dependency management** system, not just a \"core count.\""
     },
     {
-      "title": "워크로그 #08 - 컴파일러 IR에서 SSA 기초",
+      "title": "컴파일러 IR에서 SSA 기초",
       "date": "2026-03-01",
       "status": "wip",
       "project": "vAI",
@@ -475,7 +475,7 @@
       "series": "compiler",
       "book": "Compiler Series",
       "part": "tooling",
-      "chapter": "워크로그 #08 - 컴파일러 IR에서 SSA 기초",
+      "chapter": "컴파일러 IR에서 SSA 기초",
       "order": null,
       "tags": [
         "compiler",
@@ -488,7 +488,7 @@
       "summary": "- 핵심 주장: SSA는 컴파일러 최적화 결과를 일관되게 해석하기 위한 최소 단위 모델이다."
     },
     {
-      "title": "Worklog #08 - SSA Basics in Compiler IR",
+      "title": "SSA Basics in Compiler IR",
       "date": "2026-03-01",
       "status": "wip",
       "project": "vAI",
@@ -498,7 +498,7 @@
       "series": "compiler",
       "book": "Compiler Series",
       "part": "tooling",
-      "chapter": "Worklog #08 - SSA Basics in Compiler IR",
+      "chapter": "SSA Basics in Compiler IR",
       "order": null,
       "tags": [
         "compiler",
@@ -511,31 +511,7 @@
       "summary": "- Core claim: SSA is the minimum abstraction required to reason about compiler optimization behavior with confidence."
     },
     {
-      "title": "워크로그 #07 - JIT 캐시 vs 파이프라인 캐시",
-      "date": "2026-02-22",
-      "status": "wip",
-      "project": "vAI",
-      "lang": "ko",
-      "category": "worklog",
-      "track": "api-language",
-      "series": "gpu-lab",
-      "book": "GPU Lab",
-      "part": "api-language",
-      "chapter": "워크로그 #07 - JIT 캐시 vs 파이프라인 캐시",
-      "order": null,
-      "tags": [
-        "cuda",
-        "vulkan",
-        "nvidia",
-        "sass",
-        "jit",
-        "pipeline-cache"
-      ],
-      "path": "posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/ko.md",
-      "summary": "- 핵심 주장: 지난 네 글에서 CUDA와 Vulkan이 NVIDIA GPU에서 거의 동일한 SASS를 생성한다는 것을 확인했다. 산술, 메모리 접근, 코얼레싱 동작 - 모두 동일. BDA를 사용하면 바인딩 모델까지 수렴한다."
-    },
-    {
-      "title": "Worklog #07 - JIT Cache vs Pipeline Cache",
+      "title": "JIT Cache vs Pipeline Cache in CUDA and Vulkan",
       "date": "2026-02-22",
       "status": "wip",
       "project": "vAI",
@@ -545,7 +521,7 @@
       "series": "gpu-lab",
       "book": "GPU Lab",
       "part": "api-language",
-      "chapter": "Worklog #07 - JIT Cache vs Pipeline Cache",
+      "chapter": "JIT Cache vs Pipeline Cache in CUDA and Vulkan",
       "order": null,
       "tags": [
         "cuda",
@@ -559,7 +535,31 @@
       "summary": "- Core claim: Over the past four posts, we have established that CUDA and Vulkan produce nearly identical SASS on NVIDIA GPUs. The arithmetic, the memory accesses, the coalescing behavior — all the same. With BDA, even the binding model converges."
     },
     {
-      "title": "워크로그 #06 - 바인드리스, BDA, 원시 포인터",
+      "title": "CUDA와 Vulkan의 JIT 캐시 vs 파이프라인 캐시",
+      "date": "2026-02-22",
+      "status": "wip",
+      "project": "vAI",
+      "lang": "ko",
+      "category": "worklog",
+      "track": "api-language",
+      "series": "gpu-lab",
+      "book": "GPU Lab",
+      "part": "api-language",
+      "chapter": "CUDA와 Vulkan의 JIT 캐시 vs 파이프라인 캐시",
+      "order": null,
+      "tags": [
+        "cuda",
+        "vulkan",
+        "nvidia",
+        "sass",
+        "jit",
+        "pipeline-cache"
+      ],
+      "path": "posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/ko.md",
+      "summary": "- 핵심 주장: 지난 네 글에서 CUDA와 Vulkan이 NVIDIA GPU에서 거의 동일한 SASS를 생성한다는 것을 확인했다. 산술, 메모리 접근, 코얼레싱 동작 - 모두 동일. BDA를 사용하면 바인딩 모델까지 수렴한다."
+    },
+    {
+      "title": "바인드리스, 버퍼 디바이스 주소, 원시 포인터",
       "date": "2026-02-21",
       "status": "wip",
       "project": "vAI",
@@ -569,7 +569,7 @@
       "series": "gpu-lab",
       "book": "GPU Lab",
       "part": "api-language",
-      "chapter": "워크로그 #06 - 바인드리스, BDA, 원시 포인터",
+      "chapter": "바인드리스, 버퍼 디바이스 주소, 원시 포인터",
       "order": null,
       "tags": [
         "cuda",
@@ -583,7 +583,7 @@
       "summary": "- 핵심 주장: [워크로그 #04](/posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/)에서 CUDA와 Vulkan 사이의 유일한 구조적 SASS 차이를 확인했다: 디스크립터 간접 참조. CUDA는 상수 뱅크를 통해 버퍼 주소를 직접 전달한다. Vulkan은 글로벌 메모리의 디스크립터 테이블에서 가져오면서 추가 `LDG` 명령어가 발생한다."
     },
     {
-      "title": "Worklog #06 - Bindless, BDA, Raw Pointers",
+      "title": "Bindless, Buffer Device Address, and Raw Pointers",
       "date": "2026-02-21",
       "status": "wip",
       "project": "vAI",
@@ -593,7 +593,7 @@
       "series": "gpu-lab",
       "book": "GPU Lab",
       "part": "api-language",
-      "chapter": "Worklog #06 - Bindless, BDA, Raw Pointers",
+      "chapter": "Bindless, Buffer Device Address, and Raw Pointers",
       "order": null,
       "tags": [
         "cuda",
@@ -607,7 +607,7 @@
       "summary": "- Core claim: In [Worklog #04](/posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/) we identified the one structural SASS difference between CUDA and Vulkan: the descriptor indirection. CUDA passes buffer addresses directly through the constant bank. Vulkan fetches them from a descriptor table in global memory, adding extra `LDG` instructions."
     },
     {
-      "title": "워크로그 #05 - SASS 레벨에서 본 메모리 코얼레싱",
+      "title": "SASS 레벨 메모리 코얼레싱",
       "date": "2026-02-20",
       "status": "wip",
       "project": "vAI",
@@ -617,7 +617,7 @@
       "series": "gpu-lab",
       "book": "GPU Lab",
       "part": "api-language",
-      "chapter": "워크로그 #05 - SASS 레벨에서 본 메모리 코얼레싱",
+      "chapter": "SASS 레벨 메모리 코얼레싱",
       "order": null,
       "tags": [
         "cuda",
@@ -630,7 +630,7 @@
       "summary": "- 핵심 주장: 이전 두 글에서 CUDA와 Vulkan이 단순 커널에서 거의 동일한 SASS를 생성하며, 유일한 차이가 디스크립터 바인딩 오버헤드라는 것을 확인했다. 벡터 덧셈 커널에서는 순수 대역폭 바운드여서 그것이 문제가 되지 않았다."
     },
     {
-      "title": "Worklog #05 - Memory Coalescing at SASS Level",
+      "title": "Memory Coalescing at the SASS Level",
       "date": "2026-02-20",
       "status": "wip",
       "project": "vAI",
@@ -640,7 +640,7 @@
       "series": "gpu-lab",
       "book": "GPU Lab",
       "part": "api-language",
-      "chapter": "Worklog #05 - Memory Coalescing at SASS Level",
+      "chapter": "Memory Coalescing at the SASS Level",
       "order": null,
       "tags": [
         "cuda",
@@ -653,7 +653,7 @@
       "summary": "- Core claim: In the previous two posts, we saw that CUDA and Vulkan produce nearly identical SASS for simple kernels, with the only difference being descriptor binding overhead. But for the vector add kernel, that did not matter because the kernel was purely bandwidth-bound and the computation was trivial."
     },
     {
-      "title": "워크로그 #04 - Hello SASS: 벡터 덧셈",
+      "title": "SASS 따라가기: 벡터 덧셈",
       "date": "2026-02-19",
       "status": "wip",
       "project": "vAI",
@@ -663,7 +663,7 @@
       "series": "gpu-lab",
       "book": "GPU Lab",
       "part": "api-language",
-      "chapter": "워크로그 #04 - Hello SASS: 벡터 덧셈",
+      "chapter": "SASS 따라가기: 벡터 덧셈",
       "order": null,
       "tags": [
         "cuda",
@@ -676,7 +676,7 @@
       "summary": "- 핵심 주장: [워크로그 #03](/posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/)에서 CUDA와 Vulkan이 동일한 NVIDIA 백엔드 컴파일러로 합류한다는 것을 확인했다. 빈 커널은 동일한 SASS를 생성한다. 그러면 실제로 *무언가를 하는* 커널은 어떨까?"
     },
     {
-      "title": "Worklog #04 - Hello SASS: Vector Add",
+      "title": "SASS Walkthrough: Vector Add",
       "date": "2026-02-19",
       "status": "wip",
       "project": "vAI",
@@ -686,7 +686,7 @@
       "series": "gpu-lab",
       "book": "GPU Lab",
       "part": "api-language",
-      "chapter": "Worklog #04 - Hello SASS: Vector Add",
+      "chapter": "SASS Walkthrough: Vector Add",
       "order": null,
       "tags": [
         "cuda",
@@ -699,7 +699,7 @@
       "summary": "- Core claim: In [Worklog #03](/posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/) we established that CUDA and Vulkan feed into the same NVIDIA backend compiler. An empty kernel produces identical SASS. But what about a kernel that actually *does* something?"
     },
     {
-      "title": "워크로그 #03 - CUDA vs Vulkan: 컴파일 툴체인 해부",
+      "title": "CUDA vs Vulkan 컴파일 툴체인 해부",
       "date": "2026-02-18",
       "status": "wip",
       "project": "vAI",
@@ -709,7 +709,7 @@
       "series": "gpu-lab",
       "book": "GPU Lab",
       "part": "api-language",
-      "chapter": "워크로그 #03 - CUDA vs Vulkan: 컴파일 툴체인 해부",
+      "chapter": "CUDA vs Vulkan 컴파일 툴체인 해부",
       "order": null,
       "tags": [
         "cuda",
@@ -722,7 +722,7 @@
       "summary": "- 핵심 주장: CUDA든 Vulkan이든, 디스패치하는 모든 컴퓨트 워크로드는 결국 동일한 NVIDIA SASS 명령어로 같은 실리콘 위에서 실행된다. GPU는 어떤 API가 작업을 제출했는지 모른다. 그러나 소스 코드에서 SASS까지의 여정은 두 에코시스템 사이에서 근본적으로 다르며, 그 여정을 이해하는 것이 두 API가 동일한 하드웨어를 대상으로 함에도 왜 그토록 다르게 느껴지는지를 이해하는 열쇠다."
     },
     {
-      "title": "Worklog #03 - CUDA vs Vulkan: Compilation Toolchain Anatomy",
+      "title": "CUDA vs Vulkan Compilation Toolchain Anatomy",
       "date": "2026-02-18",
       "status": "wip",
       "project": "vAI",
@@ -732,7 +732,7 @@
       "series": "gpu-lab",
       "book": "GPU Lab",
       "part": "api-language",
-      "chapter": "Worklog #03 - CUDA vs Vulkan: Compilation Toolchain Anatomy",
+      "chapter": "CUDA vs Vulkan Compilation Toolchain Anatomy",
       "order": null,
       "tags": [
         "cuda",
@@ -811,7 +811,7 @@
       "summary": "- Core claim: Initialization complexity and first execution behavior on NVIDIA GPU."
     },
     {
-      "title": "워크로그 #02 - Vulkan Compute 배리어 점검",
+      "title": "Vulkan Compute 배리어 점검",
       "date": "2026-02-15",
       "status": "wip",
       "project": "vAI",
@@ -821,7 +821,7 @@
       "series": "gpu-lab",
       "book": "GPU Lab",
       "part": "api-language",
-      "chapter": "워크로그 #02 - Vulkan Compute 배리어 점검",
+      "chapter": "Vulkan Compute 배리어 점검",
       "order": null,
       "tags": [
         "vulkan",
@@ -833,7 +833,7 @@
       "summary": "- 핵심 주장: 현재 Vulkan compute 경로에서 배리어 범위가 과도할 가능성이 있다."
     },
     {
-      "title": "Worklog #02 - Vulkan Barrier Audit for Compute",
+      "title": "Vulkan Barrier Audit for Compute",
       "date": "2026-02-15",
       "status": "wip",
       "project": "vAI",
@@ -843,7 +843,7 @@
       "series": "gpu-lab",
       "book": "GPU Lab",
       "part": "api-language",
-      "chapter": "Worklog #02 - Vulkan Barrier Audit for Compute",
+      "chapter": "Vulkan Barrier Audit for Compute",
       "order": null,
       "tags": [
         "vulkan",
@@ -855,7 +855,7 @@
       "summary": "- Core claim: Barrier placement in the Vulkan compute path may be over-conservative, reducing overlap opportunities."
     },
     {
-      "title": "워크로그 #01 - NVIDIA에서 CUDA vs Vulkan 초기화",
+      "title": "NVIDIA에서 CUDA vs Vulkan 초기화",
       "date": "2026-02-14",
       "status": "wip",
       "project": "vAI",
@@ -865,7 +865,7 @@
       "series": "gpu-lab",
       "book": "GPU Lab",
       "part": "api-language",
-      "chapter": "워크로그 #01 - NVIDIA에서 CUDA vs Vulkan 초기화",
+      "chapter": "NVIDIA에서 CUDA vs Vulkan 초기화",
       "order": null,
       "tags": [
         "cuda",
@@ -877,7 +877,7 @@
       "summary": "- 핵심 주장: vAI의 CUDA/Vulkan 백엔드에서 첫 실행 지연과 초기화 비용을 분리해서 확인한다."
     },
     {
-      "title": "Worklog #01 - CUDA vs Vulkan Initialization on NVIDIA",
+      "title": "CUDA vs Vulkan Initialization on NVIDIA",
       "date": "2026-02-14",
       "status": "wip",
       "project": "vAI",
@@ -887,7 +887,7 @@
       "series": "gpu-lab",
       "book": "GPU Lab",
       "part": "api-language",
-      "chapter": "Worklog #01 - CUDA vs Vulkan Initialization on NVIDIA",
+      "chapter": "CUDA vs Vulkan Initialization on NVIDIA",
       "order": null,
       "tags": [
         "cuda",
@@ -925,7 +925,7 @@
           "index": 1,
           "total": 1,
           "path": "posts/worklog/2026-03-01-worklog-08-compiler-ssa-basics/en.md",
-          "title": "Worklog #08 - SSA Basics in Compiler IR",
+          "title": "SSA Basics in Compiler IR",
           "date": "2026-03-01",
           "lang": "en",
           "category": "worklog",
@@ -933,7 +933,7 @@
           "status": "wip",
           "book": "Compiler Series",
           "part": "tooling",
-          "chapter": "Worklog #08 - SSA Basics in Compiler IR",
+          "chapter": "SSA Basics in Compiler IR",
           "order": null,
           "prev_path": null,
           "next_path": null
@@ -944,7 +944,7 @@
           "index": 1,
           "total": 1,
           "path": "posts/worklog/2026-03-01-worklog-08-compiler-ssa-basics/ko.md",
-          "title": "워크로그 #08 - 컴파일러 IR에서 SSA 기초",
+          "title": "컴파일러 IR에서 SSA 기초",
           "date": "2026-03-01",
           "lang": "ko",
           "category": "worklog",
@@ -952,7 +952,7 @@
           "status": "wip",
           "book": "Compiler Series",
           "part": "tooling",
-          "chapter": "워크로그 #08 - 컴파일러 IR에서 SSA 기초",
+          "chapter": "컴파일러 IR에서 SSA 기초",
           "order": null,
           "prev_path": null,
           "next_path": null
@@ -1175,7 +1175,7 @@
           "index": 1,
           "total": 12,
           "path": "posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/en.md",
-          "title": "Worklog #01 - CUDA vs Vulkan Initialization on NVIDIA",
+          "title": "CUDA vs Vulkan Initialization on NVIDIA",
           "date": "2026-02-14",
           "lang": "en",
           "category": "worklog",
@@ -1183,7 +1183,7 @@
           "status": "wip",
           "book": "GPU Lab",
           "part": "api-language",
-          "chapter": "Worklog #01 - CUDA vs Vulkan Initialization on NVIDIA",
+          "chapter": "CUDA vs Vulkan Initialization on NVIDIA",
           "order": null,
           "prev_path": null,
           "next_path": "posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit/en.md"
@@ -1192,7 +1192,7 @@
           "index": 2,
           "total": 12,
           "path": "posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit/en.md",
-          "title": "Worklog #02 - Vulkan Barrier Audit for Compute",
+          "title": "Vulkan Barrier Audit for Compute",
           "date": "2026-02-15",
           "lang": "en",
           "category": "worklog",
@@ -1200,7 +1200,7 @@
           "status": "wip",
           "book": "GPU Lab",
           "part": "api-language",
-          "chapter": "Worklog #02 - Vulkan Barrier Audit for Compute",
+          "chapter": "Vulkan Barrier Audit for Compute",
           "order": null,
           "prev_path": "posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/en.md",
           "next_path": "posts/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init/en.md"
@@ -1243,7 +1243,7 @@
           "index": 5,
           "total": 12,
           "path": "posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/en.md",
-          "title": "Worklog #03 - CUDA vs Vulkan: Compilation Toolchain Anatomy",
+          "title": "CUDA vs Vulkan Compilation Toolchain Anatomy",
           "date": "2026-02-18",
           "lang": "en",
           "category": "worklog",
@@ -1251,7 +1251,7 @@
           "status": "wip",
           "book": "GPU Lab",
           "part": "api-language",
-          "chapter": "Worklog #03 - CUDA vs Vulkan: Compilation Toolchain Anatomy",
+          "chapter": "CUDA vs Vulkan Compilation Toolchain Anatomy",
           "order": null,
           "prev_path": "posts/comparison/gpu-architecture/2026-02-17-comparison-nvidia-ampere-vs-ada-template/en.md",
           "next_path": "posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/en.md"
@@ -1260,7 +1260,7 @@
           "index": 6,
           "total": 12,
           "path": "posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/en.md",
-          "title": "Worklog #04 - Hello SASS: Vector Add",
+          "title": "SASS Walkthrough: Vector Add",
           "date": "2026-02-19",
           "lang": "en",
           "category": "worklog",
@@ -1268,7 +1268,7 @@
           "status": "wip",
           "book": "GPU Lab",
           "part": "api-language",
-          "chapter": "Worklog #04 - Hello SASS: Vector Add",
+          "chapter": "SASS Walkthrough: Vector Add",
           "order": null,
           "prev_path": "posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/en.md",
           "next_path": "posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/en.md"
@@ -1277,7 +1277,7 @@
           "index": 7,
           "total": 12,
           "path": "posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/en.md",
-          "title": "Worklog #05 - Memory Coalescing at SASS Level",
+          "title": "Memory Coalescing at the SASS Level",
           "date": "2026-02-20",
           "lang": "en",
           "category": "worklog",
@@ -1285,7 +1285,7 @@
           "status": "wip",
           "book": "GPU Lab",
           "part": "api-language",
-          "chapter": "Worklog #05 - Memory Coalescing at SASS Level",
+          "chapter": "Memory Coalescing at the SASS Level",
           "order": null,
           "prev_path": "posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/en.md",
           "next_path": "posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/en.md"
@@ -1294,7 +1294,7 @@
           "index": 8,
           "total": 12,
           "path": "posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/en.md",
-          "title": "Worklog #06 - Bindless, BDA, Raw Pointers",
+          "title": "Bindless, Buffer Device Address, and Raw Pointers",
           "date": "2026-02-21",
           "lang": "en",
           "category": "worklog",
@@ -1302,7 +1302,7 @@
           "status": "wip",
           "book": "GPU Lab",
           "part": "api-language",
-          "chapter": "Worklog #06 - Bindless, BDA, Raw Pointers",
+          "chapter": "Bindless, Buffer Device Address, and Raw Pointers",
           "order": null,
           "prev_path": "posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/en.md",
           "next_path": "posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/en.md"
@@ -1311,7 +1311,7 @@
           "index": 9,
           "total": 12,
           "path": "posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/en.md",
-          "title": "Worklog #07 - JIT Cache vs Pipeline Cache",
+          "title": "JIT Cache vs Pipeline Cache in CUDA and Vulkan",
           "date": "2026-02-22",
           "lang": "en",
           "category": "worklog",
@@ -1319,7 +1319,7 @@
           "status": "wip",
           "book": "GPU Lab",
           "part": "api-language",
-          "chapter": "Worklog #07 - JIT Cache vs Pipeline Cache",
+          "chapter": "JIT Cache vs Pipeline Cache in CUDA and Vulkan",
           "order": null,
           "prev_path": "posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/en.md",
           "next_path": "posts/comparison/gpu-architecture/2026-03-26-comparison-vega-gcn-rdna-vs-nvidia-scalarization/en.md"
@@ -1381,7 +1381,7 @@
           "index": 1,
           "total": 11,
           "path": "posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/ko.md",
-          "title": "워크로그 #01 - NVIDIA에서 CUDA vs Vulkan 초기화",
+          "title": "NVIDIA에서 CUDA vs Vulkan 초기화",
           "date": "2026-02-14",
           "lang": "ko",
           "category": "worklog",
@@ -1389,7 +1389,7 @@
           "status": "wip",
           "book": "GPU Lab",
           "part": "api-language",
-          "chapter": "워크로그 #01 - NVIDIA에서 CUDA vs Vulkan 초기화",
+          "chapter": "NVIDIA에서 CUDA vs Vulkan 초기화",
           "order": null,
           "prev_path": null,
           "next_path": "posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit/ko.md"
@@ -1398,7 +1398,7 @@
           "index": 2,
           "total": 11,
           "path": "posts/worklog/2026-02-15-worklog-02-vulkan-barrier-audit/ko.md",
-          "title": "워크로그 #02 - Vulkan Compute 배리어 점검",
+          "title": "Vulkan Compute 배리어 점검",
           "date": "2026-02-15",
           "lang": "ko",
           "category": "worklog",
@@ -1406,7 +1406,7 @@
           "status": "wip",
           "book": "GPU Lab",
           "part": "api-language",
-          "chapter": "워크로그 #02 - Vulkan Compute 배리어 점검",
+          "chapter": "Vulkan Compute 배리어 점검",
           "order": null,
           "prev_path": "posts/worklog/2026-02-14-worklog-01-cuda-vulkan-init-on-nvidia/ko.md",
           "next_path": "posts/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init/ko.md"
@@ -1432,7 +1432,7 @@
           "index": 4,
           "total": 11,
           "path": "posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/ko.md",
-          "title": "워크로그 #03 - CUDA vs Vulkan: 컴파일 툴체인 해부",
+          "title": "CUDA vs Vulkan 컴파일 툴체인 해부",
           "date": "2026-02-18",
           "lang": "ko",
           "category": "worklog",
@@ -1440,7 +1440,7 @@
           "status": "wip",
           "book": "GPU Lab",
           "part": "api-language",
-          "chapter": "워크로그 #03 - CUDA vs Vulkan: 컴파일 툴체인 해부",
+          "chapter": "CUDA vs Vulkan 컴파일 툴체인 해부",
           "order": null,
           "prev_path": "posts/comparison/api-language/2026-02-16-comparison-cuda-vs-vulkan-init/ko.md",
           "next_path": "posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/ko.md"
@@ -1449,7 +1449,7 @@
           "index": 5,
           "total": 11,
           "path": "posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/ko.md",
-          "title": "워크로그 #04 - Hello SASS: 벡터 덧셈",
+          "title": "SASS 따라가기: 벡터 덧셈",
           "date": "2026-02-19",
           "lang": "ko",
           "category": "worklog",
@@ -1457,7 +1457,7 @@
           "status": "wip",
           "book": "GPU Lab",
           "part": "api-language",
-          "chapter": "워크로그 #04 - Hello SASS: 벡터 덧셈",
+          "chapter": "SASS 따라가기: 벡터 덧셈",
           "order": null,
           "prev_path": "posts/worklog/2026-02-18-worklog-03-cuda-vulkan-sass-toolchain/ko.md",
           "next_path": "posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/ko.md"
@@ -1466,7 +1466,7 @@
           "index": 6,
           "total": 11,
           "path": "posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/ko.md",
-          "title": "워크로그 #05 - SASS 레벨에서 본 메모리 코얼레싱",
+          "title": "SASS 레벨 메모리 코얼레싱",
           "date": "2026-02-20",
           "lang": "ko",
           "category": "worklog",
@@ -1474,7 +1474,7 @@
           "status": "wip",
           "book": "GPU Lab",
           "part": "api-language",
-          "chapter": "워크로그 #05 - SASS 레벨에서 본 메모리 코얼레싱",
+          "chapter": "SASS 레벨 메모리 코얼레싱",
           "order": null,
           "prev_path": "posts/worklog/2026-02-19-worklog-04-cuda-vulkan-sass-vector-add/ko.md",
           "next_path": "posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/ko.md"
@@ -1483,7 +1483,7 @@
           "index": 7,
           "total": 11,
           "path": "posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/ko.md",
-          "title": "워크로그 #06 - 바인드리스, BDA, 원시 포인터",
+          "title": "바인드리스, 버퍼 디바이스 주소, 원시 포인터",
           "date": "2026-02-21",
           "lang": "ko",
           "category": "worklog",
@@ -1491,7 +1491,7 @@
           "status": "wip",
           "book": "GPU Lab",
           "part": "api-language",
-          "chapter": "워크로그 #06 - 바인드리스, BDA, 원시 포인터",
+          "chapter": "바인드리스, 버퍼 디바이스 주소, 원시 포인터",
           "order": null,
           "prev_path": "posts/worklog/2026-02-20-worklog-05-cuda-vulkan-sass-memory-coalescing/ko.md",
           "next_path": "posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/ko.md"
@@ -1500,7 +1500,7 @@
           "index": 8,
           "total": 11,
           "path": "posts/worklog/2026-02-22-worklog-07-cuda-vulkan-sass-jit-pipeline-cache/ko.md",
-          "title": "워크로그 #07 - JIT 캐시 vs 파이프라인 캐시",
+          "title": "CUDA와 Vulkan의 JIT 캐시 vs 파이프라인 캐시",
           "date": "2026-02-22",
           "lang": "ko",
           "category": "worklog",
@@ -1508,7 +1508,7 @@
           "status": "wip",
           "book": "GPU Lab",
           "part": "api-language",
-          "chapter": "워크로그 #07 - JIT 캐시 vs 파이프라인 캐시",
+          "chapter": "CUDA와 Vulkan의 JIT 캐시 vs 파이프라인 캐시",
           "order": null,
           "prev_path": "posts/worklog/2026-02-21-worklog-06-cuda-vulkan-sass-bindless-bda/ko.md",
           "next_path": "posts/comparison/gpu-architecture/2026-03-26-comparison-vega-gcn-rdna-vs-nvidia-scalarization/ko.md"

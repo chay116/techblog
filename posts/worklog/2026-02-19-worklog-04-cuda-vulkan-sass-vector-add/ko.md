@@ -1,5 +1,5 @@
 ---
-title: "워크로그 #04 - Hello SASS: 벡터 덧셈"
+title: "SASS 따라가기: 벡터 덧셈"
 date: "2026-02-19"
 status: "wip"
 project: "vAI"

@@ -1,5 +1,5 @@
 ---
-title: "워크로그 #05 - SASS 레벨에서 본 메모리 코얼레싱"
+title: "SASS 레벨 메모리 코얼레싱"
 date: "2026-02-20"
 status: "wip"
 project: "vAI"

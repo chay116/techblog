@@ -1,5 +1,5 @@
 ---
-title: "Worklog #04 - Hello SASS: Vector Add"
+title: "SASS Walkthrough: Vector Add"
 date: "2026-02-19"
 status: "wip"
 project: "vAI"
