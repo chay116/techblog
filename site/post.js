@@ -287,65 +287,6 @@ function normalizeMarkedImageArgs(href, title, text2) {
   };
 }
 
-function isImageOnlyParagraph(node) {
-  if (!node || node.tagName !== "P") return false;
-  let hasImage = false;
-  for (const child of Array.from(node.childNodes)) {
-    if (child.nodeType === 3) {
-      if (child.textContent && child.textContent.trim()) return false;
-      continue;
-    }
-    if (child.nodeType !== 1) return false;
-    if (child.tagName === "IMG") {
-      hasImage = true;
-      continue;
-    }
-    return false;
-  }
-  return hasImage;
-}
-
-function isCaptionParagraph(node) {
-  if (!node || node.tagName !== "P") return false;
-  if (node.childElementCount !== 1) return false;
-  const child = node.firstElementChild;
-  return child && child.tagName === "EM" && !(node.textContent || "").trim().startsWith("!");
-}
-
-function enhanceGpuSeriesArticle(container) {
-  if (!container) return;
-  container.classList.add("gpu-article");
-
-  const topChildren = Array.from(container.children);
-  const firstList = topChildren.find((node) => node.tagName === "UL" || node.tagName === "OL");
-  if (firstList) firstList.classList.add("gpu-summary-list");
-
-  const headings = topChildren.filter((node) => node.tagName === "H2");
-  headings.forEach((heading) => {
-    let next = heading.nextElementSibling;
-    while (next && (next.tagName === "HR" || next.classList.contains("gpu-caption"))) {
-      next = next.nextElementSibling;
-    }
-    if (next && next.tagName === "P" && !next.classList.contains("gpu-caption") && !next.classList.contains("gpu-lede")) {
-      next.classList.add("gpu-section-lede");
-    }
-  });
-
-  const paragraphs = Array.from(container.querySelectorAll(":scope > p"));
-  paragraphs.forEach((p) => {
-    if (isImageOnlyParagraph(p)) {
-      p.classList.add("gpu-figure", "gpu-figure-wide");
-      const img = p.querySelector("img");
-      if (img) img.classList.add("gpu-diagram-image");
-    } else if (isCaptionParagraph(p) && p.previousElementSibling && p.previousElementSibling.classList.contains("gpu-figure")) {
-      p.classList.add("gpu-caption");
-    }
-  });
-
-  const firstQuote = topChildren.find((node) => node.tagName === "BLOCKQUOTE");
-  if (firstQuote) firstQuote.classList.add("gpu-pullquote");
-}
-
 function chapterSortKey(post) {
   const parsedOrder = Number(post.order);
   const order = Number.isFinite(parsedOrder) ? parsedOrder : null;
@@ -806,7 +747,6 @@ async function main() {
     currentMeta = meta;
     renderChrome();
 
-    document.body.classList.toggle("gpu-series-page", meta.category === "gpu-series");
     document.body.dataset.series = meta.series || "";
     document.body.dataset.track = meta.track || "";
 
@@ -908,17 +848,9 @@ async function main() {
     marked.use({ renderer, gfm: true, breaks: false });
     const container = q("markdown");
     if (container) {
-      container.classList.toggle("gpu-article", meta.category === "gpu-series");
       container.innerHTML = marked.parse(body);
-      const firstHeading = container.querySelector("h1");
-      if (firstHeading && meta && meta.title && meta.category !== "gpu-series" && firstHeading.textContent.trim() !== meta.title.trim()) {
-        firstHeading.textContent = meta.title;
-      }
       await renderMermaidBlocks(container);
       await renderPlantUmlBlocks(container);
-      if (meta.category === "gpu-series") {
-        enhanceGpuSeriesArticle(container);
-      }
     }
 
     // Apply syntax highlighting to all code blocks
