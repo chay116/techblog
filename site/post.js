@@ -3,6 +3,118 @@ function q(id) {
 }
 
 const READER_PROGRESS_KEY = "blog_reader_progress";
+const POST_I18N = {
+  en: {
+    language: "Language",
+    langEn: "English",
+    langKo: "Korean",
+    pageTitle: "Post",
+    loading: "Loading...",
+    backToIndex: "Back to index",
+    openOnGitHub: "Open on GitHub",
+    previousChapter: "Previous Chapter",
+    nextChapter: "Next Chapter",
+    tableOfContents: "Table of Contents",
+    unavailable: "Unavailable",
+    invalidPath: "Invalid post path.",
+    unknownPost: "Unknown post path.",
+    missingPostMeta: "Post metadata not found.",
+    loadError: "Failed to load post content. Refresh and try again.",
+    notes: "Notes",
+    comparison: "Comparison",
+    statusWip: "WIP",
+    statusStable: "Stable",
+    plantUmlDiagram: "PlantUML diagram",
+  },
+  ko: {
+    language: "언어",
+    langEn: "영어",
+    langKo: "한국어",
+    pageTitle: "글",
+    loading: "불러오는 중...",
+    backToIndex: "목록으로 돌아가기",
+    openOnGitHub: "GitHub에서 보기",
+    previousChapter: "이전 챕터",
+    nextChapter: "다음 챕터",
+    tableOfContents: "목차",
+    unavailable: "불러오기 실패",
+    invalidPath: "잘못된 글 경로입니다.",
+    unknownPost: "알 수 없는 글 경로입니다.",
+    missingPostMeta: "글 메타데이터를 찾지 못했습니다.",
+    loadError: "글 내용을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.",
+    notes: "노트",
+    comparison: "비교",
+    statusWip: "작성 중",
+    statusStable: "완성",
+    plantUmlDiagram: "PlantUML 다이어그램",
+  },
+};
+
+let currentMeta = null;
+let currentNavMode = "home";
+
+function currentUiLang() {
+  return typeof getBlogLang === "function" ? getBlogLang("en") : "en";
+}
+
+function postTFor(lang, key) {
+  const table = POST_I18N[lang] || POST_I18N.en;
+  return table[key] || POST_I18N.en[key] || key;
+}
+
+function postT(key) {
+  return postTFor(currentUiLang(), key);
+}
+
+function renderLanguageSwitch() {
+  if (typeof renderBlogLangSwitch !== "function") return;
+  renderBlogLangSwitch({
+    lang: currentUiLang(),
+    languageLabel: postT("language"),
+    langEn: postT("langEn"),
+    langKo: postT("langKo"),
+    onChange() {
+      renderChrome();
+    },
+  });
+}
+
+function renderChrome() {
+  const lang = currentUiLang();
+  document.documentElement.lang = (currentMeta && currentMeta.lang) || lang;
+
+  if (typeof renderSharedNav === "function") {
+    renderSharedNav(currentNavMode, lang);
+  }
+
+  renderLanguageSwitch();
+
+  const back = q("back-link");
+  if (back) back.textContent = postT("backToIndex");
+
+  const github = q("github-link");
+  if (github) github.textContent = postT("openOnGitHub");
+
+  const prev = q("chapter-prev");
+  if (prev) prev.textContent = `\u2190 ${postT("previousChapter")}`;
+
+  const toc = q("chapter-toc");
+  if (toc) toc.textContent = postT("tableOfContents");
+
+  const next = q("chapter-next");
+  if (next) next.textContent = `${postT("nextChapter")} \u2192`;
+
+  const title = q("title");
+  if (title && !currentMeta && title.textContent.trim() === "Loading...") {
+    title.textContent = postT("loading");
+  }
+
+  if (currentMeta) {
+    document.title = currentMeta.title || postT("pageTitle");
+    const meta = q("meta");
+    if (meta) meta.textContent = formatMetaLine(currentMeta, lang);
+  }
+}
 
 function getPathParam() {
   const params = new URLSearchParams(window.location.search);
@@ -244,10 +356,10 @@ function chapterSortKey(post) {
   return [1, date, title, path];
 }
 
-function categoryLabel(value) {
+function categoryLabel(value, lang = currentUiLang()) {
   if (value === "gpu-series") return "GPU Series";
-  if (value === "worklog") return "Notes";
-  if (value === "comparison") return "Comparison";
+  if (value === "worklog") return postTFor(lang, "notes");
+  if (value === "comparison") return postTFor(lang, "comparison");
   return value;
 }
 
@@ -256,6 +368,22 @@ function trackLabel(value) {
   if (value === "api-language") return "GPU Driver/API";
   if (value === "runtime-framework") return "GPU Runtime/Framework";
   return value;
+}
+
+function statusLabel(value, lang = currentUiLang()) {
+  if (value === "wip") return postTFor(lang, "statusWip");
+  if (value === "stable") return postTFor(lang, "statusStable");
+  return value || "";
+}
+
+function formatMetaLine(meta, lang = currentUiLang()) {
+  const bits = [
+    meta.date,
+    categoryLabel(meta.category, lang),
+    trackLabel(meta.track, lang),
+    statusLabel(meta.status, lang),
+  ].filter(Boolean);
+  return bits.join(" / ");
 }
 
 function compareSortKey(a, b) {
@@ -429,7 +557,7 @@ async function renderPlantUmlBlocks(container) {
 
         const img = document.createElement("img");
         img.className = "plantuml-diagram";
-        img.alt = "PlantUML diagram";
+        img.alt = postT("plantUmlDiagram");
         img.loading = "lazy";
         img.src = blobUrl;
         img.addEventListener("load", () => URL.revokeObjectURL(blobUrl), { once: true });
@@ -609,11 +737,14 @@ function mapBrokenPath(resolvedPath) {
 }
 
 function renderError(message) {
+  currentMeta = null;
+  renderChrome();
+
   const title = q("title");
   const meta = q("meta");
   const body = q("markdown");
   const nav = q("chapter-nav");
-  if (title) title.textContent = "Unavailable";
+  if (title) title.textContent = postT("unavailable");
   if (meta) meta.textContent = "";
   if (body) body.innerHTML = `<p>${escapeAttr(message)}</p>`;
   if (nav) nav.hidden = true;
@@ -623,7 +754,7 @@ async function main() {
   try {
     const path = getPathParam();
     if (!path) {
-      renderError("Invalid post path");
+      renderError(postT("invalidPath"));
       return;
     }
 
@@ -644,9 +775,10 @@ async function main() {
 
     // Sync nav-tabs active state based on incoming filter context.
     const navMode = deriveNavMode(fromDecoded);
-    if (typeof renderSharedNav === "function") {
-      renderSharedNav(navMode);
-    } else {
+    currentNavMode = navMode;
+    renderChrome();
+
+    if (typeof renderSharedNav !== "function") {
       const navTabs = q("nav-tabs");
       if (navTabs) {
         const tabs = navTabs.querySelectorAll(".nav-tab[data-nav]");
@@ -660,24 +792,25 @@ async function main() {
     const posts = siteData.posts || [];
     const pathSet = new Set(posts.map((p) => p.path));
     if (!pathSet.has(path)) {
-      renderError("Unknown post path");
+      renderError(postT("unknownPost"));
       return;
     }
 
     const basenameIndex = buildBasenameIndex(posts);
     const meta = posts.find((p) => p.path === path) || null;
     if (!meta) {
-      renderError("Post metadata not found");
+      renderError(postT("missingPostMeta"));
       return;
     }
+
+    currentMeta = meta;
+    renderChrome();
 
     document.body.classList.toggle("gpu-series-page", meta.category === "gpu-series");
     document.body.dataset.series = meta.series || "";
     document.body.dataset.track = meta.track || "";
 
-    document.title = meta.title;
     q("title").textContent = meta.title;
-    q("meta").textContent = `${meta.date} · ${categoryLabel(meta.category)} · ${trackLabel(meta.track)} · ${meta.status}`;
 
     const githubUrl = `https://github.com/chay116/techblog/blob/main/${path}`;
     q("github-link").href = githubUrl;
@@ -796,7 +929,7 @@ async function main() {
     }
   } catch (err) {
     console.error(err);
-    renderError(`Failed to load post content: ${String(err)}`);
+    renderError(postT("loadError"));
   }
 }
 

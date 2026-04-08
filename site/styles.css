@@ -433,6 +433,57 @@ a:hover {
   cursor: pointer;
 }
 
+.filter-active {
+  margin-top: 0.9rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-soft);
+}
+
+.filter-active[hidden] {
+  display: none !important;
+}
+
+.filter-active-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+  margin-bottom: 0.55rem;
+}
+
+.filter-active-title {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.filter-active-clear {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.18rem 0.6rem;
+  cursor: pointer;
+  font: inherit;
+}
+
+.active-chip {
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
+  background: color-mix(in srgb, var(--surface) 88%, var(--surface-soft));
+}
+
+.filter-toggle-chip {
+  border-style: dashed;
+  color: var(--muted);
+}
+
+.filter-toggle-chip:hover {
+  color: var(--ink);
+}
+
 .post-section {
   margin-top: 1rem;
 }
