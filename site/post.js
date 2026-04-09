@@ -50,8 +50,22 @@ const POST_I18N = {
   },
 };
 
+const POST_I18N_EXTRA = {
+  en: {
+    outline: "Outline",
+  },
+  ko: {
+    outline: "\uac1c\uc694",
+  },
+};
+
+Object.entries(POST_I18N_EXTRA).forEach(([lang, table]) => {
+  POST_I18N[lang] = Object.assign({}, POST_I18N[lang] || {}, table);
+});
+
 let currentMeta = null;
 let currentNavMode = "home";
+let outlineObserver = null;
 
 function currentUiLang() {
   return typeof getBlogLang === "function" ? getBlogLang("en") : "en";
@@ -103,6 +117,12 @@ function renderChrome() {
 
   const next = q("chapter-next");
   if (next) next.textContent = `${postT("nextChapter")} \u2192`;
+
+  const outlineLabel = q("post-outline-label");
+  if (outlineLabel) outlineLabel.textContent = postT("outline");
+
+  const outline = q("post-outline");
+  if (outline) outline.setAttribute("aria-label", postT("outline"));
 
   const title = q("title");
   if (title && !currentMeta && title.textContent.trim() === "Loading...") {
@@ -253,6 +273,136 @@ function contentAssetHref(currentPath, href) {
   if (raw.startsWith("/")) return raw;
   const resolved = resolveHref(currentPath, raw);
   return `./content/${resolved}`;
+}
+
+function disconnectOutlineObserver() {
+  if (outlineObserver) {
+    outlineObserver.disconnect();
+    outlineObserver = null;
+  }
+}
+
+function slugifyHeadingText(text) {
+  return (
+    String(text || "")
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^0-9a-z\u3131-\ud79d\s-]/g, "")
+      .trim()
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "section"
+  );
+}
+
+function buildPostOutline(container) {
+  const card = q("post-outline-card");
+  const nav = q("post-outline");
+  if (!card || !nav) return;
+
+  disconnectOutlineObserver();
+  nav.innerHTML = "";
+
+  if (!container) {
+    card.hidden = true;
+    return;
+  }
+
+  const headings = Array.from(container.querySelectorAll("h1, h2, h3")).filter(
+    (heading) => (heading.textContent || "").trim().length > 0
+  );
+  if (headings.length < 2) {
+    card.hidden = true;
+    return;
+  }
+
+  const minLevel = Math.min(
+    ...headings.map((heading) => {
+      const parsed = Number.parseInt(heading.tagName.slice(1), 10);
+      return Number.isFinite(parsed) ? parsed : 1;
+    })
+  );
+
+  const seenIds = new Map();
+  const items = headings.map((heading) => {
+    const rawText = (heading.textContent || "").replace(/\s+/g, " ").trim();
+    const preferredId = heading.id || slugifyHeadingText(rawText);
+    const count = seenIds.get(preferredId) || 0;
+    seenIds.set(preferredId, count + 1);
+    const finalId = count === 0 ? preferredId : `${preferredId}-${count + 1}`;
+
+    heading.id = finalId;
+
+    const parsedLevel = Number.parseInt(heading.tagName.slice(1), 10);
+    const depth = Number.isFinite(parsedLevel) ? Math.max(0, Math.min(2, parsedLevel - minLevel)) : 0;
+
+    return {
+      id: finalId,
+      depth,
+      text: rawText,
+      heading,
+    };
+  });
+
+  if (items.length < 2) {
+    card.hidden = true;
+    return;
+  }
+
+  const links = items.map((item) => {
+    const link = document.createElement("a");
+    link.className = "post-outline-link";
+    link.href = `#${item.id}`;
+    link.dataset.target = item.id;
+    link.dataset.level = String(item.depth);
+    link.textContent = item.text;
+    nav.appendChild(link);
+    return { link, heading: item.heading, id: item.id };
+  });
+
+  const setActive = (activeId) => {
+    links.forEach(({ link, id }) => {
+      link.classList.toggle("active", id === activeId);
+    });
+  };
+
+  const hashId = window.location.hash ? decodeURIComponent(window.location.hash.slice(1)) : "";
+  const initialId = links.some((item) => item.id === hashId) ? hashId : links[0].id;
+  setActive(initialId);
+
+  links.forEach(({ link, id }) => {
+    link.addEventListener("click", () => setActive(id));
+  });
+
+  if ("IntersectionObserver" in window) {
+    outlineObserver = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible.length > 0) {
+          setActive(visible[0].target.id);
+        }
+      },
+      {
+        rootMargin: "-16% 0px -68% 0px",
+        threshold: [0, 1],
+      }
+    );
+
+    links.forEach(({ heading }) => outlineObserver.observe(heading));
+  }
+
+  card.hidden = false;
+
+  if (hashId) {
+    const target = document.getElementById(hashId);
+    if (target) {
+      requestAnimationFrame(() => {
+        target.scrollIntoView({ block: "start" });
+      });
+    }
+  }
 }
 
 function normalizeMarkedLinkArgs(href, title, text2) {
@@ -679,16 +829,21 @@ function mapBrokenPath(resolvedPath) {
 
 function renderError(message) {
   currentMeta = null;
+  disconnectOutlineObserver();
   renderChrome();
 
   const title = q("title");
   const meta = q("meta");
   const body = q("markdown");
   const nav = q("chapter-nav");
+  const outlineCard = q("post-outline-card");
+  const outline = q("post-outline");
   if (title) title.textContent = postT("unavailable");
   if (meta) meta.textContent = "";
   if (body) body.innerHTML = `<p>${escapeAttr(message)}</p>`;
   if (nav) nav.hidden = true;
+  if (outlineCard) outlineCard.hidden = true;
+  if (outline) outline.innerHTML = "";
 }
 
 async function main() {
@@ -851,6 +1006,7 @@ async function main() {
       container.innerHTML = marked.parse(body);
       await renderMermaidBlocks(container);
       await renderPlantUmlBlocks(container);
+      buildPostOutline(container);
     }
 
     // Apply syntax highlighting to all code blocks

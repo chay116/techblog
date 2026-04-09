@@ -45,23 +45,44 @@
     </div>
 
     <header class="hero">
-      <nav class="nav-tabs" id="nav-tabs"></nav>
       <h1 id="title">Loading...</h1>
       <p id="meta" class="sub"></p>
-      <p><a id="back-link" href="./index.html">Back to index</a></p>
     </header>
 
-    <main class="layout single">
+    <main class="layout single post-layout">
+      <aside class="post-rail post-left-rail" aria-label="Section navigation">
+        <div class="post-rail-stack">
+          <div class="post-rail-card post-rail-nav">
+            <nav class="nav-tabs" id="nav-tabs"></nav>
+          </div>
+          <div class="post-rail-card post-rail-link-card">
+            <a id="back-link" href="./index.html">Back to index</a>
+          </div>
+        </div>
+      </aside>
+
       <article class="content">
         <div id="markdown" class="markdown"></div>
-        <nav id="chapter-nav" class="chapter-nav" hidden>
-          <a id="chapter-prev" href="#" hidden>&larr; Previous Chapter</a>
-          <a id="chapter-toc" href="#">Table of Contents</a>
-          <a id="chapter-next" href="#" hidden>Next Chapter &rarr;</a>
-        </nav>
-        <hr />
-        <p><a id="github-link" href="#" target="_blank" rel="noreferrer">Open on GitHub</a></p>
       </article>
+
+      <aside class="post-rail post-right-rail" aria-label="Post outline">
+        <div class="post-rail-stack">
+          <section id="post-outline-card" class="post-rail-card post-outline-card" hidden>
+            <p id="post-outline-label" class="post-rail-label">Outline</p>
+            <nav id="post-outline" class="post-outline"></nav>
+          </section>
+
+          <nav id="chapter-nav" class="chapter-nav" hidden>
+            <a id="chapter-prev" href="#" hidden>&larr; Previous Chapter</a>
+            <a id="chapter-toc" href="#">Table of Contents</a>
+            <a id="chapter-next" href="#" hidden>Next Chapter &rarr;</a>
+          </nav>
+
+          <div class="post-rail-card post-rail-link-card">
+            <a id="github-link" href="#" target="_blank" rel="noreferrer">Open on GitHub</a>
+          </div>
+        </div>
+      </aside>
     </main>
 
     <script src="./theme.js"></script>
