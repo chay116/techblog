@@ -3,6 +3,253 @@ function q(id) {
 }
 
 const READER_PROGRESS_KEY = "blog_reader_progress";
+const POST_I18N = {
+  en: {
+    language: "Language",
+    langEn: "English",
+    langKo: "Korean",
+    pageTitle: "Post",
+    loading: "Loading...",
+    backToIndex: "Back to index",
+    openOnGitHub: "Open on GitHub",
+    previousChapter: "Previous Chapter",
+    nextChapter: "Next Chapter",
+    tableOfContents: "Table of Contents",
+    unavailable: "Unavailable",
+    invalidPath: "Invalid post path.",
+    unknownPost: "Unknown post path.",
+    missingPostMeta: "Post metadata not found.",
+    loadError: "Failed to load post content. Refresh and try again.",
+    notes: "Notes",
+    comparison: "Comparison",
+    statusWip: "WIP",
+    statusStable: "Stable",
+    plantUmlDiagram: "PlantUML diagram",
+  },
+  ko: {
+    language: "언어",
+    langEn: "영어",
+    langKo: "한국어",
+    pageTitle: "글",
+    loading: "불러오는 중...",
+    backToIndex: "목록으로 돌아가기",
+    openOnGitHub: "GitHub에서 보기",
+    previousChapter: "이전 챕터",
+    nextChapter: "다음 챕터",
+    tableOfContents: "목차",
+    unavailable: "불러오기 실패",
+    invalidPath: "잘못된 글 경로입니다.",
+    unknownPost: "알 수 없는 글 경로입니다.",
+    missingPostMeta: "글 메타데이터를 찾지 못했습니다.",
+    loadError: "글 내용을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.",
+    notes: "노트",
+    comparison: "비교",
+    statusWip: "작성 중",
+    statusStable: "완성",
+    plantUmlDiagram: "PlantUML 다이어그램",
+  },
+};
+
+const POST_I18N_EXTRA = {
+  en: {
+    outline: "Contents",
+    navigate: "Navigate",
+    postKind: "Post",
+    home: "Home",
+    siteSubtitle: "Notes on GPU architecture, compilers, and rendering.",
+  },
+  ko: {
+    outline: "\ubaa9\ucc28",
+    navigate: "\ud0d0\uc0c9",
+    postKind: "\uae00",
+    home: "\ud648",
+    siteSubtitle: "GPU \uc544\ud0a4\ud14d\ucc98, \ucef4\ud30c\uc77c\ub7ec, \ub80c\ub354\ub9c1\uc5d0 \uad00\ud55c \ub178\ud2b8.",
+  },
+};
+
+Object.entries(POST_I18N_EXTRA).forEach(([lang, table]) => {
+  POST_I18N[lang] = Object.assign({}, POST_I18N[lang] || {}, table);
+});
+
+let currentMeta = null;
+let currentNavMode = "home";
+let currentBackHref = "./index.html";
+let outlineObserver = null;
+
+function currentUiLang() {
+  return typeof getBlogLang === "function" ? getBlogLang("en") : "en";
+}
+
+function postTFor(lang, key) {
+  const table = POST_I18N[lang] || POST_I18N.en;
+  return table[key] || POST_I18N.en[key] || key;
+}
+
+function postT(key) {
+  return postTFor(currentUiLang(), key);
+}
+
+function renderLanguageSwitch() {
+  if (typeof renderBlogLangSwitch !== "function") return;
+  renderBlogLangSwitch({
+    lang: currentUiLang(),
+    languageLabel: postT("language"),
+    langEn: postT("langEn"),
+    langKo: postT("langKo"),
+    onChange() {
+      renderChrome();
+    },
+  });
+}
+
+function navModeLabel(mode, lang = currentUiLang()) {
+  const labels = {
+    en: {
+      home: "Home",
+      gpu: "GPU",
+      "gpu-lab": "GPU Lab",
+      compiler: "Compiler",
+      unreal: "Unreal",
+      pathtracing: "PathTracing",
+      recent: "Recent",
+    },
+    ko: {
+      home: "\ud648",
+      gpu: "GPU",
+      "gpu-lab": "GPU Lab",
+      compiler: "\ucef4\ud30c\uc77c\ub7ec",
+      unreal: "\uc5b8\ub9ac\uc5bc",
+      pathtracing: "\ud328\uc2a4 \ud2b8\ub808\uc774\uc2f1",
+      recent: "\ucd5c\uc2e0",
+    },
+  };
+  const table = labels[lang] || labels.en;
+  return table[mode] || labels.en[mode] || mode;
+}
+
+function seriesLabel(value) {
+  if (value === "gpu") return "GPU";
+  if (value === "gpu-lab") return "GPU Lab";
+  if (value === "compiler") return "Compiler";
+  return value || "";
+}
+
+function cleanDeckText(value) {
+  return String(value || "")
+    .replace(/^\s*-\s*/, "")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/[*_`>#]+/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function formatKind(meta, lang = currentUiLang()) {
+  if (!meta) return postTFor(lang, "postKind");
+  return meta.book || categoryLabel(meta.category, lang) || postTFor(lang, "postKind");
+}
+
+function formatDeck(meta, lang = currentUiLang()) {
+  if (!meta) return "";
+
+  const summary = cleanDeckText(meta.summary);
+  if (summary) return summary;
+
+  const bits = [];
+  if (meta.part) bits.push(meta.part);
+  if (meta.chapter && meta.chapter !== meta.title) bits.push(meta.chapter);
+  if (meta.track) bits.push(trackLabel(meta.track, lang));
+  return bits.filter(Boolean).join(" · ");
+}
+
+function formatBreadcrumb(meta, lang = currentUiLang()) {
+  const homeLabel = postTFor(lang, "home");
+  const sectionLabel =
+    seriesLabel(meta && meta.series) ||
+    navModeLabel(currentNavMode, lang) ||
+    categoryLabel(meta && meta.category, lang) ||
+    postTFor(lang, "pageTitle");
+  const sectionHref = meta && meta.series ? readerTocLink(meta.series) : currentBackHref;
+  return `<a href="./index.html">${escapeAttr(homeLabel)}</a> <span aria-hidden="true">/</span> <a href="${escapeAttr(
+    sectionHref
+  )}">${escapeAttr(sectionLabel)}</a>`;
+}
+
+function renderChrome() {
+  const lang = currentUiLang();
+  document.documentElement.lang = (currentMeta && currentMeta.lang) || lang;
+
+  if (typeof renderSharedNav === "function") {
+    renderSharedNav(currentNavMode, lang);
+  }
+
+  renderLanguageSwitch();
+
+  const back = q("back-link");
+  if (back) back.textContent = postT("backToIndex");
+
+  const github = q("github-link");
+  if (github) github.textContent = postT("openOnGitHub");
+
+  const prev = q("chapter-prev");
+  if (prev) prev.textContent = `\u2190 ${postT("previousChapter")}`;
+
+  const toc = q("chapter-toc");
+  if (toc) toc.textContent = postT("tableOfContents");
+
+  const next = q("chapter-next");
+  if (next) next.textContent = `${postT("nextChapter")} \u2192`;
+
+  const outlineLabel = q("post-outline-label");
+  if (outlineLabel) outlineLabel.textContent = postT("outline");
+
+  const outline = q("post-outline");
+  if (outline) outline.setAttribute("aria-label", postT("outline"));
+
+  const navLabelEl = q("post-nav-label");
+  if (navLabelEl) navLabelEl.textContent = postT("navigate");
+
+  const siteSubtitle = q("post-site-subtitle");
+  if (siteSubtitle) siteSubtitle.textContent = postT("siteSubtitle");
+
+  const title = q("title");
+  if (title && !currentMeta && title.textContent.trim() === "Loading...") {
+    title.textContent = postT("loading");
+  }
+
+  if (currentMeta) {
+    document.title = currentMeta.title ? `${currentMeta.title} | techblog` : "techblog";
+    if (title) title.textContent = currentMeta.title || postT("pageTitle");
+    const meta = q("meta");
+    if (meta) meta.textContent = formatMetaLine(currentMeta, lang);
+
+    const kind = q("post-kind");
+    if (kind) kind.textContent = formatKind(currentMeta, lang);
+
+    const breadcrumb = q("post-breadcrumb");
+    if (breadcrumb) breadcrumb.innerHTML = formatBreadcrumb(currentMeta, lang);
+
+    const deck = q("post-deck");
+    if (deck) {
+      const deckText = formatDeck(currentMeta, lang);
+      deck.hidden = !deckText;
+      deck.textContent = deckText;
+    }
+  } else {
+    document.title = "techblog";
+
+    const kind = q("post-kind");
+    if (kind) kind.textContent = postT("postKind");
+
+    const breadcrumb = q("post-breadcrumb");
+    if (breadcrumb) breadcrumb.innerHTML = `<a href="./index.html">${escapeAttr(postT("home"))}</a>`;
+
+    const deck = q("post-deck");
+    if (deck) {
+      deck.hidden = true;
+      deck.textContent = "";
+    }
+  }
+}
 
 function getPathParam() {
   const params = new URLSearchParams(window.location.search);
@@ -143,6 +390,136 @@ function contentAssetHref(currentPath, href) {
   return `./content/${resolved}`;
 }
 
+function disconnectOutlineObserver() {
+  if (outlineObserver) {
+    outlineObserver.disconnect();
+    outlineObserver = null;
+  }
+}
+
+function slugifyHeadingText(text) {
+  return (
+    String(text || "")
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^0-9a-z\u3131-\ud79d\s-]/g, "")
+      .trim()
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "section"
+  );
+}
+
+function buildPostOutline(container) {
+  const card = q("post-outline-card");
+  const nav = q("post-outline");
+  if (!card || !nav) return;
+
+  disconnectOutlineObserver();
+  nav.innerHTML = "";
+
+  if (!container) {
+    card.hidden = true;
+    return;
+  }
+
+  const headings = Array.from(container.querySelectorAll("h1, h2, h3")).filter(
+    (heading) => (heading.textContent || "").trim().length > 0
+  );
+  if (headings.length < 2) {
+    card.hidden = true;
+    return;
+  }
+
+  const minLevel = Math.min(
+    ...headings.map((heading) => {
+      const parsed = Number.parseInt(heading.tagName.slice(1), 10);
+      return Number.isFinite(parsed) ? parsed : 1;
+    })
+  );
+
+  const seenIds = new Map();
+  const items = headings.map((heading) => {
+    const rawText = (heading.textContent || "").replace(/\s+/g, " ").trim();
+    const preferredId = heading.id || slugifyHeadingText(rawText);
+    const count = seenIds.get(preferredId) || 0;
+    seenIds.set(preferredId, count + 1);
+    const finalId = count === 0 ? preferredId : `${preferredId}-${count + 1}`;
+
+    heading.id = finalId;
+
+    const parsedLevel = Number.parseInt(heading.tagName.slice(1), 10);
+    const depth = Number.isFinite(parsedLevel) ? Math.max(0, Math.min(2, parsedLevel - minLevel)) : 0;
+
+    return {
+      id: finalId,
+      depth,
+      text: rawText,
+      heading,
+    };
+  });
+
+  if (items.length < 2) {
+    card.hidden = true;
+    return;
+  }
+
+  const links = items.map((item) => {
+    const link = document.createElement("a");
+    link.className = "post-outline-link";
+    link.href = `#${item.id}`;
+    link.dataset.target = item.id;
+    link.dataset.level = String(item.depth);
+    link.textContent = item.text;
+    nav.appendChild(link);
+    return { link, heading: item.heading, id: item.id };
+  });
+
+  const setActive = (activeId) => {
+    links.forEach(({ link, id }) => {
+      link.classList.toggle("active", id === activeId);
+    });
+  };
+
+  const hashId = window.location.hash ? decodeURIComponent(window.location.hash.slice(1)) : "";
+  const initialId = links.some((item) => item.id === hashId) ? hashId : links[0].id;
+  setActive(initialId);
+
+  links.forEach(({ link, id }) => {
+    link.addEventListener("click", () => setActive(id));
+  });
+
+  if ("IntersectionObserver" in window) {
+    outlineObserver = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible.length > 0) {
+          setActive(visible[0].target.id);
+        }
+      },
+      {
+        rootMargin: "-16% 0px -68% 0px",
+        threshold: [0, 1],
+      }
+    );
+
+    links.forEach(({ heading }) => outlineObserver.observe(heading));
+  }
+
+  card.hidden = false;
+
+  if (hashId) {
+    const target = document.getElementById(hashId);
+    if (target) {
+      requestAnimationFrame(() => {
+        target.scrollIntoView({ block: "start" });
+      });
+    }
+  }
+}
+
 function normalizeMarkedLinkArgs(href, title, text2) {
   if (href && typeof href === "object") {
     const token = href;
@@ -175,65 +552,6 @@ function normalizeMarkedImageArgs(href, title, text2) {
   };
 }
 
-function isImageOnlyParagraph(node) {
-  if (!node || node.tagName !== "P") return false;
-  let hasImage = false;
-  for (const child of Array.from(node.childNodes)) {
-    if (child.nodeType === 3) {
-      if (child.textContent && child.textContent.trim()) return false;
-      continue;
-    }
-    if (child.nodeType !== 1) return false;
-    if (child.tagName === "IMG") {
-      hasImage = true;
-      continue;
-    }
-    return false;
-  }
-  return hasImage;
-}
-
-function isCaptionParagraph(node) {
-  if (!node || node.tagName !== "P") return false;
-  if (node.childElementCount !== 1) return false;
-  const child = node.firstElementChild;
-  return child && child.tagName === "EM" && !(node.textContent || "").trim().startsWith("!");
-}
-
-function enhanceGpuSeriesArticle(container) {
-  if (!container) return;
-  container.classList.add("gpu-article");
-
-  const topChildren = Array.from(container.children);
-  const firstList = topChildren.find((node) => node.tagName === "UL" || node.tagName === "OL");
-  if (firstList) firstList.classList.add("gpu-summary-list");
-
-  const headings = topChildren.filter((node) => node.tagName === "H2");
-  headings.forEach((heading) => {
-    let next = heading.nextElementSibling;
-    while (next && (next.tagName === "HR" || next.classList.contains("gpu-caption"))) {
-      next = next.nextElementSibling;
-    }
-    if (next && next.tagName === "P" && !next.classList.contains("gpu-caption") && !next.classList.contains("gpu-lede")) {
-      next.classList.add("gpu-section-lede");
-    }
-  });
-
-  const paragraphs = Array.from(container.querySelectorAll(":scope > p"));
-  paragraphs.forEach((p) => {
-    if (isImageOnlyParagraph(p)) {
-      p.classList.add("gpu-figure", "gpu-figure-wide");
-      const img = p.querySelector("img");
-      if (img) img.classList.add("gpu-diagram-image");
-    } else if (isCaptionParagraph(p) && p.previousElementSibling && p.previousElementSibling.classList.contains("gpu-figure")) {
-      p.classList.add("gpu-caption");
-    }
-  });
-
-  const firstQuote = topChildren.find((node) => node.tagName === "BLOCKQUOTE");
-  if (firstQuote) firstQuote.classList.add("gpu-pullquote");
-}
-
 function chapterSortKey(post) {
   const parsedOrder = Number(post.order);
   const order = Number.isFinite(parsedOrder) ? parsedOrder : null;
@@ -244,10 +562,10 @@ function chapterSortKey(post) {
   return [1, date, title, path];
 }
 
-function categoryLabel(value) {
+function categoryLabel(value, lang = currentUiLang()) {
   if (value === "gpu-series") return "GPU Series";
-  if (value === "worklog") return "Notes";
-  if (value === "comparison") return "Comparison";
+  if (value === "worklog") return postTFor(lang, "notes");
+  if (value === "comparison") return postTFor(lang, "comparison");
   return value;
 }
 
@@ -256,6 +574,22 @@ function trackLabel(value) {
   if (value === "api-language") return "GPU Driver/API";
   if (value === "runtime-framework") return "GPU Runtime/Framework";
   return value;
+}
+
+function statusLabel(value, lang = currentUiLang()) {
+  if (value === "wip") return postTFor(lang, "statusWip");
+  if (value === "stable") return postTFor(lang, "statusStable");
+  return value || "";
+}
+
+function formatMetaLine(meta, lang = currentUiLang()) {
+  const bits = [
+    meta.date,
+    categoryLabel(meta.category, lang),
+    trackLabel(meta.track, lang),
+    statusLabel(meta.status, lang),
+  ].filter(Boolean);
+  return bits.join(" · ");
 }
 
 function compareSortKey(a, b) {
@@ -429,7 +763,7 @@ async function renderPlantUmlBlocks(container) {
 
         const img = document.createElement("img");
         img.className = "plantuml-diagram";
-        img.alt = "PlantUML diagram";
+        img.alt = postT("plantUmlDiagram");
         img.loading = "lazy";
         img.src = blobUrl;
         img.addEventListener("load", () => URL.revokeObjectURL(blobUrl), { once: true });
@@ -609,21 +943,29 @@ function mapBrokenPath(resolvedPath) {
 }
 
 function renderError(message) {
+  currentMeta = null;
+  disconnectOutlineObserver();
+  renderChrome();
+
   const title = q("title");
   const meta = q("meta");
   const body = q("markdown");
   const nav = q("chapter-nav");
-  if (title) title.textContent = "Unavailable";
+  const outlineCard = q("post-outline-card");
+  const outline = q("post-outline");
+  if (title) title.textContent = postT("unavailable");
   if (meta) meta.textContent = "";
   if (body) body.innerHTML = `<p>${escapeAttr(message)}</p>`;
   if (nav) nav.hidden = true;
+  if (outlineCard) outlineCard.hidden = true;
+  if (outline) outline.innerHTML = "";
 }
 
 async function main() {
   try {
     const path = getPathParam();
     if (!path) {
-      renderError("Invalid post path");
+      renderError(postT("invalidPath"));
       return;
     }
 
@@ -636,17 +978,20 @@ async function main() {
     const backLink = q("back-link");
     if (backLink) {
       try {
-        backLink.href = safeBackHref(fromDecoded);
+        currentBackHref = safeBackHref(fromDecoded);
+        backLink.href = currentBackHref;
       } catch (_) {
+        currentBackHref = "./index.html";
         backLink.href = "./index.html";
       }
     }
 
     // Sync nav-tabs active state based on incoming filter context.
     const navMode = deriveNavMode(fromDecoded);
-    if (typeof renderSharedNav === "function") {
-      renderSharedNav(navMode);
-    } else {
+    currentNavMode = navMode;
+    renderChrome();
+
+    if (typeof renderSharedNav !== "function") {
       const navTabs = q("nav-tabs");
       if (navTabs) {
         const tabs = navTabs.querySelectorAll(".nav-tab[data-nav]");
@@ -660,24 +1005,25 @@ async function main() {
     const posts = siteData.posts || [];
     const pathSet = new Set(posts.map((p) => p.path));
     if (!pathSet.has(path)) {
-      renderError("Unknown post path");
+      renderError(postT("unknownPost"));
       return;
     }
 
     const basenameIndex = buildBasenameIndex(posts);
     const meta = posts.find((p) => p.path === path) || null;
     if (!meta) {
-      renderError("Post metadata not found");
+      renderError(postT("missingPostMeta"));
       return;
     }
 
-    document.body.classList.toggle("gpu-series-page", meta.category === "gpu-series");
+    currentMeta = meta;
+    renderChrome();
+
     document.body.dataset.series = meta.series || "";
     document.body.dataset.track = meta.track || "";
+    document.body.dataset.category = meta.category || "";
 
-    document.title = meta.title;
     q("title").textContent = meta.title;
-    q("meta").textContent = `${meta.date} · ${categoryLabel(meta.category)} · ${trackLabel(meta.track)} · ${meta.status}`;
 
     const githubUrl = `https://github.com/chay116/techblog/blob/main/${path}`;
     q("github-link").href = githubUrl;
@@ -775,17 +1121,10 @@ async function main() {
     marked.use({ renderer, gfm: true, breaks: false });
     const container = q("markdown");
     if (container) {
-      container.classList.toggle("gpu-article", meta.category === "gpu-series");
       container.innerHTML = marked.parse(body);
-      const firstHeading = container.querySelector("h1");
-      if (firstHeading && meta && meta.title && meta.category !== "gpu-series" && firstHeading.textContent.trim() !== meta.title.trim()) {
-        firstHeading.textContent = meta.title;
-      }
       await renderMermaidBlocks(container);
       await renderPlantUmlBlocks(container);
-      if (meta.category === "gpu-series") {
-        enhanceGpuSeriesArticle(container);
-      }
+      buildPostOutline(container);
     }
 
     // Apply syntax highlighting to all code blocks
@@ -796,7 +1135,7 @@ async function main() {
     }
   } catch (err) {
     console.error(err);
-    renderError(`Failed to load post content: ${String(err)}`);
+    renderError(postT("loadError"));
   }
 }
 

@@ -157,6 +157,20 @@ Aleksa Gordić의 글이 강한 이유는 Hopper를 단순한 "더 최신 GPU"�
 커널 설계 자체가 어떻게 달라져야 하는지를 보여 준다.  
 그게 이 글의 진짜 가치다.
 
+## CUTLASS 스타일 Hopper 커널을 읽는 순서
+
+`explore-gemm` 같은 코드 저장소나 Kapil의 글을 따라가다 보면, Hopper 단계에서부터는 "코드가 길다"보다 "누가 movement를 책임지는지 보이지 않는다"가 더 큰 문제로 느껴진다.
+
+이때는 구현 세부보다 다음 순서로 읽는 편이 좋다.
+
+1. collective tile 또는 cluster tile이 무엇인지 먼저 찾는다.
+2. producer와 consumer warp-group이 어디서 갈라지는지 본다.
+3. `TMA` descriptor, barrier, stage count가 어떤 리듬을 만드는지 본다.
+4. `WGMMA` issue와 accumulator lifetime이 register pressure를 어떻게 만들지 본다.
+5. persistent work distribution과 epilogue ownership이 steady-state를 어떻게 유지하는지 본다.
+
+이 순서로 보면 템플릿이나 helper 이름보다 pipeline 구조가 먼저 눈에 들어오고, 그러면 CUTLASS 같은 프레임워크도 훨씬 덜 추상적으로 읽힌다.
+
 # 10. Diagram
 
 ![Cluster and persistence view](diagram-cluster-persistence.svg)
@@ -168,3 +182,9 @@ Aleksa Gordić의 글이 강한 이유는 Hopper를 단순한 "더 최신 GPU"�
 - Hopper matmul kernel을 공부할 가치가 있는 이유는, 현대 GPU 설계가 movement를 얼마나 1급 경로로 끌어올렸는지를 보여 주기 때문이다.
 - TMA, specialization, persistence, cluster 관점은 모두 같은 방향을 가리킨다. movement와 compute를 의도적으로 분리하고 겹치게 하라는 것이다.
 - 다음 단계는 Hopper 기능 이름을 외우는 것이 아니라, 실제 커널이 movement, compute, coordination 중 어디에서 실패하고 있는지를 진단하는 것이다.
+
+## References
+
+- [Learning CUTLASS the hard way! 코드 저장소](https://github.com/gpusgobrr/explore-gemm)
+- [Learn CUTLASS the hard way!](https://www.kapilsharma.dev/posts/learn-cutlass-the-hard-way/)
+- [Inside NVIDIA GPUs: Anatomy of high performance matmul kernels](https://www.aleksagordic.com/blog/matmul)

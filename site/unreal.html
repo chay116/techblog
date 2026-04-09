@@ -17,6 +17,7 @@
   </head>
   <body>
     <div class="top-controls">
+      <div class="lang-control" id="lang-switch" aria-label="Language switch"></div>
       <div class="theme-control">
         <label class="theme-switch" for="theme-toggle">
           <input id="theme-toggle" class="theme-toggle" type="checkbox" role="switch" aria-label="Toggle dark mode" />
@@ -31,8 +32,8 @@
 
     <main class="page">
       <header class="site-head">
-        <h1>Unreal Summary</h1>
-        <p class="subtitle">Folder-tree navigation for Unreal Engine notes.</p>
+        <h1 id="page-title">Unreal Summary</h1>
+        <p class="subtitle" id="page-subtitle">Folder-tree navigation for Unreal Engine notes.</p>
         <nav class="nav-tabs" id="nav-tabs"></nav>
       </header>
 
@@ -40,10 +41,10 @@
         <aside class="sidebar">
           <section class="filter-box">
             <div class="filter-body">
-              <h3>Search</h3>
+              <h3 id="search-label">Search</h3>
               <input id="search-input" class="search" type="search" placeholder="Search title, summary, tags..." />
 
-              <h3>Tree</h3>
+              <h3 id="tree-label">Tree</h3>
               <div id="tree" class="tree"></div>
             </div>
           </section>

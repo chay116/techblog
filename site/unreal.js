@@ -1,7 +1,61 @@
 const PATH_TRACING_VIEW = "pathtracing";
+const UNREAL_I18N = {
+  en: {
+    language: "Language",
+    langEn: "English",
+    langKo: "Korean",
+    siteTitle: "Unreal Summary",
+    siteSubtitle: "Folder-tree navigation for Unreal Engine notes.",
+    search: "Search",
+    tree: "Tree",
+    searchPlaceholder: "Search title, summary, tags...",
+    tracks: "Tracks",
+    docs: "docs",
+    browseTrack: "Browse {name} notes.",
+    noSummary: "No summary",
+    untitled: "(untitled)",
+    all: "All",
+    allPathTracing: "All PathTracing",
+    searchResults: "Search Results",
+    pathTracingSearch: "PathTracing Search",
+    pathTracing: "PathTracing",
+    unavailable: "Unavailable",
+    noDocuments: "No documents for current selection.",
+    loadError: "Failed to load Unreal summary data. Refresh and try again.",
+    inaccessible: "Unreal documents are not accessible from this blog.",
+  },
+  ko: {
+    language: "언어",
+    langEn: "영어",
+    langKo: "한국어",
+    siteTitle: "언리얼 요약",
+    siteSubtitle: "언리얼 엔진 노트를 폴더 트리로 탐색합니다.",
+    search: "검색",
+    tree: "트리",
+    searchPlaceholder: "제목, 요약, 태그 검색...",
+    tracks: "트랙",
+    docs: "문서",
+    browseTrack: "{name} 노트 둘러보기.",
+    noSummary: "요약 없음",
+    untitled: "(제목 없음)",
+    all: "전체",
+    allPathTracing: "패스 트레이싱 전체",
+    searchResults: "검색 결과",
+    pathTracingSearch: "패스 트레이싱 검색",
+    pathTracing: "패스 트레이싱",
+    unavailable: "불러오기 실패",
+    noDocuments: "현재 선택에 해당하는 문서가 없습니다.",
+    loadError: "언리얼 요약 데이터를 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.",
+    inaccessible: "이 블로그에서는 Unreal 문서를 확인할 수 없습니다.",
+  },
+};
 
 function byId(id) {
   return document.getElementById(id);
+}
+
+function normalizeLang(value, fallback = "en") {
+  return value === "ko" ? "ko" : fallback === "ko" ? "ko" : "en";
 }
 
 function parseQuery() {
@@ -10,6 +64,28 @@ function parseQuery() {
   } catch (_) {
     return new URLSearchParams();
   }
+}
+
+const state = {
+  view: "all",
+  dir: "",
+  q: "",
+  lang: typeof getBlogLang === "function" ? getBlogLang("en") : "en",
+  all: [],
+  tree: null,
+};
+
+function t(key) {
+  const table = UNREAL_I18N[state.lang] || UNREAL_I18N.en;
+  return table[key] || UNREAL_I18N.en[key] || key;
+}
+
+function formatDocsCount(count) {
+  return state.lang === "ko" ? `${count}개 ${t("docs")}` : `${count} ${t("docs")}`;
+}
+
+function formatBrowseTrack(name) {
+  return t("browseTrack").replace("{name}", name);
 }
 
 function currentView() {
@@ -23,6 +99,7 @@ function currentNavMode() {
 function syncUrl() {
   const params = new URLSearchParams();
   if (currentView() === PATH_TRACING_VIEW) params.set("view", PATH_TRACING_VIEW);
+  if (state.lang !== "en") params.set("lang", state.lang);
   if (state.dir) params.set("dir", state.dir);
   if (state.q) params.set("q", state.q);
   const qs = params.toString();
@@ -33,14 +110,6 @@ function syncUrl() {
     // ignore history failures
   }
 }
-
-const state = {
-  view: "all",
-  dir: "",
-  q: "",
-  all: [],
-  tree: null,
-};
 
 function makePostLink(path, from) {
   return `./post.html?path=${encodeURIComponent(path)}&from=${encodeURIComponent(from)}`;
@@ -79,10 +148,45 @@ function buildTree(posts) {
   return root;
 }
 
+function renderLanguageSwitch() {
+  if (typeof renderBlogLangSwitch !== "function") return;
+  renderBlogLangSwitch({
+    lang: state.lang,
+    languageLabel: t("language"),
+    langEn: t("langEn"),
+    langKo: t("langKo"),
+    onChange(next) {
+      state.lang = normalizeLang(next, state.lang);
+      renderAll();
+    },
+  });
+}
+
+function renderStaticText() {
+  document.documentElement.lang = state.lang;
+  document.title =
+    currentView() === PATH_TRACING_VIEW ? `${t("pathTracing")} | ${t("siteTitle")}` : t("siteTitle");
+
+  const pageTitle = byId("page-title");
+  if (pageTitle) pageTitle.textContent = t("siteTitle");
+
+  const pageSubtitle = byId("page-subtitle");
+  if (pageSubtitle) pageSubtitle.textContent = t("siteSubtitle");
+
+  const searchLabel = byId("search-label");
+  if (searchLabel) searchLabel.textContent = t("search");
+
+  const treeLabel = byId("tree-label");
+  if (treeLabel) treeLabel.textContent = t("tree");
+
+  const search = byId("search-input");
+  if (search) search.placeholder = t("searchPlaceholder");
+}
+
 function renderNavTabs() {
   const mode = currentNavMode();
   if (typeof renderSharedNav === "function") {
-    renderSharedNav(mode);
+    renderSharedNav(mode, state.lang);
     return;
   }
 
@@ -136,7 +240,7 @@ function renderTree() {
   const allBtn = document.createElement("button");
   allBtn.type = "button";
   allBtn.className = `tree-root-btn ${state.dir === "" ? "active" : ""}`;
-  allBtn.textContent = currentView() === PATH_TRACING_VIEW ? "All PathTracing" : "All";
+  allBtn.textContent = currentView() === PATH_TRACING_VIEW ? t("allPathTracing") : t("all");
   allBtn.addEventListener("click", () => setDir(""));
   rootEl.appendChild(allBtn);
 
@@ -238,11 +342,11 @@ function renderTrackCards(list, posts) {
 
     const sub = document.createElement("p");
     sub.className = "sub";
-    sub.textContent = `${count} docs`;
+    sub.textContent = formatDocsCount(count);
 
     const desc = document.createElement("p");
     desc.className = "muted";
-    desc.textContent = `Browse ${name} notes.`;
+    desc.textContent = formatBrowseTrack(name);
 
     item.appendChild(h3);
     item.appendChild(sub);
@@ -268,15 +372,15 @@ function renderTrackCards(list, posts) {
       const h3 = document.createElement("h3");
       const link = document.createElement("a");
       link.href = postUrl;
-      link.textContent = post.title || "(untitled)";
+      link.textContent = post.title || t("untitled");
       h3.appendChild(link);
 
       const sub = document.createElement("p");
       sub.className = "sub";
-      sub.textContent = `${post.date || ""} | ${post.track || ""}`;
+      sub.textContent = [post.date || "", post.track || ""].filter(Boolean).join(" / ");
 
       const summary = document.createElement("p");
-      summary.textContent = post.summary || "No summary";
+      summary.textContent = post.summary || t("noSummary");
 
       item.appendChild(h3);
       item.appendChild(sub);
@@ -299,15 +403,15 @@ function renderPostList(list, posts) {
     const h3 = document.createElement("h3");
     const link = document.createElement("a");
     link.href = postUrl;
-    link.textContent = post.title || "(untitled)";
+    link.textContent = post.title || t("untitled");
     h3.appendChild(link);
 
     const sub = document.createElement("p");
     sub.className = "sub";
-    sub.textContent = metaBits.join(" | ");
+    sub.textContent = metaBits.join(" / ");
 
     const summary = document.createElement("p");
-    summary.textContent = post.summary || "No summary";
+    summary.textContent = post.summary || t("noSummary");
 
     item.appendChild(h3);
     item.appendChild(sub);
@@ -327,28 +431,28 @@ function renderMain() {
   list.innerHTML = "";
 
   if (currentView() === "all" && !state.dir && !query) {
-    title.textContent = "Tracks";
-    meta.textContent = `${docs.length} docs`;
+    title.textContent = t("tracks");
+    meta.textContent = formatDocsCount(docs.length);
     renderTrackCards(list, docs);
     return;
   }
 
   const posts = filteredPosts().sort((a, b) => (a.path || "").localeCompare(b.path || ""));
   if (query) {
-    title.textContent = currentView() === PATH_TRACING_VIEW ? "PathTracing Search" : "Search Results";
+    title.textContent = currentView() === PATH_TRACING_VIEW ? t("pathTracingSearch") : t("searchResults");
   } else if (state.dir) {
     title.textContent = state.dir;
   } else if (currentView() === PATH_TRACING_VIEW) {
-    title.textContent = "PathTracing";
+    title.textContent = t("pathTracing");
   } else {
-    title.textContent = "Unreal";
+    title.textContent = t("siteTitle");
   }
-  meta.textContent = `${posts.length} docs`;
+  meta.textContent = formatDocsCount(posts.length);
 
   if (posts.length === 0) {
     const empty = document.createElement("p");
     empty.className = "empty";
-    empty.textContent = "No documents for current selection.";
+    empty.textContent = t("noDocuments");
     list.appendChild(empty);
     return;
   }
@@ -356,7 +460,9 @@ function renderMain() {
   renderPostList(list, posts);
 }
 
-function renderLoadError(message = "Failed to load Unreal summary data. Refresh and try again.") {
+function renderLoadError(message = t("loadError")) {
+  renderStaticText();
+  renderLanguageSwitch();
   renderNavTabs();
 
   const meta = byId("meta");
@@ -364,7 +470,7 @@ function renderLoadError(message = "Failed to load Unreal summary data. Refresh 
   const list = byId("post-list");
   const tree = byId("tree");
 
-  if (title) title.textContent = "Unavailable";
+  if (title) title.textContent = t("unavailable");
   if (meta) meta.textContent = "";
   if (tree) tree.innerHTML = "";
   if (list) {
@@ -386,6 +492,8 @@ function renderAll() {
     search.value = state.q;
   }
 
+  renderStaticText();
+  renderLanguageSwitch();
   renderNavTabs();
   renderTree();
   renderMain();
@@ -395,6 +503,12 @@ function renderAll() {
 async function main() {
   try {
     const params = parseQuery();
+    const queryLang = params.get("lang");
+    if (queryLang === "en" || queryLang === "ko") {
+      state.lang = normalizeLang(queryLang, state.lang);
+      if (typeof setBlogLang === "function") setBlogLang(state.lang);
+    }
+
     state.view = params.get("view") === PATH_TRACING_VIEW ? PATH_TRACING_VIEW : "all";
     state.dir = params.get("dir") || "";
     state.q = (params.get("q") || "").trim();
@@ -405,7 +519,7 @@ async function main() {
     state.all = (data.posts || []).filter((post) => post.category === "unreal-summary");
 
     if (state.all.length === 0) {
-      renderLoadError("Unreal documents are not accessible from this blog.");
+      renderLoadError(t("inaccessible"));
       return;
     }
 
