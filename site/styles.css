@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   color-scheme: light;
   --bg: #ffffff;
   --ink: #1f1f1f;
@@ -12,7 +12,6 @@
   --inline-code-bg: rgba(175, 184, 193, 0.2);
   --focus-ring: rgba(22, 78, 166, 0.25);
 }
-
 :root[data-theme="dark"] {
   color-scheme: dark;
   --bg: #0f131a;
@@ -576,20 +575,20 @@ a:hover {
   padding-right: 0;
 }
 
-body.gpu-series-page {
+body.post-page {
   background:
     radial-gradient(circle at top, color-mix(in srgb, var(--surface-soft) 92%, transparent) 0%, transparent 48%),
     linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%);
 }
 
-body.gpu-series-page .hero {
+body.post-page .hero {
   max-width: 1120px;
   margin: 0 auto;
   padding-top: 2.65rem;
   padding-bottom: 1rem;
 }
 
-body.gpu-series-page .hero #title {
+body.post-page .hero #title {
   max-width: 18ch;
   font-size: clamp(2.3rem, 3.5vw, 3.7rem);
   line-height: 1.03;
@@ -597,7 +596,7 @@ body.gpu-series-page .hero #title {
   margin-bottom: 0.55rem;
 }
 
-html:lang(ko) body.gpu-series-page .hero #title {
+html:lang(ko) body.post-page .hero #title {
   max-width: 20ch;
   font-size: clamp(2.15rem, 3.2vw, 3.35rem);
   line-height: 1.08;
@@ -605,16 +604,16 @@ html:lang(ko) body.gpu-series-page .hero #title {
   word-break: keep-all;
 }
 
-body.gpu-series-page .hero .sub {
+body.post-page .hero .sub {
   max-width: 880px;
   font-size: 0.95rem;
 }
 
-body.gpu-series-page .layout.single {
+body.post-page .layout.single {
   max-width: 1120px;
 }
 
-body.gpu-series-page .content {
+body.post-page .content {
   max-width: 960px;
   margin: 0 auto;
 }
@@ -638,7 +637,7 @@ body.gpu-series-page .content {
   line-height: 1.7;
 }
 
-body.gpu-series-page .markdown {
+body.post-page .markdown {
   font-size: 1.06rem;
   line-height: 1.9;
 }
@@ -649,174 +648,170 @@ body.gpu-series-page .markdown {
   margin-top: 1.2rem;
 }
 
-body.gpu-series-page .markdown h1 {
-  margin-top: 0.2rem;
-  margin-bottom: 1.1rem;
-  font-size: clamp(2rem, 2.5vw, 2.95rem);
-  line-height: 1.08;
-  letter-spacing: -0.028em;
-  max-width: 20ch;
-}
-
-body.gpu-series-page .markdown h2 {
-  margin-top: 3rem;
-  margin-bottom: 1rem;
-  font-size: clamp(1.4rem, 1.7vw, 1.8rem);
-  line-height: 1.18;
+body.post-page .markdown h1,
+body.post-page .markdown h2 {
+  margin-top: 2.75rem;
+  margin-bottom: 0.95rem;
+  font-size: clamp(1.42rem, 1.8vw, 1.9rem);
+  line-height: 1.22;
   letter-spacing: -0.022em;
-}
-
-body.gpu-series-page .markdown h3 {
-  margin-top: 2rem;
-  margin-bottom: 0.55rem;
-  font-size: 1.06rem;
-  line-height: 1.35;
-}
-
-body.gpu-series-page .markdown > p,
-body.gpu-series-page .markdown > ul,
-body.gpu-series-page .markdown > ol,
-body.gpu-series-page .markdown > blockquote {
   max-width: 100%;
 }
 
-body.gpu-series-page .markdown > p + p {
+body.post-page .markdown > h1:first-child,
+body.post-page .markdown > h2:first-child {
+  margin-top: 0.35rem;
+}
+
+body.post-page .markdown h3 {
+  margin-top: 1.8rem;
+  margin-bottom: 0.55rem;
+  font-size: 1.04rem;
+  line-height: 1.4;
+}
+
+body.post-page .markdown > p,
+body.post-page .markdown > ul,
+body.post-page .markdown > ol,
+body.post-page .markdown > blockquote {
+  max-width: 100%;
+}
+
+body.post-page .markdown > p + p {
   margin-top: 1.35rem;
 }
 
-body.gpu-series-page .markdown > p,
-body.gpu-series-page .markdown > ul,
-body.gpu-series-page .markdown > ol,
-body.gpu-series-page .markdown > blockquote {
+body.post-page .markdown > p,
+body.post-page .markdown > ul,
+body.post-page .markdown > ol,
+body.post-page .markdown > blockquote {
   margin-bottom: 1.15rem;
 }
 
-body.gpu-series-page .markdown .gpu-summary-list {
+body.post-page .markdown .gpu-summary-list {
   max-width: 100%;
-  margin: 1rem 0 2rem;
-  padding: 1.15rem 1.3rem 1.15rem 1.7rem;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: linear-gradient(180deg, var(--surface-soft), var(--surface));
+  margin: 1rem 0 1.55rem;
+  padding: 0 0 0 1.45rem;
+  border: 0;
+  border-radius: 0;
+  background: none;
 }
 
-body.gpu-series-page .markdown .gpu-kicker {
-  display: inline-block;
-  margin: 0.2rem 0 1rem;
-  padding: 0.28rem 0.72rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--line));
-  border-radius: 999px;
-  color: var(--accent);
-  background: color-mix(in srgb, var(--surface-soft) 88%, transparent);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-body.gpu-series-page .markdown .gpu-intro-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.95fr);
-  gap: 1.2rem;
-  align-items: start;
-  margin: 0.45rem 0 1.7rem;
-}
-
-body.gpu-series-page .markdown .gpu-intro-copy {
-  margin: 0;
-  font-size: 1.2rem;
-  line-height: 1.75;
-  letter-spacing: -0.015em;
-  max-width: 34ch;
-}
-
-body.gpu-series-page .markdown .gpu-note-card {
-  margin: 0;
-  padding: 1rem 1.05rem;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: linear-gradient(180deg, var(--surface), var(--surface-soft));
-}
-
-body.gpu-series-page .markdown .gpu-note-eyebrow {
-  margin: 0 0 0.55rem;
+body.post-page .markdown .gpu-kicker {
+  display: block;
+  margin: 0.15rem 0 0.95rem;
+  padding: 0;
+  border: 0;
   color: var(--muted);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-body.gpu-series-page .markdown .gpu-note-card ul {
-  margin: 0;
-  padding-left: 1.2rem;
-}
-
-body.gpu-series-page .markdown .gpu-note-card li + li {
-  margin-top: 0.45rem;
-}
-
-body.gpu-series-page .markdown .gpu-compare-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.9rem;
-  margin: 1.1rem 0 2rem;
-}
-
-body.gpu-series-page .markdown .gpu-compare-card {
-  padding: 0.95rem 1rem 1rem;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--surface);
-}
-
-body.gpu-series-page .markdown .gpu-compare-label {
-  margin: 0 0 0.45rem;
-  color: var(--muted);
-  font-size: 0.82rem;
+  background: none;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-body.gpu-series-page .markdown .gpu-compare-card p:last-child {
+body.post-page .markdown .gpu-intro-grid {
+  display: block;
+  margin: 0.25rem 0 1.5rem;
+}
+
+body.post-page .markdown .gpu-intro-copy {
+  margin: 0 0 1rem;
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: normal;
+  max-width: 100%;
+}
+
+body.post-page .markdown .gpu-note-card {
+  margin: 1rem 0 1.35rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+
+body.post-page .markdown .gpu-note-eyebrow {
+  margin: 0 0 0.55rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+body.post-page .markdown .gpu-note-card ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+body.post-page .markdown .gpu-note-card li + li {
+  margin-top: 0.45rem;
+}
+
+body.post-page .markdown .gpu-compare-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.8rem;
+  margin: 1rem 0 1.6rem;
+}
+
+body.post-page .markdown .gpu-compare-card {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+
+body.post-page .markdown .gpu-compare-label {
+  margin: 0 0 0.45rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+body.post-page .markdown .gpu-compare-card p:last-child {
   margin-bottom: 0;
 }
 
-body.gpu-series-page .markdown .gpu-callout {
+body.post-page .markdown .gpu-callout {
   max-width: 100%;
-  margin: 1.8rem 0 1.9rem;
-  padding: 1.1rem 1.15rem;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: linear-gradient(180deg, var(--surface-soft), var(--surface));
+  margin: 1.4rem 0 1.6rem;
+  padding: 0.65rem 1rem;
+  border: 0;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  background: var(--surface-muted);
 }
 
-body.gpu-series-page .markdown .gpu-callout p {
+body.post-page .markdown .gpu-callout p {
   margin: 0;
 }
 
-body.gpu-series-page .markdown .gpu-summary-list li + li {
+body.post-page .markdown .gpu-summary-list li + li {
   margin-top: 0.55rem;
 }
 
-body.gpu-series-page .markdown .gpu-section-lede {
-  font-size: 1.08rem;
-  line-height: 1.84;
-  color: color-mix(in srgb, var(--ink) 88%, var(--muted));
+body.post-page .markdown .gpu-section-lede {
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
   max-width: 100%;
 }
 
-body.gpu-series-page .markdown .gpu-pullquote {
+body.post-page .markdown .gpu-pullquote {
   max-width: 100%;
-  margin: 1.8rem 0 1.5rem;
-  padding: 1rem 1.15rem 1rem 1.3rem;
-  border-left-width: 5px;
-  border-radius: 0 16px 16px 0;
+  margin: 1.35rem 0 1.35rem;
+  padding: 0.75rem 1rem;
+  border-left-width: 4px;
+  border-radius: 0 12px 12px 0;
+  background: var(--surface-muted);
 }
 
-body.gpu-series-page .markdown pre {
-  border-radius: 14px;
+body.post-page .markdown pre {
+  border-radius: 10px;
   padding: 1.05rem 1.15rem;
 }
 
@@ -901,33 +896,35 @@ body.gpu-series-page .markdown pre {
   border-radius: 6px;
 }
 
-body.gpu-series-page .markdown .gpu-figure {
-  margin: 1.6rem 0 0.3rem;
-  padding: 1rem;
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  background: linear-gradient(180deg, var(--surface-soft), var(--surface));
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.06);
+body.post-page .markdown .gpu-figure {
+  margin: 1.5rem 0 0.35rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
 }
 
-body.gpu-series-page .markdown .gpu-figure.gpu-figure-wide {
-  width: min(1040px, calc(100vw - 7rem));
-  margin-left: 50%;
-  transform: translateX(-50%);
+body.post-page .markdown .gpu-figure.gpu-figure-wide {
+  width: 100%;
+  margin-left: 0;
+  transform: none;
 }
 
-body.gpu-series-page .markdown .gpu-diagram-image {
+body.post-page .markdown .gpu-diagram-image {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface);
 }
 
-body.gpu-series-page .markdown .gpu-caption {
-  margin: 0.55rem auto 2rem;
+body.post-page .markdown .gpu-caption {
+  margin: 0.45rem 0 1.6rem;
   max-width: 100%;
-  text-align: center;
-  font-size: 0.95rem;
+  text-align: left;
+  font-size: 0.92rem;
   color: var(--muted);
 }
 
@@ -1048,32 +1045,27 @@ body.gpu-series-page .markdown .gpu-caption {
     padding-left: 0;
   }
 
-  body.gpu-series-page .hero #title {
+  body.post-page .hero #title {
     max-width: none;
     line-height: 1.06;
   }
 
-  body.gpu-series-page .content {
+  body.post-page .content {
     max-width: none;
   }
 
-  body.gpu-series-page .markdown .gpu-intro-grid,
-  body.gpu-series-page .markdown .gpu-compare-grid {
-    grid-template-columns: 1fr;
-  }
-
-  body.gpu-series-page .markdown .gpu-intro-copy {
+  body.post-page .markdown .gpu-intro-copy {
     max-width: none;
-    font-size: 1.14rem;
   }
 
-  body.gpu-series-page .markdown .gpu-figure.gpu-figure-wide {
+  body.post-page .markdown .gpu-figure.gpu-figure-wide {
     width: 100%;
     margin-left: 0;
     transform: none;
   }
 
-  body.gpu-series-page .markdown {
+  body.post-page .markdown {
     font-size: 1rem;
   }
 }
+
