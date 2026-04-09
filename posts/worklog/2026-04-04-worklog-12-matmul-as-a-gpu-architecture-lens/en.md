@@ -68,6 +68,22 @@ The useful thing about this progression is that the question changes as the kern
 
 This is why matmul is such a strong teaching kernel. The optimization path is not a bag of unrelated tricks. It is a sequence of increasingly explicit decisions about dataflow.
 
+## A Code-First Matmul Learning Ladder
+
+This is the point where code-first material and architecture-first material meet naturally. In prose, we learn hierarchy and ownership first. In code, we start from a naive kernel and watch what each optimization stage really changes.
+
+In practice, the most useful ladder looks like this:
+
+1. naive fp32 GEMM: understand correctness, arithmetic intensity, and the roofline gap.
+2. global-memory cleanup: reduce wasted transactions through coalescing and vectorization.
+3. shared-memory tiling: make reuse explicit instead of accidental.
+4. warp/register tiling: translate tile ownership into on-chip schedule and accumulator shape.
+5. Tensor Core / WMMA kernels: change the compute primitive while keeping the feeding problem central.
+6. async pipelines: start overlapping copy and compute with paths such as `cp.async`.
+7. Hopper-style pipelines: `TMA`, `WGMMA`, persistent execution, and cluster thinking turn movement into a first-class design path.
+
+This ladder is powerful because every stage can be re-read through one sentence: keep the same data alive longer, and move it in a more deliberate rhythm.
+
 ## Why Naive Matmul Leaves the GPU Underfed
 
 The textbook loop is straightforward:
@@ -243,6 +259,20 @@ When looking at a Tensor Core kernel, ask:
 
 The diagram matters because the kernel is fundamentally spatial. A prose-only description can explain the sequence, but a visual makes it much easier to see that data is moving between storage layers while ownership is also moving between execution layers.
 
+## The Same Questions Still Unlock CUTLASS
+
+The confusing part about seeing `CUTLASS` for the first time is that template names and policy objects can look like the main event. They are not. The real event is still ownership, staging, synchronization, accumulator lifetime, and epilogue responsibility.
+
+So when reading a CUTLASS-style kernel, it is better to trace:
+
+1. which block or warp-group owns which tile
+2. which storage layers `A` and `B` fragments pass through
+3. how long accumulators stay live, and where epilogue work lands
+4. which stages overlap movement and compute
+5. whether the larger tile shape earns back its register and shared-memory cost through reuse
+
+In that sense, CUTLASS is not a separate magic world. It is a framework that makes the same architectural questions more explicit.
+
 ## Why Aleksa Gordić's Article Is a Strong Reference
 
 The article does not stop at “use Tensor Cores.” It climbs the actual ladder:
@@ -308,6 +338,8 @@ When looking at a matmul-like kernel, ask:
 ## References
 
 - [Inside NVIDIA GPUs: Anatomy of high performance matmul kernels](https://www.aleksagordic.com/blog/matmul)
+- [Learning CUTLASS the hard way! code repository](https://github.com/gpusgobrr/explore-gemm)
+- [Learn CUTLASS the hard way!](https://www.kapilsharma.dev/posts/learn-cutlass-the-hard-way/)
 - `General-Purpose Graphics Processor Architecture`
 - Existing related posts:
   - `GPU Series 02 - Systolic Array: From Fundamentals to Production Mapping`

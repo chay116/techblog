@@ -52,10 +52,18 @@ const POST_I18N = {
 
 const POST_I18N_EXTRA = {
   en: {
-    outline: "Outline",
+    outline: "Contents",
+    navigate: "Navigate",
+    postKind: "Post",
+    home: "Home",
+    siteSubtitle: "Notes on GPU architecture, compilers, and rendering.",
   },
   ko: {
-    outline: "\uac1c\uc694",
+    outline: "\ubaa9\ucc28",
+    navigate: "\ud0d0\uc0c9",
+    postKind: "\uae00",
+    home: "\ud648",
+    siteSubtitle: "GPU \uc544\ud0a4\ud14d\ucc98, \ucef4\ud30c\uc77c\ub7ec, \ub80c\ub354\ub9c1\uc5d0 \uad00\ud55c \ub178\ud2b8.",
   },
 };
 
@@ -65,6 +73,7 @@ Object.entries(POST_I18N_EXTRA).forEach(([lang, table]) => {
 
 let currentMeta = null;
 let currentNavMode = "home";
+let currentBackHref = "./index.html";
 let outlineObserver = null;
 
 function currentUiLang() {
@@ -91,6 +100,78 @@ function renderLanguageSwitch() {
       renderChrome();
     },
   });
+}
+
+function navModeLabel(mode, lang = currentUiLang()) {
+  const labels = {
+    en: {
+      home: "Home",
+      gpu: "GPU",
+      "gpu-lab": "GPU Lab",
+      compiler: "Compiler",
+      unreal: "Unreal",
+      pathtracing: "PathTracing",
+      recent: "Recent",
+    },
+    ko: {
+      home: "\ud648",
+      gpu: "GPU",
+      "gpu-lab": "GPU Lab",
+      compiler: "\ucef4\ud30c\uc77c\ub7ec",
+      unreal: "\uc5b8\ub9ac\uc5bc",
+      pathtracing: "\ud328\uc2a4 \ud2b8\ub808\uc774\uc2f1",
+      recent: "\ucd5c\uc2e0",
+    },
+  };
+  const table = labels[lang] || labels.en;
+  return table[mode] || labels.en[mode] || mode;
+}
+
+function seriesLabel(value) {
+  if (value === "gpu") return "GPU";
+  if (value === "gpu-lab") return "GPU Lab";
+  if (value === "compiler") return "Compiler";
+  return value || "";
+}
+
+function cleanDeckText(value) {
+  return String(value || "")
+    .replace(/^\s*-\s*/, "")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/[*_`>#]+/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function formatKind(meta, lang = currentUiLang()) {
+  if (!meta) return postTFor(lang, "postKind");
+  return meta.book || categoryLabel(meta.category, lang) || postTFor(lang, "postKind");
+}
+
+function formatDeck(meta, lang = currentUiLang()) {
+  if (!meta) return "";
+
+  const summary = cleanDeckText(meta.summary);
+  if (summary) return summary;
+
+  const bits = [];
+  if (meta.part) bits.push(meta.part);
+  if (meta.chapter && meta.chapter !== meta.title) bits.push(meta.chapter);
+  if (meta.track) bits.push(trackLabel(meta.track, lang));
+  return bits.filter(Boolean).join(" · ");
+}
+
+function formatBreadcrumb(meta, lang = currentUiLang()) {
+  const homeLabel = postTFor(lang, "home");
+  const sectionLabel =
+    seriesLabel(meta && meta.series) ||
+    navModeLabel(currentNavMode, lang) ||
+    categoryLabel(meta && meta.category, lang) ||
+    postTFor(lang, "pageTitle");
+  const sectionHref = meta && meta.series ? readerTocLink(meta.series) : currentBackHref;
+  return `<a href="./index.html">${escapeAttr(homeLabel)}</a> <span aria-hidden="true">/</span> <a href="${escapeAttr(
+    sectionHref
+  )}">${escapeAttr(sectionLabel)}</a>`;
 }
 
 function renderChrome() {
@@ -124,15 +205,49 @@ function renderChrome() {
   const outline = q("post-outline");
   if (outline) outline.setAttribute("aria-label", postT("outline"));
 
+  const navLabelEl = q("post-nav-label");
+  if (navLabelEl) navLabelEl.textContent = postT("navigate");
+
+  const siteSubtitle = q("post-site-subtitle");
+  if (siteSubtitle) siteSubtitle.textContent = postT("siteSubtitle");
+
   const title = q("title");
   if (title && !currentMeta && title.textContent.trim() === "Loading...") {
     title.textContent = postT("loading");
   }
 
   if (currentMeta) {
-    document.title = currentMeta.title || postT("pageTitle");
+    document.title = currentMeta.title ? `${currentMeta.title} | techblog` : "techblog";
+    if (title) title.textContent = currentMeta.title || postT("pageTitle");
     const meta = q("meta");
     if (meta) meta.textContent = formatMetaLine(currentMeta, lang);
+
+    const kind = q("post-kind");
+    if (kind) kind.textContent = formatKind(currentMeta, lang);
+
+    const breadcrumb = q("post-breadcrumb");
+    if (breadcrumb) breadcrumb.innerHTML = formatBreadcrumb(currentMeta, lang);
+
+    const deck = q("post-deck");
+    if (deck) {
+      const deckText = formatDeck(currentMeta, lang);
+      deck.hidden = !deckText;
+      deck.textContent = deckText;
+    }
+  } else {
+    document.title = "techblog";
+
+    const kind = q("post-kind");
+    if (kind) kind.textContent = postT("postKind");
+
+    const breadcrumb = q("post-breadcrumb");
+    if (breadcrumb) breadcrumb.innerHTML = `<a href="./index.html">${escapeAttr(postT("home"))}</a>`;
+
+    const deck = q("post-deck");
+    if (deck) {
+      deck.hidden = true;
+      deck.textContent = "";
+    }
   }
 }
 
@@ -474,7 +589,7 @@ function formatMetaLine(meta, lang = currentUiLang()) {
     trackLabel(meta.track, lang),
     statusLabel(meta.status, lang),
   ].filter(Boolean);
-  return bits.join(" / ");
+  return bits.join(" · ");
 }
 
 function compareSortKey(a, b) {
@@ -863,8 +978,10 @@ async function main() {
     const backLink = q("back-link");
     if (backLink) {
       try {
-        backLink.href = safeBackHref(fromDecoded);
+        currentBackHref = safeBackHref(fromDecoded);
+        backLink.href = currentBackHref;
       } catch (_) {
+        currentBackHref = "./index.html";
         backLink.href = "./index.html";
       }
     }
@@ -904,6 +1021,7 @@ async function main() {
 
     document.body.dataset.series = meta.series || "";
     document.body.dataset.track = meta.track || "";
+    document.body.dataset.category = meta.category || "";
 
     q("title").textContent = meta.title;
 

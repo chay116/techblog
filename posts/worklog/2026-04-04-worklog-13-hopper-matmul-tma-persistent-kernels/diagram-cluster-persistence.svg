@@ -4,19 +4,60 @@
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#164ea6"/>
     </marker>
   </defs>
+
   <rect x="40" y="40" width="900" height="240" rx="24" fill="#f8fbff" stroke="#164ea6" stroke-width="2"/>
+
   <rect x="90" y="90" width="220" height="140" rx="18" fill="#fffdf2" stroke="#7a5a00" stroke-width="2"/>
+  <rect x="90" y="90" width="220" height="140" rx="18" fill="#ffeeb5" opacity="0.08">
+    <animate attributeName="opacity" values="0.08;0.24;0.08;0.08" dur="6.6s" repeatCount="indefinite"/>
+  </rect>
+
   <rect x="380" y="90" width="220" height="140" rx="18" fill="#fffdf2" stroke="#7a5a00" stroke-width="2"/>
+  <rect x="380" y="90" width="220" height="140" rx="18" fill="#ffeeb5" opacity="0.08">
+    <animate attributeName="opacity" values="0.08;0.08;0.24;0.08" dur="6.6s" repeatCount="indefinite"/>
+  </rect>
+
   <rect x="670" y="90" width="220" height="140" rx="18" fill="#fffdf2" stroke="#7a5a00" stroke-width="2"/>
+  <rect x="670" y="90" width="220" height="140" rx="18" fill="#ffeeb5" opacity="0.08">
+    <animate attributeName="opacity" values="0.08;0.08;0.08;0.24" dur="6.6s" repeatCount="indefinite"/>
+  </rect>
+
   <path d="M 310 160 L 380 160" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-clu-a)"/>
   <path d="M 600 160 L 670 160" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-clu-a)"/>
+
+  <g opacity="0.75">
+    <circle r="6" fill="#164ea6">
+      <animateMotion dur="5.8s" repeatCount="indefinite" path="M 170 160 H 780"/>
+    </circle>
+  </g>
+  <g opacity="0.55">
+    <rect x="-5" y="-5" width="10" height="10" rx="2" fill="#2b7a4b">
+      <animateMotion dur="5.8s" begin="1.15s" repeatCount="indefinite" path="M 190 188 H 800"/>
+    </rect>
+  </g>
+
+  <g fill="#7a5a00" opacity="0.82">
+    <circle cx="130" cy="118" r="4">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="420" cy="118" r="4">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2.2s" begin="0.7s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="710" cy="118" r="4">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2.2s" begin="1.4s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
   <text x="490" y="68" text-anchor="middle" font-size="22" font-weight="700" fill="#1f1f1f">Persistent Cluster View</text>
+
   <text x="200" y="125" text-anchor="middle" font-size="19" font-weight="700" fill="#4d3a00">Cluster Tile 0</text>
   <text x="200" y="148" text-anchor="middle" font-size="14" fill="#5d4a10">resident workers keep pulling work</text>
   <text x="200" y="188" text-anchor="middle" font-size="14" fill="#5d4a10">multicast-friendly movement</text>
+
   <text x="490" y="125" text-anchor="middle" font-size="19" font-weight="700" fill="#4d3a00">Cluster Tile 1</text>
   <text x="490" y="148" text-anchor="middle" font-size="14" fill="#5d4a10">same kernel shape, next work packet</text>
   <text x="490" y="188" text-anchor="middle" font-size="14" fill="#5d4a10">coordination scope is larger than one block</text>
+
   <text x="780" y="125" text-anchor="middle" font-size="19" font-weight="700" fill="#4d3a00">Cluster Tile 2</text>
   <text x="780" y="148" text-anchor="middle" font-size="14" fill="#5d4a10">steady pipeline instead of repeated rebuilds</text>
   <text x="780" y="188" text-anchor="middle" font-size="14" fill="#5d4a10">movement feeds more than one local consumer</text>

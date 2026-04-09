@@ -68,6 +68,22 @@ tags: ["gpu", "matmul", "gemm", "tensor-core", "tiling", "register-pressure", "n
 
 그래서 matmul은 좋은 교재다. 최적화 경로가 서로 무관한 트릭의 묶음이 아니라, 데이터 흐름을 점점 더 명시적으로 설계해 가는 과정으로 보이기 때문이다.
 
+## 코드로 따라가는 Matmul 학습 계단
+
+이 지점에서 code-first 자료와 글 기반 자료가 자연스럽게 만난다. 글로는 hierarchy와 ownership을 먼저 잡고, 코드로는 naive kernel에서 출발해 각 단계가 무엇을 바꾸는지 확인하면 된다.
+
+실전적으로는 다음 계단이 가장 이해하기 좋다.
+
+1. naive fp32 GEMM: 정확성, arithmetic intensity, roofline gap을 본다.
+2. global-memory 정리: coalescing과 vectorization으로 transaction 낭비를 줄인다.
+3. shared-memory tiling: 재사용을 명시적으로 설계한다.
+4. warp/register tiling: ownership을 더 작은 실행 단위와 accumulator 모양으로 내린다.
+5. Tensor Core / WMMA: compute primitive를 바꾸되, 여전히 feeding 문제를 중심에 둔다.
+6. async pipeline: `cp.async` 같은 경로로 copy와 compute를 겹치기 시작한다.
+7. Hopper-style pipeline: `TMA`, `WGMMA`, persistent execution, cluster 관점으로 movement가 1급 설계가 된다.
+
+이 순서가 좋은 이유는 "더 빠른 instruction을 찾아라"가 아니라 "같은 데이터를 더 오래 붙잡고, 더 질서 있게 흘려라"라는 한 문장으로 모든 단계를 다시 읽을 수 있기 때문이다.
+
 ## 왜 Naive Matmul은 GPU를 굶기는가
 
 교과서식 loop는 단순하다.
@@ -243,6 +259,20 @@ Tensor Core kernel을 볼 때는 다음을 먼저 묻는 편이 좋다.
 
 이 그림이 특히 도움이 되는 이유는, 커널이 본질적으로 공간적인 구조를 갖기 때문이다. 글만으로도 순서를 설명할 수는 있지만, 그림으로 보면 데이터가 저장 계층 사이를 이동하는 흐름과 실행 계층 사이에서 ownership이 이동하는 흐름이 한 번에 보인다.
 
+## CUTLASS를 읽을 때도 질문은 같다
+
+`CUTLASS`를 처음 볼 때 가장 헷갈리는 점은, 템플릿 이름과 정책 객체가 너무 많아서 "라이브러리 문법"이 핵심처럼 보인다는 것이다. 하지만 실제 핵심은 문법이 아니라 ownership과 pipeline이다.
+
+그래서 CUTLASS 스타일 커널을 볼 때도 먼저 다음을 추적하는 편이 좋다.
+
+1. block과 warp-group이 어떤 tile을 소유하는가
+2. `A`, `B` fragment가 어느 계층을 거쳐 들어오는가
+3. accumulator가 얼마나 오래 살아 있고, epilogue는 누가 담당하는가
+4. movement와 compute가 어떤 stage 구조로 겹치는가
+5. 더 큰 tile이 만든 reuse 증가가 register/shared-memory 비용을 정당화하는가
+
+즉 CUTLASS는 "알아야 할 새로운 마법"이라기보다, 이미 배운 ownership, staging, synchronization, epilogue 문제를 더 노골적으로 드러내는 프레임워크에 가깝다.
+
 ## 왜 Aleksa Gordić의 글이 좋은 기준점인가
 
 그 글은 "Tensor Core를 써라"에서 멈추지 않는다. 실제로는 다음 계단을 차례로 올라간다.
@@ -308,6 +338,8 @@ matmul 계열 커널을 볼 때는 다음을 묻는 편이 좋다.
 ## References
 
 - [Inside NVIDIA GPUs: Anatomy of high performance matmul kernels](https://www.aleksagordic.com/blog/matmul)
+- [Learning CUTLASS the hard way! 코드 저장소](https://github.com/gpusgobrr/explore-gemm)
+- [Learn CUTLASS the hard way!](https://www.kapilsharma.dev/posts/learn-cutlass-the-hard-way/)
 - `General-Purpose Graphics Processor Architecture`
 - 기존 관련 글:
   - `GPU 시리즈 02 - Systolic Array: 기초에서 실제 매핑까지`

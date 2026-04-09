@@ -3,28 +3,74 @@
     <marker id="arrow-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#164ea6"/>
     </marker>
+    <filter id="soft-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
+
+  <path d="M 96 34 H 874" stroke="#d6e3f8" stroke-width="6" stroke-linecap="round"/>
+
+  <g opacity="0.7" filter="url(#soft-glow)">
+    <circle r="7" fill="#164ea6">
+      <animateMotion dur="7.4s" repeatCount="indefinite" path="M 96 34 H 874"/>
+    </circle>
+  </g>
+  <g opacity="0.55">
+    <rect x="-6" y="-6" width="12" height="12" rx="3" fill="#2b7a4b">
+      <animateMotion dur="7.4s" begin="0.55s" repeatCount="indefinite" path="M 96 34 H 874"/>
+    </rect>
+  </g>
+
   <rect x="20" y="56" width="160" height="92" rx="18" fill="#f5f7fb" stroke="#164ea6" stroke-width="2"/>
+  <rect x="20" y="56" width="160" height="92" rx="18" fill="#dbe9ff" opacity="0.08">
+    <animate attributeName="opacity" values="0.08;0.26;0.08;0.08" dur="8s" repeatCount="indefinite"/>
+  </rect>
+
   <rect x="210" y="56" width="160" height="92" rx="18" fill="#eef6ff" stroke="#164ea6" stroke-width="2"/>
+  <rect x="210" y="56" width="160" height="92" rx="18" fill="#d8efff" opacity="0.08">
+    <animate attributeName="opacity" values="0.08;0.08;0.28;0.08;0.08" dur="8s" repeatCount="indefinite"/>
+  </rect>
+
   <rect x="400" y="56" width="160" height="92" rx="18" fill="#eefaf5" stroke="#2b7a4b" stroke-width="2"/>
+  <rect x="400" y="56" width="160" height="92" rx="18" fill="#dff8e8" opacity="0.08">
+    <animate attributeName="opacity" values="0.08;0.08;0.08;0.3;0.08" dur="8s" repeatCount="indefinite"/>
+  </rect>
+
   <rect x="590" y="56" width="160" height="92" rx="18" fill="#fff7ea" stroke="#b7791f" stroke-width="2"/>
+  <rect x="590" y="56" width="160" height="92" rx="18" fill="#ffe8c7" opacity="0.08">
+    <animate attributeName="opacity" values="0.08;0.08;0.08;0.08;0.28;0.08" dur="8s" repeatCount="indefinite"/>
+  </rect>
+
   <rect x="780" y="56" width="180" height="92" rx="18" fill="#fff0f0" stroke="#b94141" stroke-width="2"/>
+  <rect x="780" y="56" width="180" height="92" rx="18" fill="#ffd9d9" opacity="0.08">
+    <animate attributeName="opacity" values="0.08;0.08;0.08;0.08;0.08;0.32;0.08" dur="8s" repeatCount="indefinite"/>
+  </rect>
+
   <path d="M 180 102 L 210 102" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-a)"/>
   <path d="M 370 102 L 400 102" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-a)"/>
   <path d="M 560 102 L 590 102" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-a)"/>
   <path d="M 750 102 L 780 102" stroke="#164ea6" stroke-width="3" marker-end="url(#arrow-a)"/>
+
   <text x="100" y="86" text-anchor="middle" font-size="20" font-weight="700" fill="#1f1f1f">Naive</text>
   <text x="100" y="112" text-anchor="middle" font-size="15" fill="#444">one output</text>
   <text x="100" y="132" text-anchor="middle" font-size="15" fill="#444">at a time</text>
+
   <text x="290" y="86" text-anchor="middle" font-size="20" font-weight="700" fill="#1f1f1f">Block Tiling</text>
   <text x="290" y="112" text-anchor="middle" font-size="15" fill="#444">own a C tile</text>
   <text x="290" y="132" text-anchor="middle" font-size="15" fill="#444">per block</text>
+
   <text x="480" y="84" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Shared Memory</text>
   <text x="480" y="108" text-anchor="middle" font-size="15" fill="#444">stage A/B tiles</text>
   <text x="480" y="128" text-anchor="middle" font-size="15" fill="#444">reuse before reload</text>
+
   <text x="670" y="86" text-anchor="middle" font-size="20" font-weight="700" fill="#1f1f1f">Registers</text>
   <text x="670" y="112" text-anchor="middle" font-size="15" fill="#444">keep fragments</text>
   <text x="670" y="132" text-anchor="middle" font-size="15" fill="#444">and accumulators close</text>
+
   <text x="870" y="84" text-anchor="middle" font-size="19" font-weight="700" fill="#1f1f1f">Tensor-Core</text>
   <text x="870" y="108" text-anchor="middle" font-size="15" fill="#444">pipeline movement</text>
   <text x="870" y="128" text-anchor="middle" font-size="15" fill="#444">and compute together</text>

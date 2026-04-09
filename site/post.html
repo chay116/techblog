@@ -30,29 +30,36 @@
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
   </head>
   <body class="post-page">
-    <div class="top-controls">
-      <div class="lang-control" id="lang-switch" aria-label="Language switch"></div>
-      <div class="theme-control">
-        <label class="theme-switch" for="theme-toggle">
-          <input id="theme-toggle" class="theme-toggle" type="checkbox" role="switch" aria-label="Toggle dark mode" />
-          <span class="theme-track">
-            <span class="theme-icon sun" aria-hidden="true">&#9728;</span>
-            <span class="theme-thumb" aria-hidden="true"></span>
-            <span class="theme-icon moon" aria-hidden="true">&#9790;</span>
-          </span>
-        </label>
-      </div>
-    </div>
-
-    <header class="hero">
-      <h1 id="title">Loading...</h1>
-      <p id="meta" class="sub"></p>
-    </header>
-
     <main class="layout single post-layout">
       <aside class="post-rail post-left-rail" aria-label="Section navigation">
         <div class="post-rail-stack">
+          <div class="post-site-card">
+            <a id="post-site-home" class="post-site-home" href="./index.html">techblog</a>
+            <p id="post-site-subtitle" class="post-site-subtitle">Notes on GPU architecture, compilers, and rendering.</p>
+          </div>
+
+          <div class="top-controls top-controls-inline">
+            <div class="lang-control" id="lang-switch" aria-label="Language switch"></div>
+            <div class="theme-control">
+              <label class="theme-switch" for="theme-toggle">
+                <input
+                  id="theme-toggle"
+                  class="theme-toggle"
+                  type="checkbox"
+                  role="switch"
+                  aria-label="Toggle dark mode"
+                />
+                <span class="theme-track">
+                  <span class="theme-icon sun" aria-hidden="true">&#9728;</span>
+                  <span class="theme-thumb" aria-hidden="true"></span>
+                  <span class="theme-icon moon" aria-hidden="true">&#9790;</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
           <div class="post-rail-card post-rail-nav">
+            <p id="post-nav-label" class="post-rail-label">Navigate</p>
             <nav class="nav-tabs" id="nav-tabs"></nav>
           </div>
           <div class="post-rail-card post-rail-link-card">
@@ -62,13 +69,20 @@
       </aside>
 
       <article class="content">
+        <header class="hero post-article-header">
+          <p id="post-breadcrumb" class="post-breadcrumb"></p>
+          <p id="post-kind" class="post-kind">Post</p>
+          <h1 id="title">Loading...</h1>
+          <p id="post-deck" class="post-deck" hidden></p>
+          <p id="meta" class="sub"></p>
+        </header>
         <div id="markdown" class="markdown"></div>
       </article>
 
       <aside class="post-rail post-right-rail" aria-label="Post outline">
         <div class="post-rail-stack">
           <section id="post-outline-card" class="post-rail-card post-outline-card" hidden>
-            <p id="post-outline-label" class="post-rail-label">Outline</p>
+            <p id="post-outline-label" class="post-rail-label">Contents</p>
             <nav id="post-outline" class="post-outline"></nav>
           </section>
 

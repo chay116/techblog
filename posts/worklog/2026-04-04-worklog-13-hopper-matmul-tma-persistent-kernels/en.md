@@ -157,6 +157,20 @@ Instead, it shows that once the hardware gives you:
 the kernel design itself must evolve.  
 That is the real lesson.
 
+## A Good Order for Reading CUTLASS-Style Hopper Kernels
+
+When following code-first material such as `explore-gemm` or Kapil Sharma's write-up, the Hopper stage usually stops feeling "long" and starts feeling "hard to parse." The issue is not only code size. The issue is that movement responsibility is no longer obvious.
+
+At that point, it helps to read the kernel in this order:
+
+1. find the collective tile or cluster tile
+2. identify where producer and consumer warp-groups split
+3. trace the rhythm created by `TMA` descriptors, barriers, and stage count
+4. locate `WGMMA` issue points and accumulator lifetime to understand register pressure
+5. inspect persistent work distribution and epilogue ownership to understand the steady state
+
+Read in that order, the pipeline becomes visible before the helper types do. That is usually the difference between "template fog" and a readable Hopper kernel.
+
 # 10. Diagram
 
 ![Cluster and persistence view](diagram-cluster-persistence.svg)
@@ -168,3 +182,9 @@ That is the real lesson.
 - Hopper matmul kernels are worth studying because they make modern GPU design more explicit: movement is no longer a side detail, it is a first-class architectural path.
 - TMA, specialization, persistence, and cluster thinking all point in the same direction: build a coherent pipeline where movement and compute are deliberately separated and overlapped.
 - The next step after understanding this is not memorizing Hopper features. It is learning how to diagnose whether a kernel is failing on movement, compute, or coordination.
+
+## References
+
+- [Learning CUTLASS the hard way! code repository](https://github.com/gpusgobrr/explore-gemm)
+- [Learn CUTLASS the hard way!](https://www.kapilsharma.dev/posts/learn-cutlass-the-hard-way/)
+- [Inside NVIDIA GPUs: Anatomy of high performance matmul kernels](https://www.aleksagordic.com/blog/matmul)
